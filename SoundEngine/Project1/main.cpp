@@ -3,6 +3,7 @@
 
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
+#include "FModManager.h"
 
 GLFWwindow* window;
 
@@ -10,9 +11,12 @@ void key_callback(GLFWwindow* window, const int key, int scancode, const int act
 }
 
 int main(int argc, char* argv[]) {
+	// Initialize the FModManager Class
+	FModManager fmod_manager(FMOD_INIT_NORMAL);
+
 	//initialize glfw/glad
 	glfwInit();
-	window = glfwCreateWindow(800, 600, "INFO-6064", nullptr, nullptr);
+	window = glfwCreateWindow(800, 600, "Sound Engine - Project #1", nullptr, nullptr);
 
 	if (!window) {
 		return 1;
