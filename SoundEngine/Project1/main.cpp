@@ -19,6 +19,14 @@ int main(int argc, char* argv[]) {
 	fmod_manager.createChannelGroup("music");
 	fmod_manager.createChannelGroup("fx");
 
+	// Creates Parent Child relation between channels
+	fmod_manager.setChannelGroupParent("master", "music");
+	fmod_manager.setChannelGroupParent("master", "fx");
+
+	// Sets initial volume for master channel to 20%
+	// WARNING: DO NOT PASS VOLUME VALUE ABOVE 1.0f
+	fmod_manager.setChannelGroupVolume("master", 0.3f);
+
 	//initialize glfw/glad
 	glfwInit();
 	window = glfwCreateWindow(800, 600, "Sound Engine - Project #1", nullptr, nullptr);

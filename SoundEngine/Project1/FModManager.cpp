@@ -10,7 +10,7 @@
 #endif
 
 FModManager::FModManager(const int system_flags) {
-	DEBUG_PRINT("FModManager::FModManager(const int system_flags)\n");
+	DEBUG_PRINT("FModManager::FModManager(%d)\n", system_flags);
 	// Creates the System
 	m_result = System_Create(&m_system);
 	// Checks for errors
@@ -41,10 +41,11 @@ FModManager::~FModManager() {
 }
 
 void FModManager::createChannelGroup(const std::string& name) {
-	DEBUG_PRINT("FModManager::createChannelGroup(const std::string& %s)\n", name.c_str());
+	DEBUG_PRINT("FModManager::createChannelGroup(%s)\n", name.c_str());
 	FMOD::ChannelGroup* fmod_channel_group;
 	// Creates the FMOD Channel Group
 	m_result = m_system->createChannelGroup(name.c_str(), &fmod_channel_group);
+	// Checks the result
 	if (m_result != FMOD_OK) {
 		std::cout << "fmod error: #" << m_result << "-" << FMOD_ErrorString(m_result) << std::endl;
 		return;
@@ -56,10 +57,10 @@ void FModManager::createChannelGroup(const std::string& name) {
 }
 
 void FModManager::removeChannelGroup(const std::string& name) {
-	DEBUG_PRINT("FModManager::removeChannelGroup(const std::string& %s)\n", name.c_str());
+	DEBUG_PRINT("FModManager::removeChannelGroup(%s)\n", name.c_str());
 	// Finds the Channel group by Name
 	std::map<std::string, ChannelGroup*>::iterator it = m_channel_groups.find(name);
-	// Check if found
+	// Checks if it was found
 	if (it == m_channel_groups.end()) {
 		std::cout << "FModManager error: Couldn't find the ChannelGroup named #" << name << std::endl;
 		return;
@@ -68,4 +69,48 @@ void FModManager::removeChannelGroup(const std::string& name) {
 	it->second->~ChannelGroup();
 	// Removes the class instance from the member map tree
 	m_channel_groups.erase(it);
+}
+
+void FModManager::setChannelGroupParent(const std::string& parent_name, const std::string& child_name) {
+	DEBUG_PRINT("FModManager::setChannelGroupParent(%s, %s)\n", parent_name.c_str(), child_name.c_str());
+	// Tries to find both Parent and Child channel groups
+	std::map<std::string, ChannelGroup*>::iterator itParent = m_channel_groups.find(parent_name);
+	std::map<std::string, ChannelGroup*>::iterator itChild  = m_channel_groups.find(child_name);
+	// Checks if both parent and child was found
+	if (itParent == m_channel_groups.end() || itChild == m_channel_groups.end()) {
+		std::cout << "FModManager error: Couldn't find the ChannelGroup named #" << parent_name 
+													<< "or ChannelGroup named #" << child_name << std::endl;
+		return;
+	}
+	// If found tries to estabelish the relation using FMOD
+	m_result = itParent->second->m_group->addGroup(itChild->second->m_group);
+	// Checks for error
+	if (m_result != FMOD_OK) 
+		std::cout << "fmod error: #" << m_result << "-" << FMOD_ErrorString(m_result) << std::endl;
+}
+
+void FModManager::getChannelGroupVolume(const std::string& name, float* volume) {
+	DEBUG_PRINT("FModManager::getChannelGroupVolume(%s)\n", name.c_str());
+	// Finds the Channel group by Name
+	std::map<std::string, ChannelGroup*>::iterator it = m_channel_groups.find(name);
+	// Checks if it was found
+	if (it == m_channel_groups.end()) {
+		std::cout << "FModManager error: Couldn't find the ChannelGroup named #" << name << std::endl;
+		return;
+	}
+	// Gets the pointer to the value of the volume
+	it->second->m_group->getVolume(volume);
+}
+
+void FModManager::setChannelGroupVolume(const std::string& name, float volume) {
+	DEBUG_PRINT("FModManager::setChannelGroupVolume(%s, %f)\n", name.c_str(), volume);
+	// Finds the Channel group by Name
+	std::map<std::string, ChannelGroup*>::iterator it = m_channel_groups.find(name);
+	// Checks if it was found
+	if (it == m_channel_groups.end()) {
+		std::cout << "FModManager error: Couldn't find the ChannelGroup named #" << name << std::endl;
+		return;
+	}
+	// Sets the new value for the volume
+	it->second->m_group->setVolume(volume);
 }
