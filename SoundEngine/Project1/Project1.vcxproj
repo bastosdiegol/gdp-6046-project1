@@ -122,7 +122,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)dev\libraries;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>fmod_vc.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>fmod_vc.lib;glfw3.lib;pugixml.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -153,6 +153,7 @@
     <ClCompile Include="imgui\imgui_tables.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Sound.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChannelGroup.h" />
@@ -166,6 +167,25 @@
     <ClInclude Include="imgui\imstb_rectpack.h" />
     <ClInclude Include="imgui\imstb_textedit.h" />
     <ClInclude Include="imgui\imstb_truetype.h" />
+    <ClInclude Include="Sound.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="sounds.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="sounds\fx\Breath.wav" />
+    <Media Include="sounds\fx\Fire01.wav" />
+    <Media Include="sounds\fx\Fire16.wav" />
+    <Media Include="sounds\fx\Hit.wav" />
+    <Media Include="sounds\fx\Rock02.wav" />
+    <Media Include="sounds\fx\Rock10.wav" />
+    <Media Include="sounds\fx\Water03.wav" />
+    <Media Include="sounds\fx\Water04.wav" />
+    <Media Include="sounds\fx\Water10.wav" />
+    <Media Include="sounds\fx\WingFlap.wav" />
+    <Media Include="sounds\music\beethoven_moonlight_sonata.mp3" />
+    <Media Include="sounds\music\tchaikovsky_dance_of_the_sugar_plum_fairy.mp3" />
+    <Media Include="sounds\music\vivaldi_winter_mvt1.mp3" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

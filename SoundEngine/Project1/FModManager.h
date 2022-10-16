@@ -5,6 +5,7 @@
 #include <string>
 
 #include "ChannelGroup.h"
+#include "Sound.h"
 
 class FModManager {
 public:
@@ -29,13 +30,17 @@ public:
 	// Receives channel name and desired volume, Returns Nothing
 	void setChannelGroupVolume(const std::string& name, float volume);
 
+	// Loads all sounds available from XML File
+	void loadSoundsFromFile();
+
 protected:
 	FMOD_RESULT		m_result; // Variable to check Erros
 	FMOD::System*	m_system; // FMod System
 	std::map<std::string, ChannelGroup*> m_channel_groups; // Map Tree of Channel Groups
+	std::map<std::string, Sound*>		 m_sounds; // Map Tree of Sounds
 
 private:
-	const int MAX_CHANNELS = 255;
-	
+	const int			MAX_CHANNELS = 255;
+	const std::string	SOUND_FILE	 = "sounds.xml";
 };
 

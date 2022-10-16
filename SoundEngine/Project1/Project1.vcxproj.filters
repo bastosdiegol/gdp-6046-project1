@@ -19,6 +19,15 @@
     <Filter Include="Header Files\imgui">
       <UniqueIdentifier>{545b146e-8509-4d8e-be8a-8fd1482d3465}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\sounds">
+      <UniqueIdentifier>{e37ae009-8638-443a-9615-f480c2a889d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\sounds\music">
+      <UniqueIdentifier>{bc7563e1-5ec8-4111-97a4-9b8cb4392078}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\sounds\fx">
+      <UniqueIdentifier>{f28cdd33-ddca-41d5-9057-8007f6ba4947}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -52,6 +61,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ChannelGroup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Sound.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -89,5 +101,54 @@
     <ClInclude Include="ChannelGroup.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Sound.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="sounds.xml">
+      <Filter>Source Files</Filter>
+    </Xml>
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="sounds\music\beethoven_moonlight_sonata.mp3">
+      <Filter>Resource Files\sounds\music</Filter>
+    </Media>
+    <Media Include="sounds\music\tchaikovsky_dance_of_the_sugar_plum_fairy.mp3">
+      <Filter>Resource Files\sounds\music</Filter>
+    </Media>
+    <Media Include="sounds\music\vivaldi_winter_mvt1.mp3">
+      <Filter>Resource Files\sounds\music</Filter>
+    </Media>
+    <Media Include="sounds\fx\Breath.wav">
+      <Filter>Resource Files\sounds\fx</Filter>
+    </Media>
+    <Media Include="sounds\fx\Fire01.wav">
+      <Filter>Resource Files\sounds\fx</Filter>
+    </Media>
+    <Media Include="sounds\fx\Fire16.wav">
+      <Filter>Resource Files\sounds\fx</Filter>
+    </Media>
+    <Media Include="sounds\fx\Hit.wav">
+      <Filter>Resource Files\sounds\fx</Filter>
+    </Media>
+    <Media Include="sounds\fx\Rock02.wav">
+      <Filter>Resource Files\sounds\fx</Filter>
+    </Media>
+    <Media Include="sounds\fx\Rock10.wav">
+      <Filter>Resource Files\sounds\fx</Filter>
+    </Media>
+    <Media Include="sounds\fx\Water03.wav">
+      <Filter>Resource Files\sounds\fx</Filter>
+    </Media>
+    <Media Include="sounds\fx\Water04.wav">
+      <Filter>Resource Files\sounds\fx</Filter>
+    </Media>
+    <Media Include="sounds\fx\Water10.wav">
+      <Filter>Resource Files\sounds\fx</Filter>
+    </Media>
+    <Media Include="sounds\fx\WingFlap.wav">
+      <Filter>Resource Files\sounds\fx</Filter>
+    </Media>
   </ItemGroup>
 </Project>

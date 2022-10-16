@@ -1,4 +1,5 @@
 #include <iostream>
+#include <pugixml/pugixml.hpp>
 
 #include "FModManager.h"
 
@@ -113,4 +114,76 @@ void FModManager::setChannelGroupVolume(const std::string& name, float volume) {
 	}
 	// Sets the new value for the volume
 	it->second->m_group->setVolume(volume);
+}
+
+void FModManager::loadSoundsFromFile() {
+	DEBUG_PRINT("FModManager::loadSounds()\n");
+	// Create a document object
+	pugi::xml_document soundlibrary;
+	// Load a xml file into the object
+	pugi::xml_parse_result result = soundlibrary.load_file(SOUND_FILE.c_str());
+	if (!result) {
+		std::cout << "FModManager error: Failed to load file named #" << SOUND_FILE << std::endl;
+		return;
+	}
+	DEBUG_PRINT("Successfully loaded file named #%s\n", SOUND_FILE.c_str());
+
+	// Use XML object to read data from
+	pugi::xml_object_range<pugi::xml_node_iterator> itSoundLibrary = soundlibrary.child("soundlibrary").children();
+	if (itSoundLibrary.empty()) {
+		std::cout << "FModManager error: There are no sounds in the sound library!" << std::endl;
+		return;
+	}
+
+	// Parse through the tree of the XML Data using iterator
+	// <soundlibrary>
+	pugi::xml_node_iterator itSound;
+	// Pointer to each new sound to be instanciated
+	Sound* newSound;
+	for (itSound = itSoundLibrary.begin(); itSound != itSoundLibrary.end(); itSound++) {
+		pugi::xml_node soundNode = *itSound;
+		pugi::xml_attribute category = soundNode.attribute("category");
+		DEBUG_PRINT("Category: %s\n", category.value());
+		if (strcmp(category.value(), "MUSIC") == 0) {		// Instanciate new sound with mode LOOP - BGM
+			newSound = new Sound(FMOD_LOOP_NORMAL);
+		} else if (strcmp(category.value(), "FX") == 0) {	// Instanciate new sound with mode DEFAULT - FX
+			newSound = new Sound(FMOD_DEFAULT);
+		} else {								// Category not defined error
+			std::cout << "FModManager error: Category found on XML not defined! #" << category.value() << std::endl;
+			return;
+		}
+		// <sound>
+		pugi::xml_node_iterator itSoundInfo;
+		for (itSoundInfo = soundNode.children().begin();
+			itSoundInfo != soundNode.children().end();
+			itSoundInfo++) {
+			pugi::xml_node soundInfoNode = *itSoundInfo;
+			DEBUG_PRINT(" %s: %s\n", soundInfoNode.name(), soundInfoNode.child_value());
+			if (strcmp(soundInfoNode.name(), "title") == 0) {			// Sets Element named Title
+				newSound->m_name = soundInfoNode.child_value();
+			} else if (strcmp(soundInfoNode.name(), "path") == 0) {	// Sets Element named Path
+				newSound->m_path = soundInfoNode.child_value();
+			} else {										// Element not defined error
+				std::cout << "FModManager error: Element found on XML not defined! #" << soundInfoNode.name() << std::endl;
+			}
+
+			// Attributes of sound - At the moment we aren't joining this loop
+			for (pugi::xml_attribute_iterator itAttribute = soundInfoNode.attributes_begin();
+				itAttribute != soundInfoNode.attributes_end();
+				itAttribute++) {
+				pugi::xml_attribute attribute = *itAttribute;
+				DEBUG_PRINT("   %s: %s\n", attribute.name(), attribute.value());
+			}
+		}
+
+		// Calls the FMOD function to create the new sound
+		m_result = m_system->createSound(newSound->m_path.c_str(), newSound->m_mode, nullptr, &newSound->m_sound);
+		// Checks the result
+		if (m_result != FMOD_OK) {
+			std::cout << "fmod error: #" << m_result << "-" << FMOD_ErrorString(m_result) << std::endl;
+			return;
+		}
+		// Adds the new sound to the map tree of sounds
+		m_sounds.try_emplace(newSound->m_name, newSound);
+	}
 }

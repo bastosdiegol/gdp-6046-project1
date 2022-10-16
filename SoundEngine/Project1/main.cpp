@@ -27,6 +27,9 @@ int main(int argc, char* argv[]) {
 	// WARNING: DO NOT PASS VOLUME VALUE ABOVE 1.0f
 	fmod_manager.setChannelGroupVolume("master", 0.3f);
 
+	// Load all sounds from the XML File
+	fmod_manager.loadSoundsFromFile();
+
 	//initialize glfw/glad
 	glfwInit();
 	window = glfwCreateWindow(800, 600, "Sound Engine - Project #1", nullptr, nullptr);
