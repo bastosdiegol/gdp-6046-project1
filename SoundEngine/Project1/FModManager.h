@@ -32,6 +32,8 @@ public:
 
 	// Loads all sounds available from XML File
 	void loadSoundsFromFile();
+	// Play a sound on a specified channel group
+	void playSound(const std::string& sound_name, const std::string& channel_group_name);
 
 protected:
 	FMOD_RESULT		m_result; // Variable to check Erros

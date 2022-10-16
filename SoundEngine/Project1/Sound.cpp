@@ -24,6 +24,6 @@ Sound::Sound(const std::string& name, const std::string& path, const int mode)
 }
 
 Sound::~Sound() {
-	DEBUG_PRINT("Sound::~Sound()\n");
+	DEBUG_PRINT("Sound::~Sound(%s)\n", m_name.c_str());
 	m_sound->release();
 }

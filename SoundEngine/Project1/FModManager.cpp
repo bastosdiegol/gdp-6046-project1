@@ -31,10 +31,14 @@ FModManager::FModManager(const int system_flags) {
 
 FModManager::~FModManager() {
 	DEBUG_PRINT("FModManager::~FModManager()\n");
-	std::map<std::string, ChannelGroup*>::iterator it;
+	std::map<std::string, Sound*>::iterator itSounds;
 	// Iterates trought map tree of channels and call each destructor
-	for (it = m_channel_groups.begin(); it != m_channel_groups.end(); it++)
-		it->second->~ChannelGroup();
+	for (itSounds = m_sounds.begin(); itSounds != m_sounds.end(); itSounds++)
+		itSounds->second->~Sound();
+	std::map<std::string, ChannelGroup*>::iterator itChannels;
+	// Iterates trought map tree of channels and call each destructor
+	for (itChannels = m_channel_groups.begin(); itChannels != m_channel_groups.end(); itChannels++)
+		itChannels->second->~ChannelGroup();
 	// Clear the map tree
 	m_channel_groups.clear();
 	// Deletes the FMOD System
@@ -186,4 +190,27 @@ void FModManager::loadSoundsFromFile() {
 		// Adds the new sound to the map tree of sounds
 		m_sounds.try_emplace(newSound->m_name, newSound);
 	}
+}
+
+void FModManager::playSound(const std::string& sound_name, const std::string& channel_group_name) {
+	// Tries to find the sound
+	std::map<std::string, Sound*>::iterator itSound = m_sounds.find(sound_name);
+	// Tries to find the channel group
+	std::map<std::string, ChannelGroup*>::iterator itChannel = m_channel_groups.find(channel_group_name);
+
+	if (itSound == m_sounds.end() || itChannel == m_channel_groups.end()) {
+		std::cout << "FModManager error: Couldn't find the Sound named #" << sound_name
+													<< "or ChannelGroup named #" << channel_group_name << std::endl;
+		return;
+	}
+
+	FMOD::Channel* channel;
+	// Calls FMOD to play the sound
+	m_result = m_system->playSound(itSound->second->m_sound, itChannel->second->m_group, false, &channel);
+	// Checks the result
+	if (m_result != FMOD_OK) {
+		std::cout << "fmod error: #" << m_result << "-" << FMOD_ErrorString(m_result) << std::endl;
+		return;
+	}
+
 }

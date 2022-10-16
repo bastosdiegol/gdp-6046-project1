@@ -30,6 +30,9 @@ int main(int argc, char* argv[]) {
 	// Load all sounds from the XML File
 	fmod_manager.loadSoundsFromFile();
 
+	// Plays a BGM Sound
+	fmod_manager.playSound("Moonlight Sonata", "master");
+
 	//initialize glfw/glad
 	glfwInit();
 	window = glfwCreateWindow(800, 600, "Sound Engine - Project #1", nullptr, nullptr);
