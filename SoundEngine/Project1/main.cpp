@@ -14,6 +14,11 @@ int main(int argc, char* argv[]) {
 	// Initialize the FModManager Class
 	FModManager fmod_manager(FMOD_INIT_NORMAL);
 
+	// Creates Channel Groups
+	fmod_manager.createChannelGroup("master");
+	fmod_manager.createChannelGroup("music");
+	fmod_manager.createChannelGroup("fx");
+
 	//initialize glfw/glad
 	glfwInit();
 	window = glfwCreateWindow(800, 600, "Sound Engine - Project #1", nullptr, nullptr);
