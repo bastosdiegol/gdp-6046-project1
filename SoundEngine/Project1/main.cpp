@@ -4,6 +4,7 @@
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
 #include "FModManager.h"
+#include "SoundUI.h"
 
 GLFWwindow* window;
 
@@ -25,13 +26,10 @@ int main(int argc, char* argv[]) {
 
 	// Sets initial volume for master channel to 20%
 	// WARNING: DO NOT PASS VOLUME VALUE ABOVE 1.0f
-	fmod_manager.setChannelGroupVolume("master", 0.1f);
+	fmod_manager.setChannelGroupVolume("master", 0.5f);
 
 	// Load all sounds from the XML File
 	fmod_manager.loadSoundsFromFile();
-
-	// Plays a BGM Sound
-	fmod_manager.playSound("Moonlight Sonata", "master");
 
 	//initialize glfw/glad
 	glfwInit();
@@ -63,6 +61,9 @@ int main(int argc, char* argv[]) {
 	//imgui style (dark mode for the win)
 	ImGui::StyleColorsDark();
 
+	//create sound ui
+	SoundUI sound_ui(&fmod_manager);
+
 	//game loop
 	while (!glfwWindowShouldClose(window)) {
 		//poll for user events
@@ -74,6 +75,9 @@ int main(int argc, char* argv[]) {
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
+		
+		if(sound_ui.is_my_tool_active)
+			sound_ui.render();
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

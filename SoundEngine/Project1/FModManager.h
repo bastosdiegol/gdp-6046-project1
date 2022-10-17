@@ -9,6 +9,8 @@
 
 class FModManager {
 public:
+	std::map<std::string, Sound*>		 m_sounds; // Map Tree of Sounds
+
 	// Constructor
 	FModManager(const int system_flags);
 	// Destructor
@@ -34,12 +36,13 @@ public:
 	void loadSoundsFromFile();
 	// Play a sound on a specified channel group
 	void playSound(const std::string& sound_name, const std::string& channel_group_name);
+	// Stop all the sounds on a specified channel group
+	void stopSound(const std::string& channel_group_name);
 
 protected:
 	FMOD_RESULT		m_result; // Variable to check Erros
 	FMOD::System*	m_system; // FMod System
 	std::map<std::string, ChannelGroup*> m_channel_groups; // Map Tree of Channel Groups
-	std::map<std::string, Sound*>		 m_sounds; // Map Tree of Sounds
 
 private:
 	const int			MAX_CHANNELS = 255;

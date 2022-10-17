@@ -181,11 +181,29 @@ void FModManager::playSound(const std::string& sound_name, const std::string& ch
 
 	FMOD::Channel* channel;
 	// Calls FMOD to play the sound
-	m_result = m_system->playSound(itSound->second->m_sound, itChannel->second->m_group, false, &channel);
+	m_result = m_system->playSound(itSound->second->m_sound, itChannel->second->m_group, true, &channel);
 	// Checks the result
 	if (m_result != FMOD_OK) {
 		std::cout << "fmod error: #" << m_result << "-" << FMOD_ErrorString(m_result) << std::endl;
 		return;
 	}
 
+	m_result = (*channel).setPaused(false);
+	if (m_result != FMOD_OK) {
+		std::cout << "fmod error: #" << m_result << "-" << FMOD_ErrorString(m_result) << std::endl;
+		return;
+	}
+
+}
+
+void FModManager::stopSound(const std::string& channel_group_name) {
+	// Tries to find the channel group
+	std::map<std::string, ChannelGroup*>::iterator itChannel = m_channel_groups.find(channel_group_name);
+
+	if (itChannel == m_channel_groups.end()) {
+		std::cout << "FModManager error: Couldn't find the ChannelGroup named #" << channel_group_name << std::endl;
+		return;
+	}
+
+	itChannel->second->m_group->stop();
 }
