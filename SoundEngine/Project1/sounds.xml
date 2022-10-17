@@ -2,53 +2,131 @@
 	<sound category="MUSIC">
 		<title>Moonlight Sonata</title>
 		<path>./sounds/music/beethoven_moonlight_sonata.mp3</path>
+		<format>mp3<format>
+		<frequency>1</frequency>
+		<volume>0.5</volume>
+		<balance>0</balance>
+		<lenght>411000</lenght>
+		<position>0</position>
 	</sound>
 	<sound category="MUSIC">
 		<title>Dance of the Sugar Plum Fairy</title>
 		<path>./sounds/music/tchaikovsky_dance_of_the_sugar_plum_fairy.mp3</path>
+		<format>mp3<format>
+		<frequency>1</frequency>
+		<volume>0.5</volume>
+		<balance>0</balance>
+		<lenght>119000</lenght>
+		<position>0</position>
 	</sound>
 	<sound category="MUSIC">
 		<title>Winter Movement 1</title>
 		<path>./sounds/music/vivaldi_winter_mvt1.mp3</path>
+		<format>mp3<format>
+		<frequency>1</frequency>
+		<volume>0.5</volume>
+		<balance>0</balance>
+		<lenght>208000</lenght>
+		<position>0</position>
 	</sound>
 	<sound category="FX">
 		<title>Fireball</title>
 		<path>./sounds/fx/Fire01.wav</path>
+		<format>wav<format>
+		<frequency>1</frequency>
+		<volume>0.5</volume>
+		<balance>0</balance>
+		<lenght>1000</lenght>
+		<position>0</position>
 	</sound>
 	<sound category="FX">
 		<title>Firewall</title>
 		<path>./sounds/fx/Fire16.wav</path>
+		<format>wav<format>
+		<frequency>1</frequency>
+		<volume>0.5</volume>
+		<balance>0</balance>
+		<lenght>6000</lenght>
+		<position>0</position>
 	</sound>
 	<sound category="FX">
 		<title>Summon Golem</title>
 		<path>./sounds/fx/Rock02.wav</path>
+		<format>wav<format>
+		<frequency>1</frequency>
+		<volume>0.5</volume>
+		<balance>0</balance>
+		<lenght>3000</lenght>
+		<position>0</position>
 	</sound>
 	<sound category="FX">
 		<title>Rocksling</title>
 		<path>./sounds/fx/Rock10.wav</path>
+		<format>wav<format>
+		<frequency>1</frequency>
+		<volume>0.5</volume>
+		<balance>0</balance>
+		<lenght></lenght>
+		<position>0</position>
 	</sound>
 	<sound category="FX">
 		<title>Create Flask</title>
 		<path>./sounds/fx/Water03.wav</path>
+		<format>wav<format>
+		<frequency>1</frequency>
+		<volume>0.5</volume>
+		<balance>0</balance>
+		<lenght>2000</lenght>
+		<position>0</position>
 	</sound>
 	<sound category="FX">
 		<title>Bublegun</title>
 		<path>./sounds/fx/Water04.wav</path>
+		<format>wav<format>
+		<frequency>1</frequency>
+		<volume>0.5</volume>
+		<balance>0</balance>
+		<lenght>3000</lenght>
+		<position>0</position>
 	</sound>
 	<sound category="FX">
 		<title>Waterball</title>
 		<path>./sounds/fx/Water10.wav</path>
+		<format>wav<format>
+		<frequency>1</frequency>
+		<volume>0.5</volume>
+		<balance>0</balance>
+		<lenght>2000</lenght>
+		<position>0</position>
 	</sound>
 	<sound category="FX">
 		<title>Neigh</title>
 		<path>./sounds/fx/Breath.wav</path>
+		<format>wav<format>
+		<frequency>1</frequency>
+		<volume>0.5</volume>
+		<balance>0</balance>
+		<lenght>1000</lenght>
+		<position>0</position>
 	</sound>
 	<sound category="FX">
 		<title>Hit</title>
 		<path>./sounds/fx/Hit.wav</path>
+		<format>wav<format>
+		<frequency>1</frequency>
+		<volume>0.5</volume>
+		<balance>0</balance>
+		<lenght>1000</lenght>
+		<position>0</position>
 	</sound>
 	<sound category="FX">
 		<title>Wing Flap</title>
 		<path>./sounds/fx/WingFlap.wav</path>
+		<format>wav<format>
+		<frequency>1</frequency>
+		<volume>0.5</volume>
+		<balance>0</balance>
+		<lenght>1000</lenght>
+		<position>0</position>
 	</sound>
 </soundlibrary>
