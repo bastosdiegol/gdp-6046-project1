@@ -145,6 +145,7 @@
     <ClCompile Include="ChannelGroup.cpp" />
     <ClCompile Include="FModManager.cpp" />
     <ClCompile Include="glad.c" />
+    <ClCompile Include="imgui\imgui-knobs.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
@@ -161,6 +162,7 @@
     <ClInclude Include="FModManager.h" />
     <ClInclude Include="imgui\IconsFontaudio.h" />
     <ClInclude Include="imgui\imconfig.h" />
+    <ClInclude Include="imgui\imgui-knobs.h" />
     <ClInclude Include="imgui\imgui.h" />
     <ClInclude Include="imgui\imgui_impl_glfw.h" />
     <ClInclude Include="imgui\imgui_impl_opengl3.h" />

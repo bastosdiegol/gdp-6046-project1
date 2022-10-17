@@ -120,6 +120,33 @@ void FModManager::setChannelGroupVolume(const std::string& name, float volume) {
 	it->second->m_group->setVolume(volume);
 }
 
+void FModManager::getChannelGroupPan(const std::string& name, float* pan) {
+	DEBUG_PRINT("FModManager::getChannelGroupPan(%s)\n", name.c_str());
+	// Finds the Channel group by Name
+	std::map<std::string, ChannelGroup*>::iterator it = m_channel_groups.find(name);
+	// Checks if it was found
+	if (it == m_channel_groups.end()) {
+		std::cout << "FModManager error: Couldn't find the ChannelGroup named #" << name << std::endl;
+		return;
+	}
+	// Gets the pointer to the value of the pan
+	*pan = it->second->m_pan;
+}
+
+void FModManager::setChannelGroupPan(const std::string& name, float pan) {
+	DEBUG_PRINT("FModManager::setChannelGroupPan(%s, %f)\n", name.c_str(), pan);
+	// Finds the Channel group by Name
+	std::map<std::string, ChannelGroup*>::iterator it = m_channel_groups.find(name);
+	// Checks if it was found
+	if (it == m_channel_groups.end()) {
+		std::cout << "FModManager error: Couldn't find the ChannelGroup named #" << name << std::endl;
+		return;
+	}
+	// Sets the new value for the pan
+	it->second->m_group->setPan(pan);
+	it->second->m_pan = pan;
+}
+
 void FModManager::loadSoundsFromFile() {
 	DEBUG_PRINT("FModManager::loadSounds()\n");
 	// Create a document object

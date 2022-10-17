@@ -31,6 +31,12 @@ public:
 	// Sets the volume of a especified channel
 	// Receives channel name and desired volume, Returns Nothing
 	void setChannelGroupVolume(const std::string& name, float volume);
+	// Gets pointer to the float value of the pan
+	// Receives channel name and pointer to pan, Returns Nothing
+	void getChannelGroupPan(const std::string& name, float* pan);
+	// Sets the pan of a especified channel
+	// Receives channel name and desired pan, Returns Nothing
+	void setChannelGroupPan(const std::string& name, float pan);
 
 	// Loads all sounds available from XML File
 	void loadSoundsFromFile();

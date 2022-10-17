@@ -3,6 +3,7 @@
 #include "SoundUI.h"
 #include "imgui/imgui.h"
 #include "imgui/IconsFontaudio.h"
+#include "imgui/imgui-knobs.h"
 
 void SoundUI::render() {
 	// Create a window called "Audio Settings", with a menu bar.
@@ -30,9 +31,14 @@ void SoundUI::render() {
 
 
     if (ImGui::BeginTabBar("Sound Library")) {
+        // -------------
+        // MUSIC CHANNEL
+        // -------------
         if (ImGui::BeginTabItem("Music")) {
             ImGui::Text("Musics Available:");
             static bool isMusicPaused = false;
+            static float musicVolume = 0;
+            static float musicPan = 0;
             static const char* current_item = NULL;
             if (ImGui::BeginCombo("##combo", current_item)) {
                 for (int i = 0; i < musics.size(); i++) {
@@ -45,7 +51,7 @@ void SoundUI::render() {
                 ImGui::EndCombo();
             }
             ImGui::SameLine();
-            if (ImGui::Button(ICON_FAD_PLAY)) {
+            if (ImGui::Button(ICON_FAD_PLAY)) { // Play Button
                 if (isMusicPaused) {
                     m_fmod_manager->setPause("music", false);
                     isMusicPaused = false;
@@ -54,20 +60,41 @@ void SoundUI::render() {
                 }
             }
             ImGui::SameLine();
-            if (ImGui::Button(ICON_FAD_PAUSE)) {
+            if (ImGui::Button(ICON_FAD_PAUSE)) { // Pause Button
                 m_fmod_manager->setPause("music", true);
                 isMusicPaused = true;
             }
             ImGui::SameLine();
-            if (ImGui::Button(ICON_FAD_STOP)) {
+            if (ImGui::Button(ICON_FAD_STOP)) { // Stop Button
                 m_fmod_manager->stopSound("music");
                 isMusicPaused = false;
             }
+            // Music Channel Volume Knob
+            m_fmod_manager->getChannelGroupVolume("music", &musicVolume); // Gets the volume
+            musicVolume *= 100; // Conversion 0% to 100%
+            if (ImGuiKnobs::Knob("Volume", &musicVolume, 0.0f, 100.0f, 1.0f, "%.1f%", ImGuiKnobVariant_Tick)) {
+                musicVolume /= 100; // Back to the original float value
+                if (musicVolume > 1.0f) { // Safe Guard to avoid hardware issues
+                    musicVolume = 1.0f;
+                }
+                m_fmod_manager->setChannelGroupVolume("music", musicVolume); // Sets new volume
+            }
+            // Music Channel Pan Knob
+            ImGui::SameLine();
+            m_fmod_manager->getChannelGroupPan("music", &musicPan); // Gets the pan
+            if (ImGuiKnobs::Knob("Pan", &musicPan, -1.0f, 1.0f, 0.01f, "%.1f%", ImGuiKnobVariant_Tick)) {
+                m_fmod_manager->setChannelGroupPan("music", musicPan); // Sets new pan
+            }
             ImGui::EndTabItem();
         }
+        // -------------
+        //   FX CHANNEL
+        // -------------
         if (ImGui::BeginTabItem("FX")) {
             ImGui::Text("FXs Available:");
             static bool isFxPaused = false;
+            static float fxVolume = 0;
+            static float fxPan = 0;
             static const char* current_item = NULL;
             if (ImGui::BeginCombo("##combo", current_item)) {
                 for (int i = 0; i < fx.size(); i++) {
@@ -80,7 +107,7 @@ void SoundUI::render() {
                 ImGui::EndCombo();
             }
             ImGui::SameLine();
-            if (ImGui::Button(ICON_FAD_PLAY)) {
+            if (ImGui::Button(ICON_FAD_PLAY)) { // Play Button
                 if (isFxPaused) {
                     m_fmod_manager->setPause("fx", false);
                     isFxPaused = false;
@@ -89,19 +116,66 @@ void SoundUI::render() {
                 }
             }
             ImGui::SameLine();
-            if (ImGui::Button(ICON_FAD_PAUSE)) {
+            if (ImGui::Button(ICON_FAD_PAUSE)) { // Pause Button
                 m_fmod_manager->setPause("fx", true);
                 isFxPaused = true;
             }
             ImGui::SameLine();
-            if (ImGui::Button(ICON_FAD_STOP)) {
+            if (ImGui::Button(ICON_FAD_STOP)) { // Stop Button
                 m_fmod_manager->stopSound("fx");
                 isFxPaused = false;
             }
+            // FX Channel Volume Knob
+            m_fmod_manager->getChannelGroupVolume("fx", &fxVolume); // Gets the volume
+            fxVolume *= 100; // Conversion 0% to 100%
+            if (ImGuiKnobs::Knob("Volume", &fxVolume, 0.0f, 100.0f, 1.0f, "%.1f%", ImGuiKnobVariant_Tick)) {
+                fxVolume /= 100; // Back to the original float value
+                if (fxVolume > 1.0f) { // Safe Guard to avoid hardware issues
+                    fxVolume = 1.0f;
+                }
+                m_fmod_manager->setChannelGroupVolume("fx", fxVolume); // Sets new volume
+            }
+            // FX Channel Pan Knob
+            ImGui::SameLine();
+            m_fmod_manager->getChannelGroupPan("fx", &fxPan); // Gets the pan
+            if (ImGuiKnobs::Knob("Pan", &fxPan, -1.0f, 1.0f, 0.01f, "%.1f%", ImGuiKnobVariant_Tick)) {
+                m_fmod_manager->setChannelGroupPan("fx", fxPan); // Sets new pan
+            }
             ImGui::EndTabItem();
         }
+        ImGui::EndTabBar();
+    }
+
+    // --------------
+    // MASTER CHANNEL
+    // --------------
+    ImGui::Text("   ");
+    ImGui::Text("   ");
+    if (ImGui::BeginTabBar("Master Channel")) {
+        if (ImGui::BeginTabItem("Master")) {
+            ImGui::Text("Master Channel:");
+            // Master Channel Volume Knob
+            static float masterVolume = 0;
+            static float masterPan = 0;
+            m_fmod_manager->getChannelGroupVolume("master", &masterVolume); // Gets the volume
+            masterVolume *= 100; // Conversion 0% to 100%
+            if (ImGuiKnobs::Knob("Volume", &masterVolume, 0.0f, 100.0f, 1.0f, "%.1f%", ImGuiKnobVariant_Tick)) {
+                masterVolume /= 100; // Back to the original float value
+                if (masterVolume > 1.0f) { // Safe Guard to avoid hardware issues
+                    masterVolume = 1.0f;
+                }
+                m_fmod_manager->setChannelGroupVolume("master", masterVolume); // Sets new volume
+            }
+            // Master Channel Pan Knob
+            ImGui::SameLine();
+            m_fmod_manager->getChannelGroupPan("master", &masterPan); // Gets the pan
+            if (ImGuiKnobs::Knob("Pan", &masterPan, -1.0f, 1.0f, 0.01f, "%.1f%", ImGuiKnobVariant_Tick)) {
+                m_fmod_manager->setChannelGroupPan("master", masterPan); // Sets new pan
+            }
+            ImGui::EndTabItem();
+        }
+        ImGui::EndTabBar();
     }
     
-    ImGui::EndTabBar();
     ImGui::End();
 }
