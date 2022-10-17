@@ -37,9 +37,11 @@ void SoundUI::render() {
         if (ImGui::BeginTabItem("Music")) {
             ImGui::Text("Musics Available:");
             static bool isMusicPaused = false;
+            static bool isMusicMuted = false;
             static float musicVolume = 0;
             static float musicPan = 0;
             static const char* current_item = NULL;
+            m_fmod_manager->getChannelGroupMuteStatus("music", &isMusicMuted); // Gets the music muted status
             if (ImGui::BeginCombo("##combo", current_item)) {
                 for (int i = 0; i < musics.size(); i++) {
                     bool is_selected = (current_item == musics[i]);
@@ -69,6 +71,18 @@ void SoundUI::render() {
                 m_fmod_manager->stopSound("music");
                 isMusicPaused = false;
             }
+            ImGui::SameLine();
+            if (isMusicMuted) {
+                if (ImGui::Button(ICON_FAD_MUTE)) { // UnMute Button
+                    isMusicMuted = false;
+                    m_fmod_manager->setChannelGroupMuteStatus("music", isMusicMuted);
+                }
+            } else {
+                if (ImGui::Button(ICON_FAD_MUTE)) { // Mute Button
+                    isMusicMuted = true;
+                    m_fmod_manager->setChannelGroupMuteStatus("music", isMusicMuted);
+                }
+            }
             // Music Channel Volume Knob
             m_fmod_manager->getChannelGroupVolume("music", &musicVolume); // Gets the volume
             musicVolume *= 100; // Conversion 0% to 100%
@@ -94,8 +108,10 @@ void SoundUI::render() {
             ImGui::Text("FXs Available:");
             static bool isFxPaused = false;
             static float fxVolume = 0;
+            static bool isFxMuted = false;
             static float fxPan = 0;
             static const char* current_item = NULL;
+            m_fmod_manager->getChannelGroupMuteStatus("fx", &isFxMuted); // Gets the fx muted status
             if (ImGui::BeginCombo("##combo", current_item)) {
                 for (int i = 0; i < fx.size(); i++) {
                     bool is_selected = (current_item == fx[i]);
@@ -125,6 +141,18 @@ void SoundUI::render() {
                 m_fmod_manager->stopSound("fx");
                 isFxPaused = false;
             }
+            ImGui::SameLine();
+            if (isFxMuted) {
+                if (ImGui::Button(ICON_FAD_MUTE)) { // UnMute Button
+                    isFxMuted = false;
+                    m_fmod_manager->setChannelGroupMuteStatus("music", isFxMuted);
+                }
+            } else {
+                if (ImGui::Button(ICON_FAD_MUTE)) { // Mute Button
+                    isFxMuted = true;
+                    m_fmod_manager->setChannelGroupMuteStatus("music", isFxMuted);
+                }
+            }
             // FX Channel Volume Knob
             m_fmod_manager->getChannelGroupVolume("fx", &fxVolume); // Gets the volume
             fxVolume *= 100; // Conversion 0% to 100%
@@ -153,11 +181,43 @@ void SoundUI::render() {
     ImGui::Text("   ");
     if (ImGui::BeginTabBar("Master Channel")) {
         if (ImGui::BeginTabItem("Master")) {
-            ImGui::Text("Master Channel:");
+            ImGui::Text("Master Channel");
             // Master Channel Volume Knob
             static float masterVolume = 0;
             static float masterPan = 0;
-            m_fmod_manager->getChannelGroupVolume("master", &masterVolume); // Gets the volume
+            static bool isMasterPaused = false;
+            static bool isMasterMuted = false;
+            m_fmod_manager->getChannelGroupMuteStatus("fx", &isMasterMuted); // Gets the master muted status
+            ImGui::SameLine();
+            if (ImGui::Button(ICON_FAD_PLAY)) { // Play Button
+                if (isMasterPaused) {
+                    m_fmod_manager->setPause("master", false);
+                    isMasterPaused = false;
+                }
+            }
+            ImGui::SameLine();
+            if (ImGui::Button(ICON_FAD_PAUSE)) { // Pause Button
+                m_fmod_manager->setPause("master", true);
+                isMasterPaused = true;
+            }
+            ImGui::SameLine();
+            if (ImGui::Button(ICON_FAD_STOP)) { // Stop Button
+                m_fmod_manager->stopSound("master");
+                isMasterPaused = false;
+            }
+            ImGui::SameLine();
+            if (isMasterMuted) {
+                if (ImGui::Button(ICON_FAD_MUTE)) { // UnMute Button
+                    isMasterMuted = false;
+                    m_fmod_manager->setChannelGroupMuteStatus("master", isMasterMuted);
+                }
+            } else {
+                if (ImGui::Button(ICON_FAD_MUTE)) { // Mute Button
+                    isMasterMuted = true;
+                    m_fmod_manager->setChannelGroupMuteStatus("master", isMasterMuted);
+                }
+            }
+            m_fmod_manager->getChannelGroupVolume("master", &masterVolume); // Gets the master volume
             masterVolume *= 100; // Conversion 0% to 100%
             if (ImGuiKnobs::Knob("Volume", &masterVolume, 0.0f, 100.0f, 1.0f, "%.1f%", ImGuiKnobVariant_Tick)) {
                 masterVolume /= 100; // Back to the original float value

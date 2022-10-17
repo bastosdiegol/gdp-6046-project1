@@ -7,17 +7,10 @@
 #include "ChannelGroup.h"
 #include "Sound.h"
 
-
-enum DSP_ID {
-	CHORUS = 0, COMPRESSOR = 1, DELAY = 2, DISTORTION = 3, ECHO = 4, FADER = 5,
-	FLANGE = 6, NORMALIZE = 7, OSCILATOR = 8, SFXREVERB = 9, TREMOLO = 10
-};
-
-
 class FModManager {
 public:
 	std::map<std::string, Sound*>		m_sounds; // Map Tree of Sounds
-	std::map<DSP_ID, FMOD::DSP*>		m_dsp;	  // Map Tree of Digital Sound Processors
+	std::map<FMOD_DSP_TYPE, FMOD::DSP*>	m_dsp;	  // Map Tree of Digital Sound Processors
 
 	// Constructor
 	FModManager(const int system_flags);
@@ -40,6 +33,14 @@ public:
 	// Sets the volume of a especified channel
 	// Receives channel name and desired volume, Returns Nothing
 	void setChannelGroupVolume(const std::string& name, float volume);
+	// Gets the pointer of the Mute Status of a specified channgel
+	// Receives channel name and pointer to status, Returns Nothing
+	// True = silent. False = audible
+	void getChannelGroupMuteStatus(const std::string& name, bool* muteStatus);
+	// Sets a new bool value to the Mute Status of a specified channel
+	// Receives channel name and new status, Returns Nothing
+	// True = silent. False = audible
+	void setChannelGroupMuteStatus(const std::string& name, bool muteStatus);
 	// Gets pointer to the float value of the pan
 	// Receives channel name and pointer to pan, Returns Nothing
 	void getChannelGroupPan(const std::string& name, float* pan);
@@ -48,7 +49,7 @@ public:
 	void setChannelGroupPan(const std::string& name, float pan);
 
 	// Create a DSP
-	void createDSP(const DSP_ID& id, FMOD_DSP_TYPE dsp_type);
+	void createDSP(FMOD_DSP_TYPE dsp_type);
 	// Load All DSPs intented to use on the engine
 	void loadDSPs();
 

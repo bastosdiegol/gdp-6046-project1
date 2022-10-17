@@ -32,10 +32,12 @@ FModManager::FModManager(const int system_flags) {
 FModManager::~FModManager() {
 	DEBUG_PRINT("FModManager::~FModManager()\n");
 
-	std::map<DSP_ID, FMOD::DSP*>::iterator itDSP;
+	std::map<FMOD_DSP_TYPE, FMOD::DSP*>::iterator itDSP;
 	// Iterates trought map tree of sounds and call each destructor
-	for (itDSP = m_dsp.begin(); itDSP != m_dsp.end(); itDSP++)
+	for (itDSP = m_dsp.begin(); itDSP != m_dsp.end(); itDSP++) {
+		DEBUG_PRINT("FModManager::~DSPEffect(%d)\n", itDSP->first);
 		itDSP->second->release();
+	}
 
 	std::map<std::string, Sound*>::iterator itSounds;
 	// Iterates trought map tree of sounds and call each destructor
@@ -128,6 +130,39 @@ void FModManager::setChannelGroupVolume(const std::string& name, float volume) {
 	it->second->m_group->setVolume(volume);
 }
 
+void FModManager::getChannelGroupMuteStatus(const std::string& name, bool* muteStatus) {
+	DEBUG_PRINT("FModManager::getChannelGroupMuteStatus(%s)\n", name.c_str());
+	// Finds the Channel group by Name
+	std::map<std::string, ChannelGroup*>::iterator it = m_channel_groups.find(name);
+	// Checks if it was found
+	if (it == m_channel_groups.end()) {
+		std::cout << "FModManager error: Couldn't find the ChannelGroup named #" << name << std::endl;
+		return;
+	}
+	// Gets the pointer to the value of the mute status
+	m_result = it->second->m_group->getMute(muteStatus);
+	if (m_result != FMOD_OK) {
+		std::cout << "fmod error: #" << m_result << "-" << FMOD_ErrorString(m_result) << std::endl;
+		muteStatus = nullptr;
+	}
+}
+
+void FModManager::setChannelGroupMuteStatus(const std::string& name, bool muteStatus) {
+	DEBUG_PRINT("FModManager::setChannelGroupMuteStatus(%s, %d)\n", name.c_str(), muteStatus);
+	// Finds the Channel group by Name
+	std::map<std::string, ChannelGroup*>::iterator it = m_channel_groups.find(name);
+	// Checks if it was found
+	if (it == m_channel_groups.end()) {
+		std::cout << "FModManager error: Couldn't find the ChannelGroup named #" << name << std::endl;
+		return;
+	}
+	// Sets the new value for the volume
+	m_result = it->second->m_group->setMute(muteStatus);
+	if (m_result != FMOD_OK) {
+		std::cout << "fmod error: #" << m_result << "-" << FMOD_ErrorString(m_result) << std::endl;
+	}
+}
+
 void FModManager::getChannelGroupPan(const std::string& name, float* pan) {
 	DEBUG_PRINT("FModManager::getChannelGroupPan(%s)\n", name.c_str());
 	// Finds the Channel group by Name
@@ -155,8 +190,8 @@ void FModManager::setChannelGroupPan(const std::string& name, float pan) {
 	it->second->m_pan = pan;
 }
 
-void FModManager::createDSP(const DSP_ID& id, FMOD_DSP_TYPE dsp_type) {
-	DEBUG_PRINT("FModManager::createDSP(%d, %d)", id, dsp_type);
+void FModManager::createDSP(FMOD_DSP_TYPE dsp_type) {
+	DEBUG_PRINT("FModManager::createDSP(%d)", dsp_type);
 	FMOD::DSP* dsp;
 
 	// Creates the dsp
@@ -166,24 +201,101 @@ void FModManager::createDSP(const DSP_ID& id, FMOD_DSP_TYPE dsp_type) {
 		std::cout << "fmod error: #" << m_result << "-" << FMOD_ErrorString(m_result) << std::endl;
 		return;
 	}
-	m_dsp.try_emplace(id, dsp);
+	// Here we gonna set the values for the DSP in comments
+	// Also In comments the Range Expected and Default Values to facilitate future dsp updates
+	// If I want to tweek any dsp value outside the default I'll just have to uncomment the line and update the value
+	// https://fmod.com/docs/2.02/api/core-api-common-dsp-effects.html
+	switch (dsp_type) {
+	case FMOD_DSP_TYPE_CHORUS:
+		dsp->setParameterFloat(FMOD_DSP_CHORUS_MIX,	100.0f);		// Range: [0, 100] Default: 50		Units: Percentage
+//		dsp->setParameterFloat(FMOD_DSP_CHORUS_RATE, 0.8f);			// Range: [0,  20] Default: 0.8		Units: Hertz
+//		dsp->setParameterFloat(FMOD_DSP_CHORUS_DEPTH, 3.0f);		// Range: [0, 100] Default: 3		Units: Milliseconds
+		break;
+	case FMOD_DSP_TYPE_COMPRESSOR:
+//		dsp->setParameterFloat(FMOD_DSP_COMPRESSOR_THRESHOLD, 0.0f);// Range: [-60, 0] Default: 0		Units: Decibels
+//		dsp->setParameterFloat(FMOD_DSP_COMPRESSOR_RATIO, 2.5f);	// Range: [1, 50] Default: 2.5		Units: Linear
+//		dsp->setParameterFloat(FMOD_DSP_COMPRESSOR_ATTACK, 20.0f);	// Range: [0.1, 500] Default: 20	Units: Milliseconds
+//		dsp->setParameterFloat(FMOD_DSP_COMPRESSOR_GAINMAKEUP, 0.0f);//Range: [-30, 30] Default: 0		Units: Milliseconds
+//		dsp->setParameterBool(FMOD_DSP_COMPRESSOR_LINKED, true);	// false = Independent(compressor per channel), true = Linked
+		break;
+	case FMOD_DSP_TYPE_DELAY:
+		dsp->setParameterFloat(FMOD_DSP_DELAY_MAXDELAY, 10000.0f);	// Range: [0, 10000] Default: 10	Units: Milliseconds
+		dsp->setParameterFloat(FMOD_DSP_DELAY_CH0, 1000.0f);		// CH0 = MASTER (?)
+		// FMOD_DSP_DELAY_CH0
+		// ...														// Range: [0, 10000] Default: 0		Units: Milliseconds
+		// FMOD_DSP_DELAY_CH15
+		break;
+	case FMOD_DSP_TYPE_DISTORTION:
+//		dsp->setParameterFloat(FMOD_DSP_DISTORTION_LEVEL, 0.5f);	// Range: [0, 1] Default: 0.5		Units: Linear
+		break;
+	case FMOD_DSP_TYPE_ECHO:
+		dsp->setParameterFloat(FMOD_DSP_ECHO_DELAY, 500.0f);		// Range: [1, 5000] Default: 500	Units: Milliseconds
+//		dsp->setParameterFloat(FMOD_DSP_ECHO_FEEDBACK, 50.0f);		// Range: [0, 100] Default: 50		Units: Percentage
+//		dsp->setParameterFloat(FMOD_DSP_ECHO_DRYLEVEL, 0.0f);		// Range: [-80, 10] Default : 0		Units: Decibels
+//		dsp->setParameterFloat(FMOD_DSP_ECHO_WETLEVEL, 0.0f);		// Range: [-80, 10] Default: 0		Units: Decibels
+		break;
+	case FMOD_DSP_TYPE_FADER:
+		dsp->setParameterFloat(FMOD_DSP_FADER_GAIN, 0.0f);			// Range: [-80, 10] Default: 0		Units: Decibels
+		// There's also a data parameter FMOD_DSP_FADER_OVERALL_GAIN for visualization purposes
+		break;
+	case FMOD_DSP_TYPE_FLANGE:
+		dsp->setParameterFloat(FMOD_DSP_FLANGE_MIX, 50.0f);			// Range: [0, 100] Default: 50		Units: Percentage
+//		dsp->setParameterFloat(FMOD_DSP_FLANGE_DEPTH, 1.0f);		// Range: [0.01, 1] Default: 1		Units: Linear
+//		dsp->setParameterFloat(FMOD_DSP_FLANGE_RATE, 1.0f);			// Range: [0, 20] Default: .1		Units: Hertz
+		break;
+	case FMOD_DSP_TYPE_NORMALIZE:
+		dsp->setParameterFloat(FMOD_DSP_NORMALIZE_FADETIME, 5000.0f);//Range: [0, 20000] Default: 5000	Units: Milliseconds
+//		dsp->setParameterFloat(FMOD_DSP_NORMALIZE_THRESHOLD, 0.1f);	// Range: [0, 1] Default: 0.1		Units: Linear
+//		dsp->setParameterFloat(FMOD_DSP_NORMALIZE_MAXAMP, 20.0f);	// Range: [1, 100000] Default: 20	Units: Linear
+		break;
+	case FMOD_DSP_TYPE_OSCILLATOR:
+		dsp->setParameterInt(FMOD_DSP_OSCILLATOR_TYPE, 0);			// Default 0 = sine. 1 = square. 2 = sawup. 3 = sawdown. 4 = triangle. 5 = noise.
+//		dsp->setParameterFloat(FMOD_DSP_OSCILLATOR_RATE, 220);		// Range: [0, 22000] Default: 220	Units: Hertz
+		break;
+	case FMOD_DSP_TYPE_SFXREVERB:
+//		dsp->setParameterFloat(FMOD_DSP_SFXREVERB_DECAYTIME, 1500.0f);	//Range: [100, 20000] Default: 1500		Units: Milliseconds
+//		dsp->setParameterFloat(FMOD_DSP_SFXREVERB_EARLYDELAY, 20.0f);	//Range: [0, 300] Default: 20			Units: Milliseconds
+//		dsp->setParameterFloat(FMOD_DSP_SFXREVERB_LATEDELAY, 40.0f);	//Range: [0, 100] Default: 40			Units: Milliseconds
+//		dsp->setParameterFloat(FMOD_DSP_SFXREVERB_HFREFERENCE, 5000.0f);//Range: [20, 20000] Default: 5000		Units: Hertz
+//		dsp->setParameterFloat(FMOD_DSP_SFXREVERB_HFDECAYRATIO, 50.0f);	//Range: [10, 100] Default: 50			Units: Percent
+//		dsp->setParameterFloat(FMOD_DSP_SFXREVERB_DIFFUSION, 50.0f);	//Range: [10, 100] Default: 50			Units: Percent
+//		dsp->setParameterFloat(FMOD_DSP_SFXREVERB_DENSITY, 50.0f);		//Range: [10, 100] Default: 50			Units: Percent
+//		dsp->setParameterFloat(FMOD_DSP_SFXREVERB_LOWSHELFFREQUENCY, 250.0f);//Range: [20, 1000] Default: 250	Units: Hertz
+//		dsp->setParameterFloat(FMOD_DSP_SFXREVERB_LOWSHELFGAIN, 0.0f);	//Range: [-36, 12] Default: 0			Units: Decibels
+//		dsp->setParameterFloat(FMOD_DSP_SFXREVERB_HIGHCUT, 20000.0f);	//Range: [20, 20000] Default: 20000		Units: Hertz
+//		dsp->setParameterFloat(FMOD_DSP_SFXREVERB_EARLYLATEMIX, 50.0f);	//Range: [0, 100] Default: 50			Units: Percent
+//		dsp->setParameterFloat(FMOD_DSP_SFXREVERB_WETLEVEL, -6.0f);		//Range: [-80, 20] Default: -6			Units: Decibels
+//		dsp->setParameterFloat(FMOD_DSP_SFXREVERB_DRYLEVEL, 0.0f);		//Range: [-80, 20] Default: 0			Units: Decibels
+		break;
+	case FMOD_DSP_TYPE_TREMOLO:
+//		dsp->setParameterFloat(FMOD_DSP_TREMOLO_FREQUENCY, 5.0f);	// Range: [0.1, 20] Default: 5		Units: Hertz
+//		dsp->setParameterFloat(FMOD_DSP_TREMOLO_DEPTH, 1.0f);		// Range: [0, 1] Default: 1			Units: Linear
+//		dsp->setParameterFloat(FMOD_DSP_TREMOLO_SHAPE, 1.0f);		// Range: [0, 1] Default: 1			Units: Linear
+//		dsp->setParameterFloat(FMOD_DSP_TREMOLO_SKEW, 0.0f);		// Range: [-1, 1] Default: 0		Units: Linear
+//		dsp->setParameterFloat(FMOD_DSP_TREMOLO_DUTY, 0.5f);		// Range: [0, 1] Default: 0.5		Units: Linear
+//		dsp->setParameterFloat(FMOD_DSP_TREMOLO_SQUARE, 1.0f);		// Range: [0, 1] Default: 1			Units: Linear
+//		dsp->setParameterFloat(FMOD_DSP_TREMOLO_PHASE, 0.0f);		// Range: [0, 1] Default: 0			Units: Linear
+//		dsp->setParameterFloat(FMOD_DSP_TREMOLO_SPREAD, 0.0f);		// Range: [-1, 1] Default: 0		Units: Linear
+		break;
+	}
+	m_dsp.try_emplace(dsp_type, dsp);
 }
 
 void FModManager::loadDSPs() {
 	DEBUG_PRINT("FModManager::loadDSPs()");
 	FMOD::DSP* dsp;
 
-	createDSP(DSP_ID::CHORUS,		FMOD_DSP_TYPE_CHORUS);
-	createDSP(DSP_ID::COMPRESSOR,	FMOD_DSP_TYPE_COMPRESSOR);
-	createDSP(DSP_ID::DELAY,		FMOD_DSP_TYPE_DELAY);
-	createDSP(DSP_ID::DISTORTION,	FMOD_DSP_TYPE_DISTORTION);
-	createDSP(DSP_ID::ECHO,			FMOD_DSP_TYPE_ECHO);
-	createDSP(DSP_ID::FADER,		FMOD_DSP_TYPE_FADER);
-	createDSP(DSP_ID::FLANGE,		FMOD_DSP_TYPE_FLANGE);
-	createDSP(DSP_ID::NORMALIZE,	FMOD_DSP_TYPE_NORMALIZE);
-	createDSP(DSP_ID::OSCILATOR,	FMOD_DSP_TYPE_OSCILLATOR);
-	createDSP(DSP_ID::SFXREVERB,	FMOD_DSP_TYPE_SFXREVERB);
-	createDSP(DSP_ID::TREMOLO,		FMOD_DSP_TYPE_TREMOLO);
+	createDSP(FMOD_DSP_TYPE_CHORUS);
+	createDSP(FMOD_DSP_TYPE_COMPRESSOR);
+	createDSP(FMOD_DSP_TYPE_DELAY);
+	createDSP(FMOD_DSP_TYPE_DISTORTION);
+	createDSP(FMOD_DSP_TYPE_ECHO);
+	createDSP(FMOD_DSP_TYPE_FADER);
+	createDSP(FMOD_DSP_TYPE_FLANGE);
+	createDSP(FMOD_DSP_TYPE_NORMALIZE);
+	createDSP(FMOD_DSP_TYPE_OSCILLATOR);
+	createDSP(FMOD_DSP_TYPE_SFXREVERB);
+	createDSP(FMOD_DSP_TYPE_TREMOLO);
 }
 
 void FModManager::loadSoundsFromFile() {
