@@ -38,6 +38,8 @@ public:
 	void playSound(const std::string& sound_name, const std::string& channel_group_name);
 	// Stop all the sounds on a specified channel group
 	void stopSound(const std::string& channel_group_name);
+	// Sets bool pause on a specified channel group
+	void setPause(const std::string& channel_group_name, const bool pause);
 
 protected:
 	FMOD_RESULT		m_result; // Variable to check Erros

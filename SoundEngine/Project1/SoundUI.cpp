@@ -1,11 +1,13 @@
+#include <vector>
+
 #include "SoundUI.h"
 #include "imgui/imgui.h"
-#include <vector>
+#include "imgui/IconsFontaudio.h"
 
 void SoundUI::render() {
 	// Create a window called "Audio Settings", with a menu bar.
-	ImGui::Begin("Sound Engine Tools", &is_my_tool_active, ImGuiWindowFlags_MenuBar);
-
+	ImGui::Begin("Sound Engine Tools", &is_my_tool_active, ImGuiWindowFlags_MenuBar );
+    
     if (ImGui::BeginMenuBar()) {
         if (ImGui::BeginMenu("File")) {
             if (ImGui::MenuItem("Open..", "Ctrl+O")) { /* Do stuff */ }
@@ -26,9 +28,11 @@ void SoundUI::render() {
             fx.push_back(itSounds->first.c_str());
     }
 
+
     if (ImGui::BeginTabBar("Sound Library")) {
         if (ImGui::BeginTabItem("Music")) {
             ImGui::Text("Musics Available:");
+            static bool isMusicPaused = false;
             static const char* current_item = NULL;
             if (ImGui::BeginCombo("##combo", current_item)) {
                 for (int i = 0; i < musics.size(); i++) {
@@ -41,14 +45,29 @@ void SoundUI::render() {
                 ImGui::EndCombo();
             }
             ImGui::SameLine();
-            if (ImGui::Button("Play")) {
+            if (ImGui::Button(ICON_FAD_PLAY)) {
+                if (isMusicPaused) {
+                    m_fmod_manager->setPause("music", false);
+                    isMusicPaused = false;
+                } else {
+                    m_fmod_manager->playSound(current_item, "music");
+                }
+            }
+            ImGui::SameLine();
+            if (ImGui::Button(ICON_FAD_PAUSE)) {
+                m_fmod_manager->setPause("music", true);
+                isMusicPaused = true;
+            }
+            ImGui::SameLine();
+            if (ImGui::Button(ICON_FAD_STOP)) {
                 m_fmod_manager->stopSound("music");
-                m_fmod_manager->playSound(current_item, "music");
+                isMusicPaused = false;
             }
             ImGui::EndTabItem();
         }
         if (ImGui::BeginTabItem("FX")) {
             ImGui::Text("FXs Available:");
+            static bool isFxPaused = false;
             static const char* current_item = NULL;
             if (ImGui::BeginCombo("##combo", current_item)) {
                 for (int i = 0; i < fx.size(); i++) {
@@ -61,9 +80,23 @@ void SoundUI::render() {
                 ImGui::EndCombo();
             }
             ImGui::SameLine();
-            if (ImGui::Button("Play")) {
+            if (ImGui::Button(ICON_FAD_PLAY)) {
+                if (isFxPaused) {
+                    m_fmod_manager->setPause("fx", false);
+                    isFxPaused = false;
+                } else {
+                    m_fmod_manager->playSound(current_item, "fx");
+                }
+            }
+            ImGui::SameLine();
+            if (ImGui::Button(ICON_FAD_PAUSE)) {
+                m_fmod_manager->setPause("fx", true);
+                isFxPaused = true;
+            }
+            ImGui::SameLine();
+            if (ImGui::Button(ICON_FAD_STOP)) {
                 m_fmod_manager->stopSound("fx");
-                m_fmod_manager->playSound(current_item, "fx");
+                isFxPaused = false;
             }
             ImGui::EndTabItem();
         }

@@ -28,6 +28,9 @@
     <Filter Include="Resource Files\sounds\fx">
       <UniqueIdentifier>{f28cdd33-ddca-41d5-9057-8007f6ba4947}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\fonts">
+      <UniqueIdentifier>{fe2a2cb3-72ae-4b25-90bc-2d6f678a9d5b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -110,6 +113,9 @@
     <ClInclude Include="SoundUI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="imgui\IconsFontaudio.h">
+      <Filter>Header Files\imgui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Media Include="sounds\music\beethoven_moonlight_sonata.mp3">
@@ -151,5 +157,10 @@
     <Media Include="sounds\fx\WingFlap.wav">
       <Filter>Resource Files\sounds\fx</Filter>
     </Media>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="fonts\fontaudio.ttf">
+      <Filter>Resource Files\fonts</Filter>
+    </Font>
   </ItemGroup>
 </Project>

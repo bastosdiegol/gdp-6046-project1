@@ -207,3 +207,15 @@ void FModManager::stopSound(const std::string& channel_group_name) {
 
 	itChannel->second->m_group->stop();
 }
+
+void FModManager::setPause(const std::string& channel_group_name, const bool pause) {
+	// Tries to find the channel group
+	std::map<std::string, ChannelGroup*>::iterator itChannel = m_channel_groups.find(channel_group_name);
+
+	if (itChannel == m_channel_groups.end()) {
+		std::cout << "FModManager error: Couldn't find the ChannelGroup named #" << channel_group_name << std::endl;
+		return;
+	}
+
+	itChannel->second->m_group->setPaused(pause);
+}

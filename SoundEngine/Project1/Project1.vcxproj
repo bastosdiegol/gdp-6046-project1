@@ -159,6 +159,7 @@
   <ItemGroup>
     <ClInclude Include="ChannelGroup.h" />
     <ClInclude Include="FModManager.h" />
+    <ClInclude Include="imgui\IconsFontaudio.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
     <ClInclude Include="imgui\imgui_impl_glfw.h" />
@@ -185,6 +186,9 @@
     <Media Include="sounds\music\beethoven_moonlight_sonata.mp3" />
     <Media Include="sounds\music\tchaikovsky_dance_of_the_sugar_plum_fairy.mp3" />
     <Media Include="sounds\music\vivaldi_winter_mvt1.mp3" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="fonts\fontaudio.ttf" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
