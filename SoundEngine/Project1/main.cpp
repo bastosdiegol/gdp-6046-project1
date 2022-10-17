@@ -32,6 +32,9 @@ int main(int argc, char* argv[]) {
 	// Load all sounds from the XML File
 	fmod_manager.loadSoundsFromFile();
 
+	// Load all DSP
+	fmod_manager.loadDSPs();
+
 	//initialize glfw/glad
 	glfwInit();
 	window = glfwCreateWindow(800, 600, "Sound Engine - Project #1", nullptr, nullptr);

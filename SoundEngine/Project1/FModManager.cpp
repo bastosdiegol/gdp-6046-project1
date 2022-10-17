@@ -31,14 +31,22 @@ FModManager::FModManager(const int system_flags) {
 
 FModManager::~FModManager() {
 	DEBUG_PRINT("FModManager::~FModManager()\n");
+
+	std::map<DSP_ID, FMOD::DSP*>::iterator itDSP;
+	// Iterates trought map tree of sounds and call each destructor
+	for (itDSP = m_dsp.begin(); itDSP != m_dsp.end(); itDSP++)
+		itDSP->second->release();
+
 	std::map<std::string, Sound*>::iterator itSounds;
-	// Iterates trought map tree of channels and call each destructor
+	// Iterates trought map tree of sounds and call each destructor
 	for (itSounds = m_sounds.begin(); itSounds != m_sounds.end(); itSounds++)
 		itSounds->second->~Sound();
+
 	std::map<std::string, ChannelGroup*>::iterator itChannels;
 	// Iterates trought map tree of channels and call each destructor
 	for (itChannels = m_channel_groups.begin(); itChannels != m_channel_groups.end(); itChannels++)
 		itChannels->second->~ChannelGroup();
+
 	// Clear the map tree
 	m_channel_groups.clear();
 	// Deletes the FMOD System
@@ -145,6 +153,37 @@ void FModManager::setChannelGroupPan(const std::string& name, float pan) {
 	// Sets the new value for the pan
 	it->second->m_group->setPan(pan);
 	it->second->m_pan = pan;
+}
+
+void FModManager::createDSP(const DSP_ID& id, FMOD_DSP_TYPE dsp_type) {
+	DEBUG_PRINT("FModManager::createDSP(%d, %d)", id, dsp_type);
+	FMOD::DSP* dsp;
+
+	// Creates the dsp
+	m_result = m_system->createDSPByType(dsp_type, &dsp);
+	// Checks the result
+	if (m_result != FMOD_OK) {
+		std::cout << "fmod error: #" << m_result << "-" << FMOD_ErrorString(m_result) << std::endl;
+		return;
+	}
+	m_dsp.try_emplace(id, dsp);
+}
+
+void FModManager::loadDSPs() {
+	DEBUG_PRINT("FModManager::loadDSPs()");
+	FMOD::DSP* dsp;
+
+	createDSP(DSP_ID::CHORUS,		FMOD_DSP_TYPE_CHORUS);
+	createDSP(DSP_ID::COMPRESSOR,	FMOD_DSP_TYPE_COMPRESSOR);
+	createDSP(DSP_ID::DELAY,		FMOD_DSP_TYPE_DELAY);
+	createDSP(DSP_ID::DISTORTION,	FMOD_DSP_TYPE_DISTORTION);
+	createDSP(DSP_ID::ECHO,			FMOD_DSP_TYPE_ECHO);
+	createDSP(DSP_ID::FADER,		FMOD_DSP_TYPE_FADER);
+	createDSP(DSP_ID::FLANGE,		FMOD_DSP_TYPE_FLANGE);
+	createDSP(DSP_ID::NORMALIZE,	FMOD_DSP_TYPE_NORMALIZE);
+	createDSP(DSP_ID::OSCILATOR,	FMOD_DSP_TYPE_OSCILLATOR);
+	createDSP(DSP_ID::SFXREVERB,	FMOD_DSP_TYPE_SFXREVERB);
+	createDSP(DSP_ID::TREMOLO,		FMOD_DSP_TYPE_TREMOLO);
 }
 
 void FModManager::loadSoundsFromFile() {
