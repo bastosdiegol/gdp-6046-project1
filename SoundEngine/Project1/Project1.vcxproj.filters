@@ -106,11 +106,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Xml Include="sounds.xml">
-      <Filter>Source Files</Filter>
-    </Xml>
-  </ItemGroup>
-  <ItemGroup>
     <Media Include="sounds\music\beethoven_moonlight_sonata.mp3">
       <Filter>Resource Files\sounds\music</Filter>
     </Media>

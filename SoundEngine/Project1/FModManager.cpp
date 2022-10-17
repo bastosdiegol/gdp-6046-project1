@@ -130,58 +130,33 @@ void FModManager::loadSoundsFromFile() {
 		std::cout << "FModManager error: Failed to load file named #" << SOUND_FILE << std::endl;
 		return;
 	}
-	DEBUG_PRINT("Successfully loaded file named #%s\n", SOUND_FILE.c_str());
+	DEBUG_PRINT("Successfully loaded file named #%s\n", SOUND_FILE.c_str());	
 
-	// Use XML object to read data from
-	pugi::xml_object_range<pugi::xml_node_iterator> itSoundLibrary = soundlibrary.child("soundlibrary").children();
-	if (itSoundLibrary.empty()) {
-		std::cout << "FModManager error: There are no sounds in the sound library!" << std::endl;
-		return;
-	}
-
-	// Parse through the tree of the XML Data using iterator
-	// <soundlibrary>
-	pugi::xml_node_iterator itSound;
-	// Pointer to each new sound to be instanciated
+	// Gets all nodes of sound inside the soundlibrary
+	pugi::xml_node sounds = soundlibrary.child("soundlibrary");
 	Sound* newSound;
-	for (itSound = itSoundLibrary.begin(); itSound != itSoundLibrary.end(); itSound++) {
-		pugi::xml_node soundNode = *itSound;
-		pugi::xml_attribute category = soundNode.attribute("category");
-		DEBUG_PRINT("Category: %s\n", category.value());
-		if (strcmp(category.value(), "MUSIC") == 0) {		// Instanciate new sound with mode LOOP - BGM
-			newSound = new Sound(FMOD_LOOP_NORMAL);
-		} else if (strcmp(category.value(), "FX") == 0) {	// Instanciate new sound with mode DEFAULT - FX
-			newSound = new Sound(FMOD_DEFAULT);
-		} else {								// Category not defined error
-			std::cout << "FModManager error: Category found on XML not defined! #" << category.value() << std::endl;
-			return;
-		}
-		// <sound>
-		pugi::xml_node_iterator itSoundInfo;
-		for (itSoundInfo = soundNode.children().begin();
-			itSoundInfo != soundNode.children().end();
-			itSoundInfo++) {
-			pugi::xml_node soundInfoNode = *itSoundInfo;
-			DEBUG_PRINT(" %s: %s\n", soundInfoNode.name(), soundInfoNode.child_value());
-			if (strcmp(soundInfoNode.name(), "title") == 0) {			// Sets Element named Title
-				newSound->m_name = soundInfoNode.child_value();
-			} else if (strcmp(soundInfoNode.name(), "path") == 0) {	// Sets Element named Path
-				newSound->m_path = soundInfoNode.child_value();
-			} else {										// Element not defined error
-				std::cout << "FModManager error: Element found on XML not defined! #" << soundInfoNode.name() << std::endl;
-			}
 
-			// Attributes of sound - At the moment we aren't joining this loop
-			for (pugi::xml_attribute_iterator itAttribute = soundInfoNode.attributes_begin();
-				itAttribute != soundInfoNode.attributes_end();
-				itAttribute++) {
-				pugi::xml_attribute attribute = *itAttribute;
-				DEBUG_PRINT("   %s: %s\n", attribute.name(), attribute.value());
-			}
+	// Iterates through each node
+	for (pugi::xml_node sound = sounds.child("sound"); sound; sound = sound.next_sibling("sound")) {
+		// Instantiate a new sound and set its values from XML
+		newSound = new Sound();
+		newSound->m_name		 = sound.attribute("title").value();
+		newSound->m_path		 = sound.attribute("path").value();
+		newSound->m_format		 = sound.attribute("format").value();
+		newSound->m_type		 = sound.attribute("type").value();
+		newSound->m_frequency	 = sound.attribute("frequency").as_float();
+		newSound->m_volume		 = sound.attribute("volume").as_float();
+		newSound->m_balance		 = sound.attribute("balance").as_float();
+		newSound->m_lenght		 = sound.attribute("lenght").as_float();
+		newSound->m_cur_position = sound.attribute("position").as_float();
+		// Calls FMOD createSound according with the type of the sound
+		if (newSound->m_type == "MUSIC") {
+			// Calls the FMOD function to create the new sound with mode LOOP - BGM
+			m_result = m_system->createSound(newSound->m_path.c_str(), FMOD_LOOP_NORMAL, nullptr, &newSound->m_sound);
+		} else if (newSound->m_type == "FX") {
+			// Calls the FMOD function to create the new sound with mode DEFAULT - FX
+			m_result = m_system->createSound(newSound->m_path.c_str(), FMOD_DEFAULT, nullptr, &newSound->m_sound);
 		}
-
-		// Calls the FMOD function to create the new sound
-		m_result = m_system->createSound(newSound->m_path.c_str(), newSound->m_mode, nullptr, &newSound->m_sound);
 		// Checks the result
 		if (m_result != FMOD_OK) {
 			std::cout << "fmod error: #" << m_result << "-" << FMOD_ErrorString(m_result) << std::endl;

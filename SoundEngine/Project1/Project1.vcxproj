@@ -170,9 +170,6 @@
     <ClInclude Include="Sound.h" />
   </ItemGroup>
   <ItemGroup>
-    <Xml Include="sounds.xml" />
-  </ItemGroup>
-  <ItemGroup>
     <Media Include="sounds\fx\Breath.wav" />
     <Media Include="sounds\fx\Fire01.wav" />
     <Media Include="sounds\fx\Fire16.wav" />
