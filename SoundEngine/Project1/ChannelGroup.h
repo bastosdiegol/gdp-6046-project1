@@ -5,10 +5,6 @@
 
 class ChannelGroup {
 public:
-	FMOD::ChannelGroup* m_group; // FMOD Channel Group
-	float m_pan;				// Pan variable
-	float m_pitch;				// Pitch variable
-
 	// Default Constructor
 	ChannelGroup();
 	// Overloaded Constructor
@@ -20,6 +16,10 @@ public:
 	// Destructor
 	~ChannelGroup();
 private:
+	FMOD::ChannelGroup* m_group; // FMOD Channel Group
+	float m_pan;				// Pan variable
+	float m_pitch;				// Pitch variable
 
+	friend class FModManager; // Allows FModManager to access the private variables above
 };
 

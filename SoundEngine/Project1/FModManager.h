@@ -9,9 +9,6 @@
 
 class FModManager {
 public:
-	std::map<std::string, Sound*>		m_sounds; // Map Tree of Sounds
-	std::map<FMOD_DSP_TYPE, FMOD::DSP*>	m_dsp;	  // Map Tree of Digital Sound Processors
-
 	// Constructor
 	FModManager(const int system_flags);
 	// Destructor
@@ -49,9 +46,32 @@ public:
 	void setChannelGroupPan(const std::string& name, float pan);
 
 	// Create a DSP
+	// Accepts FMOD_DSP_TYPE. Returns Nothing.
 	void createDSP(FMOD_DSP_TYPE dsp_type);
 	// Load All DSPs intented to use on the engine
 	void loadDSPs();
+	// Set a Float Value to a Specified parameter of a FMOD_DSP_TYPE
+	// Instead of Letting other Classes Call DSP.setParameter directly we gonna do through this and check for errors
+	// Accepts FMOD_DSP_TYPE, Int Parameter Index and Float Value. Returns Nothing.
+	void setFloatParameterDSP(FMOD_DSP_TYPE dsp_type, int fmdDspParameter, float value);
+	// Set a Bool Value to a Specified parameter of a FMOD_DSP_TYPE
+	// Instead of Letting other Classes Call DSP.setParameter directly we gonna do through this and check for errors
+	// Accepts FMOD_DSP_TYPE, Int Parameter Index and Bool Value. Returns Nothing.
+	void setBoolParameterDSP(FMOD_DSP_TYPE dsp_type, int fmdDspParameter, bool value);
+	// Set a Int Value to a Specified parameter of a FMOD_DSP_TYPE
+	// Instead of Letting other Classes Call DSP.setParameter directly we gonna do through this and check for errors
+	// Accepts FMOD_DSP_TYPE, Int Parameter Index and Int Value. Returns Nothing.
+	void setIntParameterDSP(FMOD_DSP_TYPE dsp_type, int fmdDspParameter, int value);
+	// Gets a Float Pointer to a Specified parameter of a FMOD_DSP_TYPE
+	// Instead of Letting other Classes Call DSP.setParameter directly we gonna do through this and check for errors
+	// Accepts FMOD_DSP_TYPE, Int Parameter Index and Float Pointer. Returns Nothing.
+	void getFloatParameterDSP(FMOD_DSP_TYPE dsp_type, int fmdDspParameter, float* value);
+	// Adds a DSP Effect on a specified channel group
+	// Accepts Channel name and FMOD DSP Type. Returns nothing.
+	void addDSPEffect(const std::string& name, const FMOD_DSP_TYPE& dsp_type);
+	// Removes a DSP Effect from a specified channel group
+	// Accepts Channel name and FMOD DSP Type. Returns nothing.
+	void removeDSPEffect(const std::string& name, const FMOD_DSP_TYPE& dsp_type);
 
 	// Loads all sounds available from XML File
 	void loadSoundsFromFile();
@@ -62,13 +82,16 @@ public:
 	// Sets bool pause on a specified channel group
 	void setPause(const std::string& channel_group_name, const bool pause);
 
-protected:
-	FMOD_RESULT		m_result; // Variable to check Erros
-	FMOD::System*	m_system; // FMod System
-	std::map<std::string, ChannelGroup*> m_channel_groups; // Map Tree of Channel Groups
-
 private:
 	const int			MAX_CHANNELS = 255;
 	const std::string	SOUND_FILE	 = "sounds.xml";
+
+	FMOD_RESULT							 m_result;			// Variable to check Erros
+	FMOD::System*						 m_system;			// FMod System
+	std::map<std::string, ChannelGroup*> m_channel_groups;	// Map Tree of Channel Groups
+	std::map<std::string, Sound*>		 m_sounds;			// Map Tree of Sounds
+	std::map<FMOD_DSP_TYPE, FMOD::DSP*>	 m_dsp;				// Map Tree of Digital Sound Processors
+
+	friend class SoundUI; // We will allow SoundUI to access these private variables above
 };
 

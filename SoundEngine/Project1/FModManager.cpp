@@ -105,7 +105,7 @@ void FModManager::setChannelGroupParent(const std::string& parent_name, const st
 }
 
 void FModManager::getChannelGroupVolume(const std::string& name, float* volume) {
-	DEBUG_PRINT("FModManager::getChannelGroupVolume(%s)\n", name.c_str());
+	//DEBUG_PRINT("FModManager::getChannelGroupVolume(%s)\n", name.c_str());
 	// Finds the Channel group by Name
 	std::map<std::string, ChannelGroup*>::iterator it = m_channel_groups.find(name);
 	// Checks if it was found
@@ -131,7 +131,7 @@ void FModManager::setChannelGroupVolume(const std::string& name, float volume) {
 }
 
 void FModManager::getChannelGroupMuteStatus(const std::string& name, bool* muteStatus) {
-	DEBUG_PRINT("FModManager::getChannelGroupMuteStatus(%s)\n", name.c_str());
+	//DEBUG_PRINT("FModManager::getChannelGroupMuteStatus(%s)\n", name.c_str());
 	// Finds the Channel group by Name
 	std::map<std::string, ChannelGroup*>::iterator it = m_channel_groups.find(name);
 	// Checks if it was found
@@ -164,7 +164,7 @@ void FModManager::setChannelGroupMuteStatus(const std::string& name, bool muteSt
 }
 
 void FModManager::getChannelGroupPan(const std::string& name, float* pan) {
-	DEBUG_PRINT("FModManager::getChannelGroupPan(%s)\n", name.c_str());
+	//DEBUG_PRINT("FModManager::getChannelGroupPan(%s)\n", name.c_str());
 	// Finds the Channel group by Name
 	std::map<std::string, ChannelGroup*>::iterator it = m_channel_groups.find(name);
 	// Checks if it was found
@@ -177,7 +177,7 @@ void FModManager::getChannelGroupPan(const std::string& name, float* pan) {
 }
 
 void FModManager::setChannelGroupPan(const std::string& name, float pan) {
-	DEBUG_PRINT("FModManager::setChannelGroupPan(%s, %f)\n", name.c_str(), pan);
+	//DEBUG_PRINT("FModManager::setChannelGroupPan(%s, %f)\n", name.c_str(), pan);
 	// Finds the Channel group by Name
 	std::map<std::string, ChannelGroup*>::iterator it = m_channel_groups.find(name);
 	// Checks if it was found
@@ -191,7 +191,7 @@ void FModManager::setChannelGroupPan(const std::string& name, float pan) {
 }
 
 void FModManager::createDSP(FMOD_DSP_TYPE dsp_type) {
-	DEBUG_PRINT("FModManager::createDSP(%d)", dsp_type);
+	DEBUG_PRINT("FModManager::createDSP(%d)\n", dsp_type);
 	FMOD::DSP* dsp;
 
 	// Creates the dsp
@@ -207,7 +207,7 @@ void FModManager::createDSP(FMOD_DSP_TYPE dsp_type) {
 	// https://fmod.com/docs/2.02/api/core-api-common-dsp-effects.html
 	switch (dsp_type) {
 	case FMOD_DSP_TYPE_CHORUS:
-		dsp->setParameterFloat(FMOD_DSP_CHORUS_MIX,	100.0f);		// Range: [0, 100] Default: 50		Units: Percentage
+		dsp->setParameterFloat(FMOD_DSP_CHORUS_MIX,	50.0f);			// Range: [0, 100] Default: 50		Units: Percentage
 //		dsp->setParameterFloat(FMOD_DSP_CHORUS_RATE, 0.8f);			// Range: [0,  20] Default: 0.8		Units: Hertz
 //		dsp->setParameterFloat(FMOD_DSP_CHORUS_DEPTH, 3.0f);		// Range: [0, 100] Default: 3		Units: Milliseconds
 		break;
@@ -282,7 +282,7 @@ void FModManager::createDSP(FMOD_DSP_TYPE dsp_type) {
 }
 
 void FModManager::loadDSPs() {
-	DEBUG_PRINT("FModManager::loadDSPs()");
+	DEBUG_PRINT("FModManager::loadDSPs()\n");
 	FMOD::DSP* dsp;
 
 	createDSP(FMOD_DSP_TYPE_CHORUS);
@@ -296,6 +296,118 @@ void FModManager::loadDSPs() {
 	createDSP(FMOD_DSP_TYPE_OSCILLATOR);
 	createDSP(FMOD_DSP_TYPE_SFXREVERB);
 	createDSP(FMOD_DSP_TYPE_TREMOLO);
+}
+
+void FModManager::setFloatParameterDSP(FMOD_DSP_TYPE dsp_type, int fmdDspParameter, float value) {
+	DEBUG_PRINT("FModManager::setFloatParameterDSP(%d, %d, %f)\n", dsp_type, fmdDspParameter, value);
+	// Finds the DSP group by FMOD_DSP_TYPE
+	std::map<FMOD_DSP_TYPE, FMOD::DSP*>::iterator itDSP = m_dsp.find(dsp_type);
+	// Checks if it was found
+	if (itDSP == m_dsp.end()) {
+		std::cout << "FModManager error: Couldn't find the DSP type #" << dsp_type << std::endl;
+		return;
+	}
+	m_result = itDSP->second->setParameterFloat(fmdDspParameter, value);
+	// Checks the result
+	if (m_result != FMOD_OK) {
+		std::cout << "fmod error: #" << m_result << "-" << FMOD_ErrorString(m_result) << std::endl;
+		return;
+	}
+}
+
+void FModManager::setBoolParameterDSP(FMOD_DSP_TYPE dsp_type, int fmdDspParameter, bool value) {
+	DEBUG_PRINT("FModManager::setBoolParameterDSP(%d, %d, %d)\n", dsp_type, fmdDspParameter, value);
+	// Finds the DSP group by FMOD_DSP_TYPE
+	std::map<FMOD_DSP_TYPE, FMOD::DSP*>::iterator itDSP = m_dsp.find(dsp_type);
+	// Checks if it was found
+	if (itDSP == m_dsp.end()) {
+		std::cout << "FModManager error: Couldn't find the DSP type #" << dsp_type << std::endl;
+		return;
+	}
+	m_result = itDSP->second->setParameterBool(fmdDspParameter, value);
+	// Checks the result
+	if (m_result != FMOD_OK) {
+		std::cout << "fmod error: #" << m_result << "-" << FMOD_ErrorString(m_result) << std::endl;
+		return;
+	}
+}
+
+void FModManager::setIntParameterDSP(FMOD_DSP_TYPE dsp_type, int fmdDspParameter, int value) {
+	DEBUG_PRINT("FModManager::setIntParameterDSP(%d, %d, %d)\n", dsp_type, fmdDspParameter, value);
+	// Finds the DSP group by FMOD_DSP_TYPE
+	std::map<FMOD_DSP_TYPE, FMOD::DSP*>::iterator itDSP = m_dsp.find(dsp_type);
+	// Checks if it was found
+	if (itDSP == m_dsp.end()) {
+		std::cout << "FModManager error: Couldn't find the DSP type #" << dsp_type << std::endl;
+		return;
+	}
+	m_result = itDSP->second->setParameterInt(fmdDspParameter, value);
+	// Checks the result
+	if (m_result != FMOD_OK) {
+		std::cout << "fmod error: #" << m_result << "-" << FMOD_ErrorString(m_result) << std::endl;
+		return;
+	}
+}
+
+void FModManager::getFloatParameterDSP(FMOD_DSP_TYPE dsp_type, int fmdDspParameter, float* value) {
+	//DEBUG_PRINT("FModManager::getFloatParameterDSP(%d, %d)\n", dsp_type, fmdDspParameter);
+	// Finds the DSP group by FMOD_DSP_TYPE
+	std::map<FMOD_DSP_TYPE, FMOD::DSP*>::iterator itDSP = m_dsp.find(dsp_type);
+	// Checks if it was found
+	if (itDSP == m_dsp.end()) {
+		std::cout << "FModManager error: Couldn't find the DSP type #" << dsp_type << std::endl;
+		return;
+	}
+	m_result = itDSP->second->getParameterFloat(fmdDspParameter, value, nullptr, 0);
+	// Checks the result
+	if (m_result != FMOD_OK) {
+		std::cout << "fmod error: #" << m_result << "-" << FMOD_ErrorString(m_result) << std::endl;
+		return;
+	}
+}
+
+void FModManager::addDSPEffect(const std::string& name, const FMOD_DSP_TYPE& dsp_type) {
+	DEBUG_PRINT("FModManager::addDSPEffect(%s, %d)\n", name.c_str(), dsp_type);
+	// Finds the Channel group by Name
+	std::map<std::string, ChannelGroup*>::iterator it = m_channel_groups.find(name);
+	// Finds the DSP by type
+	std::map<FMOD_DSP_TYPE, FMOD::DSP*>::iterator itDSP = m_dsp.find(dsp_type);
+	// Checks if it was found
+	if (it == m_channel_groups.end() || itDSP == m_dsp.end()) {
+		std::cout << "FModManager error: Couldn't find the ChannelGroup named #" << name 
+												     << "or DSP Type #" << dsp_type << std::endl;
+		return;
+	}
+	int num_dsp;
+	m_result = it->second->m_group->getNumDSPs(&num_dsp);
+	if (m_result != FMOD_OK) {
+		std::cout << "fmod error: #" << m_result << "-" << FMOD_ErrorString(m_result) << std::endl;
+		return;
+	}
+	m_result = it->second->m_group->addDSP(num_dsp, itDSP->second);
+	if (m_result != FMOD_OK) {
+		std::cout << "fmod error: #" << m_result << "-" << FMOD_ErrorString(m_result) << std::endl;
+		return;
+	}
+}
+
+void FModManager::removeDSPEffect(const std::string& name, const FMOD_DSP_TYPE& dsp_type) {
+	DEBUG_PRINT("FModManager::addDSPEffect(%s, %d)\n", name.c_str(), dsp_type);
+	// Finds the Channel group by Name
+	std::map<std::string, ChannelGroup*>::iterator it = m_channel_groups.find(name);
+	// Finds the DSP by type
+	std::map<FMOD_DSP_TYPE, FMOD::DSP*>::iterator itDSP = m_dsp.find(dsp_type);
+	// Checks if it was found
+	if (it == m_channel_groups.end() || itDSP == m_dsp.end()) {
+		std::cout << "FModManager error: Couldn't find the ChannelGroup named #" << name
+			<< "or DSP Type #" << dsp_type << std::endl;
+		return;
+	}
+	m_result = it->second->m_group->removeDSP(itDSP->second);
+	if (m_result != FMOD_OK) {
+		std::cout << "fmod error: #" << m_result << "-" << FMOD_ErrorString(m_result) << std::endl;
+		return;
+	}
 }
 
 void FModManager::loadSoundsFromFile() {

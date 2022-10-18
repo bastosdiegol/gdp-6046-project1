@@ -38,8 +38,20 @@ void SoundUI::render() {
             ImGui::Text("Musics Available:");
             static bool isMusicPaused = false;
             static bool isMusicMuted = false;
-            static float musicVolume = 0;
-            static float musicPan = 0;
+            static bool musicDspChorus = false;
+            static bool musicDspCompressor = false;
+            static bool musicDspDelay = false;
+            static bool musicDspDistortion = false;
+            static bool musicDspEcho = false;
+            static bool musicDspFlange = false;
+            static bool musicDspNormalize = false;
+            static bool musicDspOscillator = false;
+            static bool musicDspSFXReverb = false;
+            static bool musicDspTremolo = false;
+            static float musicVolume = 0.0f;
+            static float musicPan = 0.0f;
+            static float musicChorusMix = 0.0f;
+            static float musicEchoDelay = 1.0f;
             static const char* current_item = NULL;
             m_fmod_manager->getChannelGroupMuteStatus("music", &isMusicMuted); // Gets the music muted status
             if (ImGui::BeginCombo("##combo", current_item)) {
@@ -83,22 +95,61 @@ void SoundUI::render() {
                     m_fmod_manager->setChannelGroupMuteStatus("music", isMusicMuted);
                 }
             }
-            // Music Channel Volume Knob
-            m_fmod_manager->getChannelGroupVolume("music", &musicVolume); // Gets the volume
-            musicVolume *= 100; // Conversion 0% to 100%
-            if (ImGuiKnobs::Knob("Volume", &musicVolume, 0.0f, 100.0f, 1.0f, "%.1f%", ImGuiKnobVariant_Tick)) {
-                musicVolume /= 100; // Back to the original float value
-                if (musicVolume > 1.0f) { // Safe Guard to avoid hardware issues
-                    musicVolume = 1.0f;
+            if (ImGui::BeginTable("tableMusicControl", 4, ImGuiTableFlags_SizingFixedFit)) {
+                ImGui::TableNextRow();
+                ImGui::TableNextColumn();
+                // Music Channel Volume Knob
+                m_fmod_manager->getChannelGroupVolume("music", &musicVolume); // Gets the volume
+                musicVolume *= 100; // Conversion 0% to 100%
+                if (ImGuiKnobs::Knob("Volume", &musicVolume, 0.0f, 100.0f, 1.0f, "%.1f%", ImGuiKnobVariant_Tick)) {
+                    musicVolume /= 100; // Back to the original float value
+                    if (musicVolume > 1.0f) { // Safe Guard to avoid hardware issues
+                        musicVolume = 1.0f;
+                    }
+                    m_fmod_manager->setChannelGroupVolume("music", musicVolume); // Sets new volume
                 }
-                m_fmod_manager->setChannelGroupVolume("music", musicVolume); // Sets new volume
-            }
-            // Music Channel Pan Knob
-            ImGui::SameLine();
-            m_fmod_manager->getChannelGroupPan("music", &musicPan); // Gets the pan
-            if (ImGuiKnobs::Knob("Pan", &musicPan, -1.0f, 1.0f, 0.01f, "%.1f%", ImGuiKnobVariant_Tick)) {
-                m_fmod_manager->setChannelGroupPan("music", musicPan); // Sets new pan
-            }
+                ImGui::TableNextColumn();
+                // Music Channel Pan Knob
+                m_fmod_manager->getChannelGroupPan("music", &musicPan); // Gets the pan
+                if (ImGuiKnobs::Knob("Pan", &musicPan, -1.0f, 1.0f, 0.01f, "%.1f%", ImGuiKnobVariant_Tick)) {
+                    m_fmod_manager->setChannelGroupPan("music", musicPan); // Sets new pan
+                }
+                // DSP CHORUS
+                ImGui::TableNextColumn();
+                ImGui::Text(" ");
+                ImGui::SameLine();
+                if (ImGui::Checkbox("##MusicChorus", &musicDspChorus)) {
+                    if (musicDspChorus) {
+                        m_fmod_manager->addDSPEffect("music", FMOD_DSP_TYPE_CHORUS);
+                        musicDspChorus = true;
+                    } else {
+                        m_fmod_manager->removeDSPEffect("music", FMOD_DSP_TYPE_CHORUS);
+                        musicDspChorus = false;
+                    }
+                }
+                m_fmod_manager->getFloatParameterDSP(FMOD_DSP_TYPE_CHORUS, FMOD_DSP_CHORUS_MIX, &musicChorusMix); // Gets the chorus mix
+                if (ImGuiKnobs::Knob("Chorus Mix", &musicChorusMix, 0.0f, 100.0f, 1.0f, "%.1f%", ImGuiKnobVariant_Tick)) {
+                    m_fmod_manager->setFloatParameterDSP(FMOD_DSP_TYPE_CHORUS, FMOD_DSP_CHORUS_MIX, musicChorusMix); // Sets new chorus mix
+                }
+                // DSP ECHO
+                ImGui::TableNextColumn();
+                ImGui::Text(" ");
+                ImGui::SameLine();
+                if (ImGui::Checkbox("##MusicEcho", &musicDspEcho)) {
+                    if (musicDspEcho) {
+                        m_fmod_manager->addDSPEffect("music", FMOD_DSP_TYPE_ECHO);
+                        musicDspEcho = true;
+                    } else {
+                        m_fmod_manager->removeDSPEffect("music", FMOD_DSP_TYPE_ECHO);
+                        musicDspEcho = false;
+                    }
+                }
+                m_fmod_manager->getFloatParameterDSP(FMOD_DSP_TYPE_ECHO, FMOD_DSP_ECHO_DELAY, &musicEchoDelay); // Gets the echo delay
+                if (ImGuiKnobs::Knob("Echo Delay", &musicEchoDelay, 1.0f, 5000.0f, 10.0f, "%.1f%", ImGuiKnobVariant_Tick)) {
+                    m_fmod_manager->setFloatParameterDSP(FMOD_DSP_TYPE_ECHO, FMOD_DSP_ECHO_DELAY, musicEchoDelay); // Sets new echo delay
+                }
+                ImGui::EndTable();
+            }            
             ImGui::EndTabItem();
         }
         // -------------
@@ -106,10 +157,9 @@ void SoundUI::render() {
         // -------------
         if (ImGui::BeginTabItem("FX")) {
             ImGui::Text("FXs Available:");
+            static float fxVolume = 0, fxPan = 0;
             static bool isFxPaused = false;
-            static float fxVolume = 0;
             static bool isFxMuted = false;
-            static float fxPan = 0;
             static const char* current_item = NULL;
             m_fmod_manager->getChannelGroupMuteStatus("fx", &isFxMuted); // Gets the fx muted status
             if (ImGui::BeginCombo("##combo", current_item)) {
