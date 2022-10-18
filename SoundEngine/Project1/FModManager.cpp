@@ -104,6 +104,18 @@ void FModManager::setChannelGroupParent(const std::string& parent_name, const st
 		std::cout << "fmod error: #" << m_result << "-" << FMOD_ErrorString(m_result) << std::endl;
 }
 
+ChannelGroup* FModManager::getChannelGroup(const std::string& name) {
+	DEBUG_PRINT("FModManager::getChannelGroup(%s)\n", name.c_str());
+	// Finds the Channel group by Name
+	std::map<std::string, ChannelGroup*>::iterator it = m_channel_groups.find(name);
+	// Checks if it was found
+	if (it == m_channel_groups.end()) {
+		std::cout << "FModManager error: Couldn't find the ChannelGroup named #" << name << std::endl;
+		return nullptr;
+	}
+	return it->second;
+}
+
 void FModManager::getChannelGroupVolume(const std::string& name, float* volume) {
 	//DEBUG_PRINT("FModManager::getChannelGroupVolume(%s)\n", name.c_str());
 	// Finds the Channel group by Name
@@ -219,7 +231,7 @@ void FModManager::createDSP(FMOD_DSP_TYPE dsp_type) {
 //		dsp->setParameterBool(FMOD_DSP_COMPRESSOR_LINKED, true);	// false = Independent(compressor per channel), true = Linked
 		break;
 	case FMOD_DSP_TYPE_DELAY:
-		dsp->setParameterFloat(FMOD_DSP_DELAY_MAXDELAY, 10000.0f);	// Range: [0, 10000] Default: 10	Units: Milliseconds
+		dsp->setParameterFloat(FMOD_DSP_DELAY_MAXDELAY, 10.0f);	// Range: [0, 10000] Default: 10	Units: Milliseconds
 		dsp->setParameterFloat(FMOD_DSP_DELAY_CH0, 1000.0f);		// CH0 = MASTER (?)
 		// FMOD_DSP_DELAY_CH0
 		// ...														// Range: [0, 10000] Default: 0		Units: Milliseconds
@@ -366,6 +378,23 @@ void FModManager::getFloatParameterDSP(FMOD_DSP_TYPE dsp_type, int fmdDspParamet
 	}
 }
 
+void FModManager::getIntParameterDSP(FMOD_DSP_TYPE dsp_type, int fmdDspParameter, int* value) {
+	//DEBUG_PRINT("FModManager::getIntParameterDSP(%d, %d)\n", dsp_type, fmdDspParameter);
+	// Finds the DSP group by FMOD_DSP_TYPE
+	std::map<FMOD_DSP_TYPE, FMOD::DSP*>::iterator itDSP = m_dsp.find(dsp_type);
+	// Checks if it was found
+	if (itDSP == m_dsp.end()) {
+		std::cout << "FModManager error: Couldn't find the DSP type #" << dsp_type << std::endl;
+		return;
+	}
+	m_result = itDSP->second->getParameterInt(fmdDspParameter, value, nullptr, 0);
+	// Checks the result
+	if (m_result != FMOD_OK) {
+		std::cout << "fmod error: #" << m_result << "-" << FMOD_ErrorString(m_result) << std::endl;
+		return;
+	}
+}
+
 void FModManager::addDSPEffect(const std::string& name, const FMOD_DSP_TYPE& dsp_type) {
 	DEBUG_PRINT("FModManager::addDSPEffect(%s, %d)\n", name.c_str(), dsp_type);
 	// Finds the Channel group by Name
@@ -392,7 +421,7 @@ void FModManager::addDSPEffect(const std::string& name, const FMOD_DSP_TYPE& dsp
 }
 
 void FModManager::removeDSPEffect(const std::string& name, const FMOD_DSP_TYPE& dsp_type) {
-	DEBUG_PRINT("FModManager::addDSPEffect(%s, %d)\n", name.c_str(), dsp_type);
+	DEBUG_PRINT("FModManager::removeDSPEffect(%s, %d)\n", name.c_str(), dsp_type);
 	// Finds the Channel group by Name
 	std::map<std::string, ChannelGroup*>::iterator it = m_channel_groups.find(name);
 	// Finds the DSP by type

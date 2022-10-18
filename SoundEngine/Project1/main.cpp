@@ -37,7 +37,7 @@ int main(int argc, char* argv[]) {
 
 	//initialize glfw/glad
 	glfwInit();
-	window = glfwCreateWindow(800, 600, "Sound Engine - Project #1", nullptr, nullptr);
+	window = glfwCreateWindow(1090, 730, "Sound Engine - Project #1", nullptr, nullptr);
 
 	if (!window) {
 		return 1;
@@ -74,7 +74,7 @@ int main(int argc, char* argv[]) {
 	ImGui::StyleColorsDark();
 
 	//create sound ui
-	SoundUI sound_ui(&fmod_manager);
+	SoundUI sound_ui(&fmod_manager, fmod_manager.getChannelGroup("master"), fmod_manager.getChannelGroup("music"), fmod_manager.getChannelGroup("fx"));
 
 	//game loop
 	while (!glfwWindowShouldClose(window)) {

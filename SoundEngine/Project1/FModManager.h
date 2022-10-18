@@ -23,6 +23,9 @@ public:
 	// Sets parent relation between two channels
 	// Receives child and parent name, Returns Nothing
 	void setChannelGroupParent(const std::string& parent_name, const std::string& child_name);
+	// Gets a pointer of a channel group
+	// Accepts name, return pointer of a ChannelGroup
+	ChannelGroup* getChannelGroup(const std::string& name);
 
 	// Gets pointer to the float value of the volume
 	// Receives channel name and pointer to volume, Returns Nothing
@@ -66,6 +69,10 @@ public:
 	// Instead of Letting other Classes Call DSP.setParameter directly we gonna do through this and check for errors
 	// Accepts FMOD_DSP_TYPE, Int Parameter Index and Float Pointer. Returns Nothing.
 	void getFloatParameterDSP(FMOD_DSP_TYPE dsp_type, int fmdDspParameter, float* value);
+	// Gets a Int Pointer to a Specified parameter of a FMOD_DSP_TYPE
+	// Instead of Letting other Classes Call DSP.setParameter directly we gonna do through this and check for errors
+	// Accepts FMOD_DSP_TYPE, Int Parameter Index and Int Pointer. Returns Nothing.
+	void getIntParameterDSP(FMOD_DSP_TYPE dsp_type, int fmdDspParameter, int* value);
 	// Adds a DSP Effect on a specified channel group
 	// Accepts Channel name and FMOD DSP Type. Returns nothing.
 	void addDSPEffect(const std::string& name, const FMOD_DSP_TYPE& dsp_type);
