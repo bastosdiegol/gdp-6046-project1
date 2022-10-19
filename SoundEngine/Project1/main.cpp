@@ -6,6 +6,7 @@
 #include "imgui/IconsFontaudio.h"
 #include "FModManager.h"
 #include "SoundUI.h"
+#include "TicTacToeGame.h"
 
 GLFWwindow* window;
 
@@ -38,19 +39,26 @@ int main(int argc, char* argv[]) {
 	fmod_manager.loadDSPs();
 
 	//initialize glfw/glad
-	glfwInit();
+	if (!glfwInit())
+		exit(EXIT_FAILURE);
 	window = glfwCreateWindow(1922, 1030, "Sound Engine - Project #1", nullptr, nullptr);
 
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+
 	if (!window) {
-		return 1;
+		glfwTerminate();
+		exit(EXIT_FAILURE);
 	}
+
+	glfwSetKeyCallback(window, key_callback);
+
 	glfwMakeContextCurrent(window);
 
 	if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress))) {
 		return 2;
 	}
-
-	glfwSetKeyCallback(window, key_callback);
+	glfwSwapInterval(1);
 
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
@@ -77,6 +85,10 @@ int main(int argc, char* argv[]) {
 
 	//create sound ui
 	SoundUI sound_ui(&fmod_manager);
+
+	//create tictactoe
+	TicTacToeGame ttt;
+	ttt.printBoard();
 
 	//game loop
 	while (!glfwWindowShouldClose(window)) {

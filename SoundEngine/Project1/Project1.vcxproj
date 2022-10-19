@@ -156,6 +156,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="SoundUI.cpp" />
+    <ClCompile Include="TicTacToeGame.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChannelGroup.h" />
@@ -173,6 +174,7 @@
     <ClInclude Include="imgui\imstb_truetype.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="SoundUI.h" />
+    <ClInclude Include="TicTacToeGame.h" />
   </ItemGroup>
   <ItemGroup>
     <Media Include="sounds\fx\Breath.wav" />

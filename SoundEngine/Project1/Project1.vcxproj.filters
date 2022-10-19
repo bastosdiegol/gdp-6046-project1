@@ -31,6 +31,18 @@
     <Filter Include="Resource Files\fonts">
       <UniqueIdentifier>{fe2a2cb3-72ae-4b25-90bc-2d6f678a9d5b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\graphics">
+      <UniqueIdentifier>{1125228d-609d-4092-ae6e-c1550d81dd5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\graphics">
+      <UniqueIdentifier>{2dadc2b2-a1b7-4501-bd3c-08b746ab6aac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\tictactoe">
+      <UniqueIdentifier>{f7f38957-3519-4023-907b-82d2505e5b86}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\tictactoe">
+      <UniqueIdentifier>{43b1038b-254b-414c-b1d9-2ba4dcf1b0b8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -74,6 +86,9 @@
     </ClCompile>
     <ClCompile Include="imgui\imgui-knobs.cpp">
       <Filter>Source Files\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="TicTacToeGame.cpp">
+      <Filter>Source Files\tictactoe</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -121,6 +136,9 @@
     </ClInclude>
     <ClInclude Include="imgui\imgui-knobs.h">
       <Filter>Header Files\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="TicTacToeGame.h">
+      <Filter>Header Files\tictactoe</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
