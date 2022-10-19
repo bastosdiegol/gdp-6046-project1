@@ -35,7 +35,7 @@ FModManager::~FModManager() {
 	std::map<FMOD_DSP_TYPE, FMOD::DSP*>::iterator itDSP;
 	// Iterates trought map tree of sounds and call each destructor
 	for (itDSP = m_dsp.begin(); itDSP != m_dsp.end(); itDSP++) {
-		DEBUG_PRINT("FModManager::~DSPEffect(%d)\n", itDSP->first);
+		DEBUG_PRINT("FModManager::~DSPEffect(%d)\n", (int)itDSP->first);
 		itDSP->second->release();
 	}
 
@@ -117,7 +117,7 @@ ChannelGroup* FModManager::getChannelGroup(const std::string& name) {
 }
 
 void FModManager::getChannelGroupVolume(const std::string& name, float* volume) {
-	//DEBUG_PRINT("FModManager::getChannelGroupVolume(%s)\n", name.c_str());
+	DEBUG_PRINT("FModManager::getChannelGroupVolume(%s)\n", name.c_str());
 	// Finds the Channel group by Name
 	std::map<std::string, ChannelGroup*>::iterator it = m_channel_groups.find(name);
 	// Checks if it was found
@@ -494,6 +494,7 @@ void FModManager::loadSoundsFromFile() {
 }
 
 void FModManager::playSound(const std::string& sound_name, const std::string& channel_group_name) {
+	DEBUG_PRINT("FModManager::playSound(%s, %s)\n", sound_name.c_str(), channel_group_name.c_str());
 	// Tries to find the sound
 	std::map<std::string, Sound*>::iterator itSound = m_sounds.find(sound_name);
 	// Tries to find the channel group
@@ -507,7 +508,11 @@ void FModManager::playSound(const std::string& sound_name, const std::string& ch
 
 	FMOD::Channel* channel;
 	// Calls FMOD to play the sound
-	m_result = m_system->playSound(itSound->second->m_sound, itChannel->second->m_group, false, &channel);
+	// TODO : DELETE
+	float tempVolume; //  <<<<<< REMEMBER TO DELETE THIS
+	getChannelGroupVolume(channel_group_name, &tempVolume);
+	DEBUG_PRINT("playSound() about to be called. Channel Volume is: %f\n", tempVolume);
+	m_result = m_system->playSound(itSound->second->m_sound, itChannel->second->m_group, true, &channel);
 	// Checks the result
 	if (m_result != FMOD_OK) {
 		std::cout << "fmod error: #" << m_result << "-" << FMOD_ErrorString(m_result) << std::endl;
@@ -523,6 +528,7 @@ void FModManager::playSound(const std::string& sound_name, const std::string& ch
 }
 
 void FModManager::stopSound(const std::string& channel_group_name) {
+	DEBUG_PRINT("FModManager::stopSound(%s)\n", channel_group_name.c_str());
 	// Tries to find the channel group
 	std::map<std::string, ChannelGroup*>::iterator itChannel = m_channel_groups.find(channel_group_name);
 
@@ -535,6 +541,7 @@ void FModManager::stopSound(const std::string& channel_group_name) {
 }
 
 void FModManager::setPause(const std::string& channel_group_name, const bool pause) {
+	DEBUG_PRINT("FModManager::setPause(%s, %b)\n", channel_group_name.c_str(), pause);
 	// Tries to find the channel group
 	std::map<std::string, ChannelGroup*>::iterator itChannel = m_channel_groups.find(channel_group_name);
 
