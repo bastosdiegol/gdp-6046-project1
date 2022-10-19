@@ -10,7 +10,7 @@
 ChannelGroup::ChannelGroup(FMOD::ChannelGroup* channel_group) {
 	DEBUG_PRINT("ChannelGroup::ChannelGroup(FMOD::ChannelGroup*)\n");
 	m_group = channel_group;
-	m_volume= 0.5f;
+	m_volume= 1.0f;
 	m_pan	= 0.0f;
 	m_pitch = 1.0f;
 	m_chorusMix = 0.0f;

@@ -131,6 +131,10 @@ void FModManager::getChannelGroupVolume(const std::string& name, float* volume) 
 
 void FModManager::setChannelGroupVolume(const std::string& name, float volume) {
 	DEBUG_PRINT("FModManager::setChannelGroupVolume(%s, %f)\n", name.c_str(), volume);
+	if (volume > 1.0f) {
+		std::cout << "WARNING: YOU TRIED TO SET A VOLUME HIGHER THAN 1.0f.\nTHE PROGRAM RESETED THE VOLUME TO 1.0f" << std::endl;
+		volume = 1.0f;
+	}
 	// Finds the Channel group by Name
 	std::map<std::string, ChannelGroup*>::iterator it = m_channel_groups.find(name);
 	// Checks if it was found
@@ -139,11 +143,15 @@ void FModManager::setChannelGroupVolume(const std::string& name, float volume) {
 		return;
 	}
 	// Sets the new value for the volume
-	it->second->m_group->setVolume(volume);
+	m_result = it->second->m_group->setVolume(volume);
+	if (m_result != FMOD_OK) {
+		std::cout << "fmod error: #" << m_result << "-" << FMOD_ErrorString(m_result) << std::endl;
+	}
+	it->second->m_volume = volume;
 }
 
 void FModManager::getChannelGroupMuteStatus(const std::string& name, bool* muteStatus) {
-	//DEBUG_PRINT("FModManager::getChannelGroupMuteStatus(%s)\n", name.c_str());
+	DEBUG_PRINT("FModManager::getChannelGroupMuteStatus(%s)\n", name.c_str());
 	// Finds the Channel group by Name
 	std::map<std::string, ChannelGroup*>::iterator it = m_channel_groups.find(name);
 	// Checks if it was found
@@ -176,7 +184,7 @@ void FModManager::setChannelGroupMuteStatus(const std::string& name, bool muteSt
 }
 
 void FModManager::getChannelGroupPan(const std::string& name, float* pan) {
-	//DEBUG_PRINT("FModManager::getChannelGroupPan(%s)\n", name.c_str());
+	DEBUG_PRINT("FModManager::getChannelGroupPan(%s)\n", name.c_str());
 	// Finds the Channel group by Name
 	std::map<std::string, ChannelGroup*>::iterator it = m_channel_groups.find(name);
 	// Checks if it was found
@@ -189,7 +197,7 @@ void FModManager::getChannelGroupPan(const std::string& name, float* pan) {
 }
 
 void FModManager::setChannelGroupPan(const std::string& name, float pan) {
-	//DEBUG_PRINT("FModManager::setChannelGroupPan(%s, %f)\n", name.c_str(), pan);
+	DEBUG_PRINT("FModManager::setChannelGroupPan(%s, %f)\n", name.c_str(), pan);
 	// Finds the Channel group by Name
 	std::map<std::string, ChannelGroup*>::iterator it = m_channel_groups.find(name);
 	// Checks if it was found
@@ -295,7 +303,6 @@ void FModManager::createDSP(FMOD_DSP_TYPE dsp_type) {
 
 void FModManager::loadDSPs() {
 	DEBUG_PRINT("FModManager::loadDSPs()\n");
-	FMOD::DSP* dsp;
 
 	createDSP(FMOD_DSP_TYPE_CHORUS);
 	createDSP(FMOD_DSP_TYPE_COMPRESSOR);
@@ -500,7 +507,7 @@ void FModManager::playSound(const std::string& sound_name, const std::string& ch
 
 	FMOD::Channel* channel;
 	// Calls FMOD to play the sound
-	m_result = m_system->playSound(itSound->second->m_sound, itChannel->second->m_group, true, &channel);
+	m_result = m_system->playSound(itSound->second->m_sound, itChannel->second->m_group, false, &channel);
 	// Checks the result
 	if (m_result != FMOD_OK) {
 		std::cout << "fmod error: #" << m_result << "-" << FMOD_ErrorString(m_result) << std::endl;

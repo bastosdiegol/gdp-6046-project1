@@ -28,6 +28,8 @@ int main(int argc, char* argv[]) {
 	// Sets initial volume for master channel to 20%
 	// WARNING: DO NOT PASS VOLUME VALUE ABOVE 1.0f
 	fmod_manager.setChannelGroupVolume("ch0 master", 0.5f);
+	fmod_manager.setChannelGroupVolume("ch1 music", 0.5f);
+	fmod_manager.setChannelGroupVolume("ch2 fx", 0.5f);
 
 	// Load all sounds from the XML File
 	fmod_manager.loadSoundsFromFile();
@@ -37,7 +39,7 @@ int main(int argc, char* argv[]) {
 
 	//initialize glfw/glad
 	glfwInit();
-	window = glfwCreateWindow(1090, 730, "Sound Engine - Project #1", nullptr, nullptr);
+	window = glfwCreateWindow(1922, 1030, "Sound Engine - Project #1", nullptr, nullptr);
 
 	if (!window) {
 		return 1;
@@ -74,7 +76,7 @@ int main(int argc, char* argv[]) {
 	ImGui::StyleColorsDark();
 
 	//create sound ui
-	SoundUI sound_ui(&fmod_manager, fmod_manager.getChannelGroup("master"), fmod_manager.getChannelGroup("music"), fmod_manager.getChannelGroup("fx"));
+	SoundUI sound_ui(&fmod_manager);
 
 	//game loop
 	while (!glfwWindowShouldClose(window)) {

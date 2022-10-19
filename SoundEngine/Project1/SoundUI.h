@@ -13,7 +13,7 @@ public:
 	std::map<std::string, Sound*>::iterator itSounds;
 
 	// Constructor
-    SoundUI(FModManager* fmod_manager, ChannelGroup* master, ChannelGroup* music, ChannelGroup* fx)
+    SoundUI(FModManager* fmod_manager)
 			: m_fmod_manager(fmod_manager), is_my_tool_active(true), m_channel(nullptr){}
 
 	// LifeCycle method thats going to be inside the main program loop

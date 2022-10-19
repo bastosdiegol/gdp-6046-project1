@@ -78,7 +78,7 @@ void SoundUI::render() {
                     } else {
                         if (channelName == "ch1 music") {
                             m_fmod_manager->playSound(current_item_music, channelName);
-                        } else {
+                        } else if (channelName == "ch2 fx") {
                             m_fmod_manager->playSound(current_item_fx, channelName);
                         }
                     }
@@ -105,6 +105,62 @@ void SoundUI::render() {
                         m_fmod_manager->setChannelGroupMuteStatus(channelName, m_channel->m_isMuted);
                     }
                 }
+                
+                if (channelName == "ch1 music" && current_item_music != nullptr) {
+                    ImGui::BeginTable("Music Data", 3, ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_BordersOuter);
+                    ImGui::TableNextRow();
+                    ImGui::TableNextColumn();
+                    for (itSounds = m_fmod_manager->m_sounds.begin(); itSounds != m_fmod_manager->m_sounds.end(); itSounds++) {
+                        if (itSounds->first == current_item_music) {
+                            ImGui::Text("Path: %s", itSounds->second->m_path.c_str());
+                            ImGui::TableNextColumn();
+                            ImGui::TableNextColumn();
+                            ImGui::Text("Format: %s", itSounds->second->m_format.c_str());
+                            ImGui::TableNextRow();
+                            ImGui::TableNextColumn();
+                            ImGui::Text("Volume: %d%%", (int)itSounds->second->m_volume*100);
+                            ImGui::TableNextColumn();
+                            ImGui::Text("Balance: %0.1f", itSounds->second->m_balance);
+                            ImGui::TableNextColumn();
+                            ImGui::Text("Frequency: %0.1f", itSounds->second->m_frequency);
+                            ImGui::TableNextColumn();
+                            ImGui::TableNextRow();
+                            ImGui::TableNextColumn();
+                            ImGui::Text("Lenght: %d:%d", (int)itSounds->second->m_lenght / 1000 / 60, (int)itSounds->second->m_lenght / 1000 % 60);
+                            ImGui::TableNextColumn();
+                            ImGui::Text("Position: %d:%d", (int)itSounds->second->m_cur_position / 1000 / 60, (int)itSounds->second->m_cur_position / 1000 % 60);
+                        }
+                    }
+                    ImGui::EndTable();
+                }
+                if (channelName == "ch2 fx" && current_item_fx != nullptr) {
+                    ImGui::BeginTable("Fx Data", 3, ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_BordersOuter);
+                    ImGui::TableNextRow();
+                    ImGui::TableNextColumn();
+                    for (itSounds = m_fmod_manager->m_sounds.begin(); itSounds != m_fmod_manager->m_sounds.end(); itSounds++) {
+                        if (itSounds->first == current_item_fx) {
+                            ImGui::Text("Path: %s", itSounds->second->m_path.c_str());
+                            ImGui::TableNextColumn();
+                            ImGui::TableNextColumn();
+                            ImGui::Text("Format: %s", itSounds->second->m_format.c_str());
+                            ImGui::TableNextRow();
+                            ImGui::TableNextColumn();
+                            ImGui::Text("Volume: %d%%", (int)itSounds->second->m_volume * 100);
+                            ImGui::TableNextColumn();
+                            ImGui::Text("Balance: %0.1f", itSounds->second->m_balance);
+                            ImGui::TableNextColumn();
+                            ImGui::Text("Frequency: %0.1f", itSounds->second->m_frequency);
+                            ImGui::TableNextColumn();
+                            ImGui::TableNextRow();
+                            ImGui::TableNextColumn();
+                            ImGui::Text("Lenght: %d:%d", (int)itSounds->second->m_lenght / 1000 / 60, (int)itSounds->second->m_lenght / 1000 % 60);
+                            ImGui::TableNextColumn();
+                            ImGui::Text("Position: %d:%d", (int)itSounds->second->m_cur_position / 1000 / 60, (int)itSounds->second->m_cur_position / 1000 % 60);
+                        }
+                    }
+                    ImGui::EndTable();
+                }
+
                 // ***********************
                 // CHANNEL DSP TABLE START
                 // ***********************
@@ -112,7 +168,7 @@ void SoundUI::render() {
                     ImGui::TableNextRow();
                     ImGui::TableNextColumn();
                     // Volume Knob
-                    m_fmod_manager->getChannelGroupVolume(channelName, &m_channel->m_volume); // Gets the volume
+                    //m_fmod_manager->getChannelGroupVolume(channelName, &m_channel->m_volume); // Gets the volume
                     m_channel->m_volume *= 100; // Conversion 0% to 100%
                     if (ImGuiKnobs::Knob("Volume", &m_channel->m_volume, 0.0f, 100.0f, 1.0f, "%.1f%", ImGuiKnobVariant_WiperDot)) {
                         m_channel->m_volume /= 100; // Back to the original float value
@@ -120,10 +176,11 @@ void SoundUI::render() {
                             m_channel->m_volume = 1.0f;
                         }
                         m_fmod_manager->setChannelGroupVolume(channelName, m_channel->m_volume); // Sets new volume
+                    } else {
+                        m_channel->m_volume /= 100; // Back to the original float value
                     }
                     ImGui::TableNextColumn();
                     // Pan Knob
-                    m_fmod_manager->getChannelGroupPan(channelName, &m_channel->m_pan); // Gets the pan
                     if (ImGuiKnobs::Knob("Pan", &m_channel->m_pan, -1.0f, 1.0f, 0.01f, "%.1f%", ImGuiKnobVariant_WiperDot)) {
                         m_fmod_manager->setChannelGroupPan(channelName, m_channel->m_pan); // Sets new pan
                     }
