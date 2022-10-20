@@ -8,6 +8,7 @@
 #include "FModManager.h"
 #include "SoundUI.h"
 #include "TicTacToeGame.h"
+#include "PlyFileReader.h"
 
 TicTacToeGame* ttt;
 GLFWwindow* window;
@@ -161,6 +162,19 @@ int main(int argc, char* argv[]) {
 
 	//create sound ui
 	SoundUI sound_ui(fmod_manager);
+
+	// Loading Ply Models From the File
+	PlyFileReader* pfr;
+	std::vector<PlyFileReader*> v_PlyModels;
+	pfr = new PlyFileReader("./assets/models/tictactoeBoard.ply");
+	pfr->loadMeshFromFile();
+	v_PlyModels.push_back(pfr);
+	pfr = new PlyFileReader("./assets/models/tictactoeX.ply");
+	pfr->loadMeshFromFile();
+	v_PlyModels.push_back(pfr);
+	pfr = new PlyFileReader("./assets/models/tictactoeO.ply");
+	pfr->loadMeshFromFile();
+	v_PlyModels.push_back(pfr);
 
 	// Starts new TicTacToe Game
 	ttt->newGame();
