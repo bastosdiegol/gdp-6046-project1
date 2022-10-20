@@ -1,5 +1,6 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <iostream>
 
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
@@ -9,8 +10,75 @@
 #include "TicTacToeGame.h"
 
 GLFWwindow* window;
+TicTacToeGame ttt;
+bool lastMoveResult;
 
 void key_callback(GLFWwindow* window, const int key, int scancode, const int action, const int mods) {
+	switch (key) {
+	case GLFW_KEY_Q :
+		lastMoveResult = ttt.makeAMove('q');
+		if (!lastMoveResult)
+			std::cout << "Your move attempt was invalid. There's already a piece on the position Q. Try again!";
+		else
+			ttt.nextTurn();
+		break;
+	case GLFW_KEY_W:
+		lastMoveResult = ttt.makeAMove('w');
+		if (!lastMoveResult)
+			std::cout << "Your move attempt was invalid. There's already a piece on the position W. Try again!";
+		else
+			ttt.nextTurn();
+		break;
+	case GLFW_KEY_E:
+		lastMoveResult = ttt.makeAMove('e');
+		if (!lastMoveResult)
+			std::cout << "Your move attempt was invalid. There's already a piece on the position W. Try again!";
+		else
+			ttt.nextTurn();
+		break;
+	case GLFW_KEY_A:
+		lastMoveResult = ttt.makeAMove('a');
+		if (!lastMoveResult)
+			std::cout << "Your move attempt was invalid. There's already a piece on the position W. Try again!";
+		else
+			ttt.nextTurn();
+		break;
+	case GLFW_KEY_S:
+		lastMoveResult = ttt.makeAMove('s');
+		if (!lastMoveResult)
+			std::cout << "Your move attempt was invalid. There's already a piece on the position W. Try again!";
+		else
+			ttt.nextTurn();
+		break;
+	case GLFW_KEY_D:
+		lastMoveResult = ttt.makeAMove('d');
+		if (!lastMoveResult)
+			std::cout << "Your move attempt was invalid. There's already a piece on the position W. Try again!";
+		else
+			ttt.nextTurn();
+		break;
+	case GLFW_KEY_Z:
+		lastMoveResult = ttt.makeAMove('z');
+		if (!lastMoveResult)
+			std::cout << "Your move attempt was invalid. There's already a piece on the position W. Try again!";
+		else
+			ttt.nextTurn();
+		break;
+	case GLFW_KEY_X:
+		lastMoveResult = ttt.makeAMove('z');
+		if (!lastMoveResult)
+			std::cout << "Your move attempt was invalid. There's already a piece on the position W. Try again!";
+		else
+			ttt.nextTurn();
+		break;
+	case GLFW_KEY_C:
+		lastMoveResult = ttt.makeAMove('c');
+		if (!lastMoveResult)
+			std::cout << "Your move attempt was invalid. There's already a piece on the position W. Try again!";
+		else
+			ttt.nextTurn();
+		break;
+	}
 }
 
 int main(int argc, char* argv[]) {
@@ -87,7 +155,6 @@ int main(int argc, char* argv[]) {
 	SoundUI sound_ui(&fmod_manager);
 
 	//create tictactoe
-	TicTacToeGame ttt;
 	ttt.printBoard();
 
 	//game loop

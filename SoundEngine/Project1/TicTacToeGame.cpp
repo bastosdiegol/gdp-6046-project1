@@ -13,6 +13,8 @@ void TicTacToeGame::newGame() {
 		}
 	}
 	m_currentTurnPlayer = 'X';
+	m_currentRound = 1;
+	m_isGameOver = false;
 }
 
 void TicTacToeGame::printBoard() {
@@ -27,59 +29,64 @@ void TicTacToeGame::printBoard() {
 	std::cout << "     |     |     " << std::endl;
 }
 
-bool TicTacToeGame::makeAMove(char player, char position) {
+bool TicTacToeGame::makeAMove(char position) {
 	// We grab the position and insert in a case
 	// If the position equivalent to the position input is empty fill it with the player
 	// Else we return false to inform its not a valid move
 	switch (position) {
 	case 'q': 
 		if (m_board[0][0] == ' ')
-			m_board[0][0] = player;
+			m_board[0][0] = m_currentTurnPlayer;
 		else
 			return false;
 	case 'w' :
 		if (m_board[0][1] == ' ')
-			m_board[0][1] = player;
+			m_board[0][1] = m_currentTurnPlayer;
 		else
 			return false;
 	case 'e' :
 		if (m_board[0][2] == ' ')
-			m_board[0][2] = player;
+			m_board[0][2] = m_currentTurnPlayer;
 		else
 			return false;
 	case 'a' :
 		if (m_board[1][0] == ' ')
-			m_board[1][0] = player;
+			m_board[1][0] = m_currentTurnPlayer;
 		else
 			return false;
 	case 's' :
 		if (m_board[1][1] == ' ')
-			m_board[1][1] = player;
+			m_board[1][1] = m_currentTurnPlayer;
 		else
 			return false;
 	case 'd' :
 		if (m_board[1][2] == ' ')
-			m_board[1][2] = player;
+			m_board[1][2] = m_currentTurnPlayer;
 		else
 			return false;
 	case 'z' :
 		if (m_board[2][0] == ' ')
-			m_board[2][0] = player;
+			m_board[2][0] = m_currentTurnPlayer;
 		else
 			return false;
 	case 'x' :
 		if (m_board[2][1] == ' ')
-			m_board[2][1] = player;
+			m_board[2][1] = m_currentTurnPlayer;
 		else
 			return false;
 	case 'c':
 		if (m_board[2][2] == ' ')
-			m_board[2][2] = player;
+			m_board[2][2] = m_currentTurnPlayer;
 		else
 			return false;
 	}
 
 	// Switch the current player
 	m_currentTurnPlayer == 'X' ? 'O' : 'X';
+	m_currentRound++;
 	return true;
+}
+
+void TicTacToeGame::nextTurn() {
+
 }
