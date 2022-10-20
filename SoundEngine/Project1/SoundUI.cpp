@@ -105,7 +105,7 @@ void SoundUI::render() {
                         m_fmod_manager->setChannelGroupMuteStatus(channelName, m_channel->m_isMuted);
                     }
                 }
-                
+                // Table with information about the selected sound CH1
                 if (channelName == "ch1 music" && current_item_music != nullptr) {
                     ImGui::BeginTable("Music Data", 3, ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_BordersOuter);
                     ImGui::TableNextRow();
@@ -133,6 +133,7 @@ void SoundUI::render() {
                     }
                     ImGui::EndTable();
                 }
+                // Table with information about the selected sound CH2
                 if (channelName == "ch2 fx" && current_item_fx != nullptr) {
                     ImGui::BeginTable("Fx Data", 3, ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_BordersOuter);
                     ImGui::TableNextRow();

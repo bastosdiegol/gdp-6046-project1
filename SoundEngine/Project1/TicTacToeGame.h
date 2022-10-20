@@ -7,7 +7,7 @@ public:
 	// Game Board
 	char m_board[3][3];
 	char m_currentTurnPlayer;
-	short m_currentRound; // We gonna use this variable to play a different sound each round
+	short m_currentRound; // We gonna use this variable to check last round drawn condition
 	bool m_isGameOver;
 	bool m_isItADrawn;
 	FModManager* m_fModManager;

@@ -106,7 +106,7 @@ int main(int argc, char* argv[]) {
 	// WARNING: DO NOT PASS VOLUME VALUE ABOVE 1.0f
 	fmod_manager->setChannelGroupVolume("ch0 master", 1.0f);
 	fmod_manager->setChannelGroupVolume("ch1 music", 0.2f);
-	fmod_manager->setChannelGroupVolume("ch2 fx", 1.0f);
+	fmod_manager->setChannelGroupVolume("ch2 fx", 0.5f);
 
 	// Load all sounds from the XML File
 	fmod_manager->loadSoundsFromFile();

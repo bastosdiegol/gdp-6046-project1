@@ -120,11 +120,11 @@ bool TicTacToeGame::makeAMove(char position) {
 			return false;
 		break;
 	}
-	//std::string moveFx = m_currentRound;
-	m_fModManager->playSound("Move Piece "+std::to_string(m_currentRound),"ch2 fx");
+	// We play a random Move Piece sound (1 to 12)
+	m_fModManager->playSound("Move Piece "+std::to_string(randInt(1, 12)),"ch2 fx");
 	// Switch the current player for next turn
 	m_currentTurnPlayer == 'X' ? m_currentTurnPlayer = 'O' : m_currentTurnPlayer = 'X';
-	// Increments turn counter for FX
+	// Increments turn counter for drawn condition
 	m_currentRound++;
 	return true;
 }
@@ -179,8 +179,18 @@ bool TicTacToeGame::isGameOver() {
 		|| (m_board[0][2] & m_board[1][1] & m_board[2][0]) == 'O')
 		&&  m_board[0][0] != ' ')
 		m_isGameOver = true;
-	// Checks for game ending condition - DRAWN
-	// First looks for empty slot
+
+	// Found winning condition?
+	if (m_isGameOver)
+		return m_isGameOver;
+	// No? Lets check for drawn now
+	else if (m_isGameOver == false && m_currentRound == 10) {
+		m_isItADrawn = true;
+		m_isGameOver = true;
+	}
+
+	// Since I have the round number no need to loop up for empty slots
+	/* First looks for empty slot
 	bool foundEmptySpot = false;
 	for (int iLine = 0; iLine < 3; iLine++) {
 		for (int iColumn = 0; iColumn < 3; iColumn++) {
@@ -188,14 +198,12 @@ bool TicTacToeGame::isGameOver() {
 				foundEmptySpot = true;
 		}
 	}
-	// Found winning condition?
-	if (m_isGameOver)
-		return m_isGameOver;
 	// If empty slot wasn't found - it's a drawn
 	if (!foundEmptySpot) {
 		m_isGameOver = true;
 		m_isItADrawn = true;
-	}
+	}*/
+
 	return m_isGameOver;
 }
 
