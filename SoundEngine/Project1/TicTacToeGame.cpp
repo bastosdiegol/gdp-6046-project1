@@ -11,6 +11,7 @@ TicTacToeGame::TicTacToeGame(FModManager* fModManager) {
 }
 
 void TicTacToeGame::newGame() {
+	m_fModManager->playSound("New Game","ch2 fx");
 	// Sets all variables to ' '
 	for (int iLine = 0; iLine < 3; iLine++) {
 		for (int iColumn = 0; iColumn < 3; iColumn++) {
@@ -32,6 +33,19 @@ void TicTacToeGame::newGame() {
 	std::cout << "The Game Board:" << std::endl;
 	printBoard();
 	std::cout << "TicTacToe first player is always the X! Now, make your move!" << std::endl;
+	m_fModManager->stopSound("ch1 music");
+	int randomInt = randInt(1,3);
+	switch (randomInt) {
+	case 1:
+		m_fModManager->playSound("Moonlight Sonata", "ch1 music");
+		break;
+	case 2:
+		m_fModManager->playSound("Dance of the Sugar Plum Fairy", "ch1 music");
+		break;
+	case 3:
+		m_fModManager->playSound("Winter Movement 1", "ch1 music");
+		break;
+	}
 }
 
 void TicTacToeGame::printBoard() {
@@ -106,7 +120,8 @@ bool TicTacToeGame::makeAMove(char position) {
 			return false;
 		break;
 	}
-
+	//std::string moveFx = m_currentRound;
+	m_fModManager->playSound("Move Piece "+std::to_string(m_currentRound),"ch2 fx");
 	// Switch the current player for next turn
 	m_currentTurnPlayer == 'X' ? m_currentTurnPlayer = 'O' : m_currentTurnPlayer = 'X';
 	// Increments turn counter for FX
@@ -122,6 +137,7 @@ void TicTacToeGame::nextTurn() {
 			// Print the Winning/Last Board
 			printBoard();
 			std::cout << "The game is over! It's a drawn! Press (N) to start a new game." << std::endl;
+			m_fModManager->playSound("Drawn Game", "ch2 fx");
 			return;
 		}
 		// Print the Winning/Last Board
@@ -130,6 +146,7 @@ void TicTacToeGame::nextTurn() {
 		m_currentTurnPlayer == 'X' ? m_currentTurnPlayer = 'O' : m_currentTurnPlayer = 'X';
 		// Winning Game Message
 		std::cout << "Player " << m_currentTurnPlayer << " won! Congratulations!" << std::endl;
+		m_fModManager->playSound("Victory Melody","ch2 fx");
 		std::cout << "Press (N) to start a new game." << std::endl;
 		return;
 	}
@@ -171,10 +188,21 @@ bool TicTacToeGame::isGameOver() {
 				foundEmptySpot = true;
 		}
 	}
+	// Found winning condition?
+	if (m_isGameOver)
+		return m_isGameOver;
 	// If empty slot wasn't found - it's a drawn
 	if (!foundEmptySpot) {
 		m_isGameOver = true;
 		m_isItADrawn = true;
 	}
 	return m_isGameOver;
+}
+
+int randInt(int min, int max) {
+	if (max == min)
+		return 0;
+
+	int diff = (max - min) + 1;
+	return min + (rand() % diff);
 }

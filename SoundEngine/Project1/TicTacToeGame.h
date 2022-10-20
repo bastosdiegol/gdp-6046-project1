@@ -30,3 +30,6 @@ public:
 
 };
 
+// Utility function for a random range of two ints
+int randInt(int min, int max);
+

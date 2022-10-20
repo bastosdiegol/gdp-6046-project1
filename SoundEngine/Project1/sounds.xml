@@ -12,18 +12,20 @@
 	<sound title="Neigh" path="./sounds/fx/Breath.wav" format="wav" type="FX" frequency="1" volume="1" balance="0" lenght="1000" position="0" />
 	<sound title="Hit" path="./sounds/fx/Hit.wav" format="wav" type="FX" frequency="1" volume="1" balance="0" lenght="1000" position="0" />
 	<sound title="Wing Flap" path="./sounds/fx/WingFlap.wav" format="wav" type="FX" frequency="1" volume="1" balance="0" lenght="1000" position="0" />
-	<sound title="Move Piece 01" path="./sounds/fx/move-piece01.wav" format="wav" type="FX" frequency="1" volume="1" balance="0" lenght="1000" position="0" />
-	<sound title="Move Piece 02" path="./sounds/fx/move-piece02.wav" format="wav" type="FX" frequency="1" volume="1" balance="0" lenght="1000" position="0" />
-	<sound title="Move Piece 03" path="./sounds/fx/move-piece03.wav" format="wav" type="FX" frequency="1" volume="1" balance="0" lenght="1000" position="0" />
-	<sound title="Move Piece 04" path="./sounds/fx/move-piece04.wav" format="wav" type="FX" frequency="1" volume="1" balance="0" lenght="1000" position="0" />
-	<sound title="Move Piece 05" path="./sounds/fx/move-piece05.wav" format="wav" type="FX" frequency="1" volume="1" balance="0" lenght="1000" position="0" />
-	<sound title="Move Piece 06" path="./sounds/fx/move-piece06.wav" format="wav" type="FX" frequency="1" volume="1" balance="0" lenght="1000" position="0" />
-	<sound title="Move Piece 07" path="./sounds/fx/move-piece07.wav" format="wav" type="FX" frequency="1" volume="1" balance="0" lenght="1000" position="0" />
-	<sound title="Move Piece 08" path="./sounds/fx/move-piece08.wav" format="wav" type="FX" frequency="1" volume="1" balance="0" lenght="1000" position="0" />
-	<sound title="Move Piece 09" path="./sounds/fx/move-piece09.wav" format="wav" type="FX" frequency="1" volume="1" balance="0" lenght="1000" position="0" />
+	<sound title="Move Piece 1" path="./sounds/fx/move-piece01.wav" format="wav" type="FX" frequency="1" volume="1" balance="0" lenght="1000" position="0" />
+	<sound title="Move Piece 2" path="./sounds/fx/move-piece02.wav" format="wav" type="FX" frequency="1" volume="1" balance="0" lenght="1000" position="0" />
+	<sound title="Move Piece 3" path="./sounds/fx/move-piece03.wav" format="wav" type="FX" frequency="1" volume="1" balance="0" lenght="1000" position="0" />
+	<sound title="Move Piece 4" path="./sounds/fx/move-piece04.wav" format="wav" type="FX" frequency="1" volume="1" balance="0" lenght="1000" position="0" />
+	<sound title="Move Piece 5" path="./sounds/fx/move-piece05.wav" format="wav" type="FX" frequency="1" volume="1" balance="0" lenght="1000" position="0" />
+	<sound title="Move Piece 6" path="./sounds/fx/move-piece06.wav" format="wav" type="FX" frequency="1" volume="1" balance="0" lenght="1000" position="0" />
+	<sound title="Move Piece 7" path="./sounds/fx/move-piece07.wav" format="wav" type="FX" frequency="1" volume="1" balance="0" lenght="1000" position="0" />
+	<sound title="Move Piece 8" path="./sounds/fx/move-piece08.wav" format="wav" type="FX" frequency="1" volume="1" balance="0" lenght="1000" position="0" />
+	<sound title="Move Piece 9" path="./sounds/fx/move-piece09.wav" format="wav" type="FX" frequency="1" volume="1" balance="0" lenght="1000" position="0" />
 	<sound title="Move Piece 10" path="./sounds/fx/move-piece10.wav" format="wav" type="FX" frequency="1" volume="1" balance="0" lenght="1000" position="0" />
 	<sound title="Move Piece 11" path="./sounds/fx/move-piece11.wav" format="wav" type="FX" frequency="1" volume="1" balance="0" lenght="1000" position="0" />
 	<sound title="Move Piece 12" path="./sounds/fx/move-piece12.wav" format="wav" type="FX" frequency="1" volume="1" balance="0" lenght="1000" position="0" />
 	<sound title="Game Win" path="./sounds/fx/game_win_success.wav" format="wav" type="FX" frequency="1" volume="1" balance="0" lenght="3000" position="0" />
 	<sound title="New Game" path="./sounds/fx/board_newgame.wav" format="wav" type="FX" frequency="1" volume="1" balance="0" lenght="1000" position="0" />
+	<sound title="Victory Melody" path="./sounds/fx/victory_melody.wav" format="wav" type="FX" frequency="1" volume="1" balance="0" lenght="3000" position="0" />
+	<sound title="Drawn Game" path="./sounds/fx/drawn_beep.wav" format="wav" type="FX" frequency="1" volume="1" balance="0" lenght="1000" position="0" />
 </soundlibrary>
