@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include "FModManager.h"
 
 class TicTacToeGame {
 public:
@@ -8,9 +9,11 @@ public:
 	char m_currentTurnPlayer;
 	short m_currentRound; // We gonna use this variable to play a different sound each round
 	bool m_isGameOver;
+	bool m_isItADrawn;
+	FModManager* m_fModManager;
 
 	// Default Constructor
-	TicTacToeGame();
+	TicTacToeGame(FModManager* fModManager);
 	// Starts a new game - reset the board
 	void newGame();
 	// Console Output for the board and its pieces
@@ -22,6 +25,8 @@ public:
 	bool makeAMove(char position);
 	// Method that initiates another turn IF possible
 	void nextTurn();
+	// Method that checks if the game is over
+	bool isGameOver();
 
 };
 
