@@ -28,6 +28,7 @@ PlyFileReader::PlyFileReader(std::string file_location) {
 	m_numberOfTriangles = -1;
 	pTheModelArray = nullptr;
 	pTheModelTriangleArray = nullptr;
+	loadMeshFromFile();
 }
 
 // Destructor
@@ -91,8 +92,8 @@ void PlyFileReader::loadMeshFromFile() {
 		theFile >> pTheModelArray[i].blue;
 		theFile >> pTheModelArray[i].alpha;
 								  
-		theFile >> pTheModelArray[i].texture_u;
-		theFile >> pTheModelArray[i].texture_v;
+		//theFile >> pTheModelArray[i].texture_u;
+		//theFile >> pTheModelArray[i].texture_v;
 
 		if (i % 10000 == 0) {
 			DEBUG_PRINT(".");

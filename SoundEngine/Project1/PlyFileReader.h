@@ -27,15 +27,13 @@ public:
     unsigned int m_numberOfVertices;
     unsigned int m_numberOfTriangles;
 
-    // Default Constructor
-    /*PlyFileReader();*/
     // Constructor
     PlyFileReader(std::string file_location);
     // Destructor
     ~PlyFileReader();
 
+private:
     // Method that reads a Mesh File and store its Header, Vertices and Faces on memory
     void loadMeshFromFile();
-
 };
 
