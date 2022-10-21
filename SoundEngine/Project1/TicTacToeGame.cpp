@@ -126,6 +126,7 @@ bool TicTacToeGame::makeAMove(char position) {
 	m_currentTurnPlayer == 'X' ? m_currentTurnPlayer = 'O' : m_currentTurnPlayer = 'X';
 	// Increments turn counter for drawn condition
 	m_currentRound++;
+	system("cls"); // Clear Screen
 	return true;
 }
 
@@ -135,11 +136,13 @@ void TicTacToeGame::nextTurn() {
 		// Checks if it was a drawn
 		if (m_isItADrawn) {
 			// Print the Winning/Last Board
+			std::cout << "The game is over!" << std::endl;
 			printBoard();
 			std::cout << "The game is over! It's a drawn! Press (N) to start a new game." << std::endl;
 			m_fModManager->playSound("Drawn Game", "ch2 fx");
 			return;
 		}
+		std::cout << "The game is over!" << std::endl;
 		// Print the Winning/Last Board
 		printBoard();
 		// Grabs last turn player

@@ -1,21 +1,21 @@
 #pragma once
 #include <string>
 
+// We read the Ply File and Store Vertices on this struct
+struct sVertex_XYZ_N_RGBA_UV {
+    float x, y, z;
+    float nx, ny, nz;
+    float red, green, blue, alpha;
+    float texture_u, texture_v;
+};
+// We also store each face on this struct
+struct sTrianglePLY {
+    // The 3 vertex index values from the ply file
+    unsigned int vertexIndices[3];
+};
+
 class PlyFileReader {
 public:
-    // We read the Ply File and Store Vertices on this struct
-    struct sVertex_XYZ_N_RGBA_UV {
-        float x, y, z;
-        float nx, ny, nz;
-        float red, green, blue, alpha;
-        float texture_u, texture_v;
-    };
-    // We also store each face on this struct
-    struct sTrianglePLY {
-        // The 3 vertex index values from the ply file
-        unsigned int vertexIndices[3];
-    };
-
     // Path to the Ply File
     std::string m_fileLocation;
 

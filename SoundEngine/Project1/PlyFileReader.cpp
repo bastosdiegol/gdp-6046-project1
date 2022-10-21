@@ -4,7 +4,9 @@
 #include <sstream>
 #include <iostream>
 
+#ifdef _DEBUG
 #define DEBUG_LOG_ENABLED
+#endif
 #ifdef DEBUG_LOG_ENABLED
 #define DEBUG_PRINT(x, ...) printf(x, __VA_ARGS__)
 #else
@@ -99,7 +101,7 @@ void PlyFileReader::loadMeshFromFile() {
 			DEBUG_PRINT(".");
 		}
 	}
-	std::cout << "done!" << std::endl;
+	DEBUG_PRINT("done!\n");
 
 	// IF we need to transform models we could do something here...
 	/*for (unsigned int i = 0; i < m_numberOfVertices; i++) {
@@ -118,7 +120,7 @@ void PlyFileReader::loadMeshFromFile() {
 		theFile >> pTheModelTriangleArray[i].vertexIndices[1];
 		theFile >> pTheModelTriangleArray[i].vertexIndices[2];
 	}
-	std::cout << "done!" << std::endl;
+	DEBUG_PRINT("done!\n");
 
 	theFile.close();
 }

@@ -93,6 +93,9 @@
     <ClCompile Include="PlyFileReader.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
+    <ClCompile Include="MeshObject.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
@@ -144,6 +147,9 @@
       <Filter>Header Files\tictactoe</Filter>
     </ClInclude>
     <ClInclude Include="PlyFileReader.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshObject.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
   </ItemGroup>
