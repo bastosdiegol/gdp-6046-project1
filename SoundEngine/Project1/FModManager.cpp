@@ -209,7 +209,19 @@ void FModManager::setChannelGroupPan(const std::string& name, float pan) {
 	}
 	// Sets the new value for the pan
 	it->second->m_group->setPan(pan);
-	it->second->m_pan = pan;
+}
+
+void FModManager::setChannelGroupPitch(const std::string& name, float pitch) {
+	DEBUG_PRINT("FModManager::setChannelGroupPitch(%s, %f)\n", name.c_str(), pitch);
+	// Finds the Channel group by Name
+	std::map<std::string, ChannelGroup*>::iterator it = m_channel_groups.find(name);
+	// Checks if it was found
+	if (it == m_channel_groups.end()) {
+		std::cout << "FModManager error: Couldn't find the ChannelGroup named #" << name << std::endl;
+		return;
+	}
+	// Sets the new value for the pitch
+	it->second->m_group->setPitch(pitch);
 }
 
 void FModManager::createDSP(FMOD_DSP_TYPE dsp_type) {
@@ -299,6 +311,11 @@ void FModManager::createDSP(FMOD_DSP_TYPE dsp_type) {
 //		dsp->setParameterFloat(FMOD_DSP_TREMOLO_PHASE, 0.0f);		// Range: [0, 1] Default: 0			Units: Linear
 //		dsp->setParameterFloat(FMOD_DSP_TREMOLO_SPREAD, 0.0f);		// Range: [-1, 1] Default: 0		Units: Linear
 		break;
+	case FMOD_DSP_TYPE_PITCHSHIFT:
+		dsp->setParameterFloat(FMOD_DSP_PITCHSHIFT_PITCH, 1.0f);	// Range: [0.5, 2] Default: 1		Type: float
+//		dsp->setParameterFloat(FMOD_DSP_PITCHSHIFT_FFTSIZE, 1024.0f); // FFT window size - 256, 512, 1024, 2048, 4096
+//		dsp->setParameterFloat(FMOD_DSP_PITCHSHIFT_MAXCHANNELS, 0.0f);// Range: [0, 16]					Type: float
+		break;
 	}
 	m_dsp.try_emplace(dsp_type, dsp);
 }
@@ -317,6 +334,7 @@ void FModManager::loadDSPs() {
 	createDSP(FMOD_DSP_TYPE_OSCILLATOR);
 	createDSP(FMOD_DSP_TYPE_SFXREVERB);
 	createDSP(FMOD_DSP_TYPE_TREMOLO);
+	createDSP(FMOD_DSP_TYPE_PITCHSHIFT);
 }
 
 void FModManager::setFloatParameterDSP(FMOD_DSP_TYPE dsp_type, int fmdDspParameter, float value) {
@@ -475,13 +493,13 @@ void FModManager::loadSoundsFromFile() {
 		newSound->m_frequency	 = sound.attribute("frequency").as_float();
 		newSound->m_volume		 = sound.attribute("volume").as_float();
 		newSound->m_balance		 = sound.attribute("balance").as_float();
-		newSound->m_lenght		 = sound.attribute("lenght").as_float();
-		newSound->m_cur_position = sound.attribute("position").as_float();
+		newSound->m_lenght		 = sound.attribute("lenght").as_uint();
+		newSound->m_cur_position = sound.attribute("position").as_uint();
 		// Calls FMOD createSound according with the type of the sound
-		if (newSound->m_type == "MUSIC") {
+		if (newSound->m_type == "music") {
 			// Calls the FMOD function to create the new sound with mode LOOP - BGM
 			m_result = m_system->createSound(newSound->m_path.c_str(), FMOD_LOOP_NORMAL, nullptr, &newSound->m_sound);
-		} else if (newSound->m_type == "FX") {
+		} else if (newSound->m_type == "fx") {
 			// Calls the FMOD function to create the new sound with mode DEFAULT - FX
 			m_result = m_system->createSound(newSound->m_path.c_str(), FMOD_DEFAULT, nullptr, &newSound->m_sound);
 		}
@@ -508,20 +526,20 @@ void FModManager::playSound(const std::string& sound_name, const std::string& ch
 		return;
 	}
 
-	FMOD::Channel* channel;
+	//FMOD::Channel* channel;
 	// Calls FMOD to play the sound
 	// TODO : DELETE
 	float tempVolume; //  <<<<<< REMEMBER TO DELETE THIS
 	getChannelGroupVolume(channel_group_name, &tempVolume);
 	DEBUG_PRINT("playSound() about to be called. Channel Volume is: %f\n", tempVolume);
-	m_result = m_system->playSound(itSound->second->m_sound, itChannel->second->m_group, true, &channel);
+	m_result = m_system->playSound(itSound->second->m_sound, itChannel->second->m_group, true, &itSound->second->m_channel);
 	// Checks the result
 	if (m_result != FMOD_OK) {
 		std::cout << "fmod error: #" << m_result << "-" << FMOD_ErrorString(m_result) << std::endl;
 		return;
 	}
 
-	m_result = (*channel).setPaused(false);
+	m_result = itSound->second->m_channel->setPaused(false);
 	if (m_result != FMOD_OK) {
 		std::cout << "fmod error: #" << m_result << "-" << FMOD_ErrorString(m_result) << std::endl;
 		return;
@@ -539,6 +557,13 @@ void FModManager::stopSound(const std::string& channel_group_name) {
 		return;
 	}
 
+	std::map<std::string, Sound*>::iterator itSound;
+	for (itSound = m_sounds.begin(); itSound != m_sounds.end(); itSound++) {
+		if (channel_group_name.find(itSound->second->m_type) != -1) {
+			itSound->second->m_channel = nullptr;
+		}
+	}
+
 	itChannel->second->m_group->stop();
 }
 
@@ -553,4 +578,62 @@ void FModManager::setPause(const std::string& channel_group_name, const bool pau
 	}
 
 	itChannel->second->m_group->setPaused(pause);
+}
+
+void FModManager::getSoundCurrentPosition(const std::string& sound_name) {
+	//DEBUG_PRINT("FModManager::getSoundCurrentPosition(%s)\n", sound_name.c_str());
+	// Tries to find the sound
+	std::map<std::string, Sound*>::iterator itSound = m_sounds.find(sound_name);
+
+	if (itSound == m_sounds.end()) {
+		std::cout << "FModManager error: Couldn't find the Sound named #" << sound_name  << std::endl;
+		return;
+	}
+
+	if (itSound->second->m_channel != nullptr) {
+		m_result = itSound->second->m_channel->getPosition(&itSound->second->m_cur_position, FMOD_TIMEUNIT_MS);
+		if (m_result != FMOD_OK) {
+			std::cout << "fmod error: #" << m_result << "-" << FMOD_ErrorString(m_result) << std::endl;
+			return;
+		}
+	}
+}
+
+
+void FModManager::setSoundCurrentFrequency(const std::string& sound_name, float frequency) {
+	DEBUG_PRINT("FModManager::setSoundCurrentFrequency(%s)\n", sound_name.c_str());
+	// Tries to find the sound
+	std::map<std::string, Sound*>::iterator itSound = m_sounds.find(sound_name);
+
+	if (itSound == m_sounds.end()) {
+		std::cout << "FModManager error: Couldn't find the Sound named #" << sound_name << std::endl;
+		return;
+	}
+
+	if (itSound->second->m_channel != nullptr) {
+		m_result = itSound->second->m_channel->setFrequency(frequency);
+		if (m_result != FMOD_OK) {
+			std::cout << "fmod error: #" << m_result << "-" << FMOD_ErrorString(m_result) << std::endl;
+			return;
+		}
+	}
+}
+
+void FModManager::getSoundCurrentFrequency(const std::string& sound_name) {
+	DEBUG_PRINT("FModManager::getSoundCurrentFrequency(%s)\n", sound_name.c_str());
+	// Tries to find the sound
+	std::map<std::string, Sound*>::iterator itSound = m_sounds.find(sound_name);
+
+	if (itSound == m_sounds.end()) {
+		std::cout << "FModManager error: Couldn't find the Sound named #" << sound_name << std::endl;
+		return;
+	}
+
+	if (itSound->second->m_channel != nullptr) {
+		m_result = itSound->second->m_channel->getFrequency(&itSound->second->m_frequency);
+		if (m_result != FMOD_OK) {
+			std::cout << "fmod error: #" << m_result << "-" << FMOD_ErrorString(m_result) << std::endl;
+			return;
+		}
+	}
 }

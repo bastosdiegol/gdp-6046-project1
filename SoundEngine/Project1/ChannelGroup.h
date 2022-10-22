@@ -1,4 +1,5 @@
 #pragma once
+#include <FMOD/fmod.h>
 #include <FMOD/fmod.hpp>
 #include <FMOD/fmod_errors.h>
 #include <string>
@@ -30,6 +31,7 @@ private:
     int   m_oscillatorType;
     float m_reverbDecay;
     float m_tremoloFrequency;
+    float m_pitchshiftPitch;
     // Variables that defines if a DSP is being applying on this channel
     bool m_dspChorus;
     bool m_dspCompressor;
@@ -42,6 +44,7 @@ private:
     bool m_dspOscillator;
     bool m_dspSFXReverb;
     bool m_dspTremolo;
+    bool m_dspPitchshift;
 
 	friend class FModManager; // Allows FModManager to access the private variables above
     friend class SoundUI;

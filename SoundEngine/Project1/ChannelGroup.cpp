@@ -25,7 +25,8 @@ ChannelGroup::ChannelGroup(FMOD::ChannelGroup* channel_group) {
 	m_normalizeFadetime = 5000.0f;
 	m_oscillatorType = 0;
 	m_reverbDecay = 1500.0f;
-	m_tremoloFrequency= 5.0f;
+	m_tremoloFrequency = 5.0f;
+	m_pitchshiftPitch = 1.0f;
 	m_isMuted = false;
 	m_isPaused = false;
 	m_dspChorus = false;
@@ -39,6 +40,7 @@ ChannelGroup::ChannelGroup(FMOD::ChannelGroup* channel_group) {
 	m_dspOscillator = false;
 	m_dspSFXReverb = false;
 	m_dspTremolo = false;
+	m_dspPitchshift = false;
 }
 
 ChannelGroup::~ChannelGroup() {

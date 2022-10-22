@@ -1,4 +1,5 @@
 #pragma once
+#include <FMOD/fmod.h>
 #include <FMOD/fmod.hpp>
 #include <FMOD/fmod_errors.h>
 #include <map>
@@ -47,6 +48,9 @@ public:
 	// Sets the pan of a especified channel
 	// Receives channel name and desired pan, Returns Nothing
 	void setChannelGroupPan(const std::string& name, float pan);
+	// Sets the pitch of a especified channel
+	// Receives channel name and desired pan, Returns Nothing
+	void setChannelGroupPitch(const std::string& name, float pitch);
 
 	// Create a DSP
 	// Accepts FMOD_DSP_TYPE. Returns Nothing.
@@ -88,6 +92,12 @@ public:
 	void stopSound(const std::string& channel_group_name);
 	// Sets bool pause on a specified channel group
 	void setPause(const std::string& channel_group_name, const bool pause);
+	// Gets the current playback position of a sound
+	void getSoundCurrentPosition(const std::string& sound_name);
+	// Sets the current frequency of a sound
+	void setSoundCurrentFrequency(const std::string& sound_name, float frequency);
+	// Gets the current frequency of a sound
+	void getSoundCurrentFrequency(const std::string& sound_name);
 
 private:
 	const int			MAX_CHANNELS = 255;

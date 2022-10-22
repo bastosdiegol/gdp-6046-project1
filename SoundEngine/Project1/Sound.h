@@ -6,6 +6,7 @@
 class Sound {
 public:
 	FMOD::Sound*	m_sound;
+	FMOD::Channel*	m_channel;
 	std::string		m_name;
 	std::string		m_path;
 	std::string		m_format;
@@ -13,8 +14,8 @@ public:
 	float			m_frequency;
 	float			m_volume;
 	float			m_balance;
-	float			m_lenght;
-	float			m_cur_position;
+	unsigned int	m_lenght;
+	unsigned int	m_cur_position;
 
 	// Default Constructor
 	Sound();

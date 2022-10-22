@@ -23,9 +23,9 @@ void SoundUI::render() {
     std::vector<const char*> fx;
 
     for (itSounds = m_fmod_manager->m_sounds.begin(); itSounds != m_fmod_manager->m_sounds.end(); itSounds++) {
-        if (itSounds->second->m_type == "MUSIC")
+        if (itSounds->second->m_type == "music")
             musics.push_back(itSounds->first.c_str());
-        if (itSounds->second->m_type == "FX")
+        if (itSounds->second->m_type == "fx")
             fx.push_back(itSounds->first.c_str());
     }
 
@@ -107,7 +107,7 @@ void SoundUI::render() {
                 }
                 // Table with information about the selected sound CH1
                 if (channelName == "ch1 music" && current_item_music != nullptr) {
-                    ImGui::BeginTable("Music Data", 3, ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_BordersOuter);
+                    ImGui::BeginTable("Music Data", 4, ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_BordersOuter);
                     ImGui::TableNextRow();
                     ImGui::TableNextColumn();
                     for (itSounds = m_fmod_manager->m_sounds.begin(); itSounds != m_fmod_manager->m_sounds.end(); itSounds++) {
@@ -116,26 +116,38 @@ void SoundUI::render() {
                             ImGui::TableNextColumn();
                             ImGui::TableNextColumn();
                             ImGui::Text("Format: %s", itSounds->second->m_format.c_str());
+                            ImGui::TableNextColumn();
+                            ImGui::Text("                       ");
                             ImGui::TableNextRow();
                             ImGui::TableNextColumn();
                             ImGui::Text("Volume: %d%%", (int)itSounds->second->m_volume*100);
                             ImGui::TableNextColumn();
+                            ImGui::TableNextColumn();
                             ImGui::Text("Balance: %0.1f", itSounds->second->m_balance);
                             ImGui::TableNextColumn();
-                            ImGui::Text("Frequency: %0.1f", itSounds->second->m_frequency);
-                            ImGui::TableNextColumn();
+                            if (ImGui::SliderFloat("##Balance", &itSounds->second->m_balance, -1.0f, 1.0f)) {
+                                m_fmod_manager->setChannelGroupPan(channelName, itSounds->second->m_balance); // Sets new pan
+                            }
                             ImGui::TableNextRow();
                             ImGui::TableNextColumn();
                             ImGui::Text("Lenght: %d:%d", (int)itSounds->second->m_lenght / 1000 / 60, (int)itSounds->second->m_lenght / 1000 % 60);
                             ImGui::TableNextColumn();
+                            m_fmod_manager->getSoundCurrentPosition(itSounds->first);
                             ImGui::Text("Position: %d:%d", (int)itSounds->second->m_cur_position / 1000 / 60, (int)itSounds->second->m_cur_position / 1000 % 60);
+                            ImGui::TableNextColumn();
+                            ImGui::Text("Frequency: %0.1f", itSounds->second->m_frequency);
+                            ImGui::TableNextColumn();
+                            // Frequency Knob
+                            if (ImGui::SliderFloat("##Frequency", &itSounds->second->m_frequency, 0.5f, 2.0f)) {
+                                m_fmod_manager->setChannelGroupPitch(channelName, itSounds->second->m_frequency); // Sets new pan
+                            }
                         }
                     }
                     ImGui::EndTable();
                 }
                 // Table with information about the selected sound CH2
                 if (channelName == "ch2 fx" && current_item_fx != nullptr) {
-                    ImGui::BeginTable("Fx Data", 3, ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_BordersOuter);
+                    ImGui::BeginTable("Fx Data", 4, ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_BordersOuter);
                     ImGui::TableNextRow();
                     ImGui::TableNextColumn();
                     for (itSounds = m_fmod_manager->m_sounds.begin(); itSounds != m_fmod_manager->m_sounds.end(); itSounds++) {
@@ -144,19 +156,30 @@ void SoundUI::render() {
                             ImGui::TableNextColumn();
                             ImGui::TableNextColumn();
                             ImGui::Text("Format: %s", itSounds->second->m_format.c_str());
+                            ImGui::TableNextColumn();
+                            ImGui::Text("                       ");
                             ImGui::TableNextRow();
                             ImGui::TableNextColumn();
                             ImGui::Text("Volume: %d%%", (int)itSounds->second->m_volume * 100);
                             ImGui::TableNextColumn();
+                            ImGui::TableNextColumn();
                             ImGui::Text("Balance: %0.1f", itSounds->second->m_balance);
                             ImGui::TableNextColumn();
-                            ImGui::Text("Frequency: %0.1f", itSounds->second->m_frequency);
-                            ImGui::TableNextColumn();
+                            if (ImGui::SliderFloat("##Balance", &itSounds->second->m_balance, -1.0f, 1.0f)) {
+                                m_fmod_manager->setChannelGroupPan(channelName, itSounds->second->m_balance); // Sets new pan
+                            }
                             ImGui::TableNextRow();
                             ImGui::TableNextColumn();
                             ImGui::Text("Lenght: %d:%d", (int)itSounds->second->m_lenght / 1000 / 60, (int)itSounds->second->m_lenght / 1000 % 60);
                             ImGui::TableNextColumn();
+                            m_fmod_manager->getSoundCurrentPosition(itSounds->first);
                             ImGui::Text("Position: %d:%d", (int)itSounds->second->m_cur_position / 1000 / 60, (int)itSounds->second->m_cur_position / 1000 % 60);
+                            ImGui::TableNextColumn();
+                            ImGui::Text("Frequency: %0.1f", itSounds->second->m_frequency);
+                            ImGui::TableNextColumn();
+                            if (ImGui::SliderFloat("##Frequency", &itSounds->second->m_frequency, 0.5f, 2.0f)) {
+                                m_fmod_manager->setChannelGroupPitch(channelName, itSounds->second->m_frequency); // Sets new pan
+                            }
                         }
                     }
                     ImGui::EndTable();
@@ -165,7 +188,7 @@ void SoundUI::render() {
                 // ***********************
                 // CHANNEL DSP TABLE START
                 // ***********************
-                if (ImGui::BeginTable(channelName.c_str(), 13, ImGuiTableFlags_SizingFixedFit)) {
+                if (ImGui::BeginTable(channelName.c_str(), 15, ImGuiTableFlags_SizingFixedFit)) {
                     ImGui::TableNextRow();
                     ImGui::TableNextColumn();
                     // Volume Knob
@@ -184,6 +207,11 @@ void SoundUI::render() {
                     // Pan Knob
                     if (ImGuiKnobs::Knob("Pan", &m_channel->m_pan, -1.0f, 1.0f, 0.01f, "%.1f%", ImGuiKnobVariant_WiperDot)) {
                         m_fmod_manager->setChannelGroupPan(channelName, m_channel->m_pan); // Sets new pan
+                    }
+                    ImGui::TableNextColumn();
+                    // Pitch Knob
+                    if (ImGuiKnobs::Knob("Pitch", &m_channel->m_pitch, 0.5f, 2.0f, 0.01f, "%.1f%", ImGuiKnobVariant_WiperDot)) {
+                        m_fmod_manager->setChannelGroupPitch(channelName, m_channel->m_pitch); // Sets new pan
                     }
                     // DSP CHORUS
                     ImGui::TableNextColumn();
@@ -290,12 +318,15 @@ void SoundUI::render() {
                         m_fmod_manager->setFloatParameterDSP(FMOD_DSP_TYPE_NORMALIZE, FMOD_DSP_NORMALIZE_FADETIME, m_channel->m_normalizeFadetime); // Sets new echo delay
                     }
                     // DSP OSCILLATOR
+                    // I will be commenting this DSP for safty reasons
+                    // It really scared me and I don't know if it could harm your hardware
+                    // Uncomment it on your own
                     ImGui::TableNextColumn();
                     if (ImGui::Checkbox("Oscillator", &m_channel->m_dspOscillator)) {
                         if (m_channel->m_dspOscillator) {
-                            m_fmod_manager->addDSPEffect(channelName, FMOD_DSP_TYPE_OSCILLATOR);
+                            //m_fmod_manager->addDSPEffect(channelName, FMOD_DSP_TYPE_OSCILLATOR);
                         } else {
-                            m_fmod_manager->removeDSPEffect(channelName, FMOD_DSP_TYPE_OSCILLATOR);
+                            //m_fmod_manager->removeDSPEffect(channelName, FMOD_DSP_TYPE_OSCILLATOR);
                         }
                     }
                     m_fmod_manager->getIntParameterDSP(FMOD_DSP_TYPE_OSCILLATOR, FMOD_DSP_OSCILLATOR_TYPE, &m_channel->m_oscillatorType); // Gets the echo delay
@@ -327,6 +358,19 @@ void SoundUI::render() {
                     m_fmod_manager->getFloatParameterDSP(FMOD_DSP_TYPE_TREMOLO, FMOD_DSP_TREMOLO_FREQUENCY, &m_channel->m_tremoloFrequency); // Gets the echo delay
                     if (ImGuiKnobs::Knob("Frequency", &m_channel->m_tremoloFrequency, 0.1f, 20.0f, 0.1f, "%.1f%", ImGuiKnobVariant_WiperDot)) {
                         m_fmod_manager->setFloatParameterDSP(FMOD_DSP_TYPE_TREMOLO, FMOD_DSP_TREMOLO_FREQUENCY, m_channel->m_tremoloFrequency); // Sets new echo delay
+                    }
+                    // DSP PITCHSHIFT
+                    ImGui::TableNextColumn();
+                    if (ImGui::Checkbox("PitchShift", &m_channel->m_dspPitchshift)) {
+                        if (m_channel->m_dspPitchshift) {
+                            m_fmod_manager->addDSPEffect(channelName, FMOD_DSP_TYPE_PITCHSHIFT);
+                        } else {
+                            m_fmod_manager->removeDSPEffect(channelName, FMOD_DSP_TYPE_PITCHSHIFT);
+                        }
+                    }
+                    m_fmod_manager->getFloatParameterDSP(FMOD_DSP_TYPE_PITCHSHIFT, FMOD_DSP_PITCHSHIFT_PITCH, &m_channel->m_pitchshiftPitch); // Gets the echo delay
+                    if (ImGuiKnobs::Knob("Shift", &m_channel->m_pitchshiftPitch, 0.5f, 2.0f, 0.01f, "%.1f%", ImGuiKnobVariant_WiperDot)) {
+                        m_fmod_manager->setFloatParameterDSP(FMOD_DSP_TYPE_PITCHSHIFT, FMOD_DSP_PITCHSHIFT_PITCH, m_channel->m_pitchshiftPitch); // Sets new echo delay
                     }
                     ImGui::EndTable();
                 }

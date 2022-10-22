@@ -2,7 +2,17 @@
 
 #include "TicTacToeGame.h"
 
+#ifdef _DEBUG
+#define DEBUG_LOG_ENABLED
+#endif
+#ifdef DEBUG_LOG_ENABLED
+#define DEBUG_PRINT(x, ...) printf(x, __VA_ARGS__)
+#else
+#define DEBUG_PRINT(x)
+#endif
+
 TicTacToeGame::TicTacToeGame(FModManager* fModManager) {
+	DEBUG_PRINT("TicTacToeGame::TicTacToeGame()\n");
 	m_fModManager = fModManager;
 	m_currentTurnPlayer = 'X';
 	m_currentRound = 1;
@@ -11,6 +21,10 @@ TicTacToeGame::TicTacToeGame(FModManager* fModManager) {
 }
 
 void TicTacToeGame::newGame() {
+	DEBUG_PRINT("TicTacToeGame::newGame()\n");
+	m_fModManager->stopSound("ch0 master");
+	m_fModManager->stopSound("ch1 music");
+	m_fModManager->stopSound("ch2 fx");
 	m_fModManager->playSound("New Game","ch2 fx");
 	// Sets all variables to ' '
 	for (int iLine = 0; iLine < 3; iLine++) {
@@ -33,7 +47,6 @@ void TicTacToeGame::newGame() {
 	std::cout << "The Game Board:" << std::endl;
 	printBoard();
 	std::cout << "TicTacToe first player is always the X! Now, make your move!" << std::endl;
-	m_fModManager->stopSound("ch1 music");
 	int randomInt = randInt(1,3);
 	switch (randomInt) {
 	case 1:
@@ -49,6 +62,7 @@ void TicTacToeGame::newGame() {
 }
 
 void TicTacToeGame::printBoard() {
+	DEBUG_PRINT("TicTacToeGame::printBoard()\n");
 	std::cout << "     |     |     " << std::endl;
 	std::cout << "  " << m_board[0][0] << "  |  " << m_board[0][1] << "  |  " << m_board[0][2] << "  " << std::endl;
 	std::cout << "_ _ _|_ _ _|_ _ _" << std::endl;
@@ -61,6 +75,7 @@ void TicTacToeGame::printBoard() {
 }
 
 bool TicTacToeGame::makeAMove(char position) {
+	DEBUG_PRINT("TicTacToeGame::makeAMove(%c)\n", position);
 	// We grab the position and insert in a case
 	// If the position equivalent to the position input is empty fill it with the player
 	// Else we return false to inform its not a valid move
@@ -131,6 +146,7 @@ bool TicTacToeGame::makeAMove(char position) {
 }
 
 void TicTacToeGame::nextTurn() {
+	DEBUG_PRINT("TicTacToeGame::nextTurn()\n");
 	// Checks if the game is over
 	if (isGameOver()) {
 		// Checks if it was a drawn
@@ -159,6 +175,7 @@ void TicTacToeGame::nextTurn() {
 }
 
 bool TicTacToeGame::isGameOver() {
+	DEBUG_PRINT("TicTacToeGame::isGameOver()\n");
 	// Checks for game winning condition on lines
 	for (int iLine = 0; iLine < 3; iLine++) {
 		if ( ( (m_board[iLine][0] & m_board[iLine][1] & m_board[iLine][2]) == 'X'
