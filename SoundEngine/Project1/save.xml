@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<tttsavefile>
+	<q>O</q>
+	<w> </w>
+	<e>X</e>
+	<a> </a>
+	<s>X</s>
+	<d> </d>
+	<z>O</z>
+	<x> </x>
+	<c>X</c>
+	<currentTurnPlayer>O</currentTurnPlayer>
+	<currentRound>6</currentRound>
+	<isGameOver>0</isGameOver>
+	<isItADrawn>0</isItADrawn>
+</tttsavefile>

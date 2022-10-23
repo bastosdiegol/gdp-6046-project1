@@ -158,6 +158,12 @@ void key_callback(GLFWwindow* window, const int key, int scancode, const int act
 		}
 		if(key == GLFW_KEY_N)
 			ttt->newGame();
+		if (key == GLFW_KEY_K)
+			if(mods == GLFW_MOD_CONTROL)
+				ttt->saveGame();
+		if (key == GLFW_KEY_L)
+			if (mods == GLFW_MOD_CONTROL)
+				ttt->loadGame();
 	}
 }
 
@@ -436,6 +442,17 @@ int main(int argc, char* argv[]) {
 
 		if (sound_ui.is_my_tool_active)
 			sound_ui.render();
+		// ImGui Menu Treatment
+		switch (sound_ui.menuState) {
+		case SoundUI::SAVE :
+			ttt->saveGame();
+			sound_ui.menuState = SoundUI::IDLE;
+			break;
+		case SoundUI::LOAD :
+			ttt->loadGame();
+			sound_ui.menuState = SoundUI::IDLE;
+			break;
+		}
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

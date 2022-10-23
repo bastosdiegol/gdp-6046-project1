@@ -1,4 +1,6 @@
 ﻿#include <iostream>
+#include <fstream> 
+#include <pugixml/pugixml.hpp>
 
 #include "TicTacToeGame.h"
 
@@ -37,6 +39,7 @@ void TicTacToeGame::newGame() {
 	m_currentRound = 1;
 	m_isGameOver = false;
 	m_isItADrawn = false;
+	system("cls"); // Clear Screen
 	std::cout << "It's a new game. Good lucky to both players!" << std::endl;
 	std::cout << "Use your keyboard to place pieces on your turn." << std::endl;
 	std::cout << " Q | W | E" << std::endl;
@@ -141,12 +144,12 @@ bool TicTacToeGame::makeAMove(char position) {
 	m_currentTurnPlayer == 'X' ? m_currentTurnPlayer = 'O' : m_currentTurnPlayer = 'X';
 	// Increments turn counter for drawn condition
 	m_currentRound++;
-	system("cls"); // Clear Screen
 	return true;
 }
 
 void TicTacToeGame::nextTurn() {
 	DEBUG_PRINT("TicTacToeGame::nextTurn()\n");
+	system("cls"); // Clear Screen
 	// Checks if the game is over
 	if (isGameOver()) {
 		// Checks if it was a drawn
@@ -225,6 +228,98 @@ bool TicTacToeGame::isGameOver() {
 	}*/
 
 	return m_isGameOver;
+}
+
+void TicTacToeGame::saveGame() {
+	DEBUG_PRINT("TicTacToeGame::saveGame()\n");
+	pugi::xml_document saveFile;
+	pugi::xml_node saveSlot;
+	std::string value;
+	//pugi::xml_parse_result result = saveFile.load_file(SOUND_FILE.c_str());
+	// File not found - We won't throw an error, we are just going to create a new XML
+	
+	saveSlot = saveFile.append_child("tttsavefile");
+	value = m_board[0][0];
+	saveSlot.append_child("q").append_child(pugi::node_pcdata).set_value(value.c_str());
+	value = m_board[0][1];
+	saveSlot.append_child("w").append_child(pugi::node_pcdata).set_value(value.c_str());
+	value = m_board[0][2];
+	saveSlot.append_child("e").append_child(pugi::node_pcdata).set_value(value.c_str());
+	value = m_board[1][0];
+	saveSlot.append_child("a").append_child(pugi::node_pcdata).set_value(value.c_str());
+	value = m_board[1][1];
+	saveSlot.append_child("s").append_child(pugi::node_pcdata).set_value(value.c_str());
+	value = m_board[1][2];
+	saveSlot.append_child("d").append_child(pugi::node_pcdata).set_value(value.c_str());
+	value = m_board[2][0];
+	saveSlot.append_child("z").append_child(pugi::node_pcdata).set_value(value.c_str());
+	value = m_board[2][1];
+	saveSlot.append_child("x").append_child(pugi::node_pcdata).set_value(value.c_str());
+	value = m_board[2][2];
+	saveSlot.append_child("c").append_child(pugi::node_pcdata).set_value(value.c_str());
+	value = m_currentTurnPlayer;
+	saveSlot.append_child("currentTurnPlayer").append_child(pugi::node_pcdata).set_value(value.c_str());
+	value = std::to_string(m_currentRound);
+	saveSlot.append_child("currentRound").append_child(pugi::node_pcdata).set_value(value.c_str());
+	value = std::to_string(m_isGameOver);
+	saveSlot.append_child("isGameOver").append_child(pugi::node_pcdata).set_value(value.c_str());
+	value = std::to_string(m_isItADrawn);
+	saveSlot.append_child("isItADrawn").append_child(pugi::node_pcdata).set_value(value.c_str());
+
+	saveFile.save_file(SAVE_FILE.c_str());
+}
+
+void TicTacToeGame::loadGame() {
+	DEBUG_PRINT("TicTacToeGame::loadGame()\n");
+	pugi::xml_document saveFile;
+	pugi::xml_node saveSlot;
+
+	// Load the XML Save File
+	pugi::xml_parse_result result = saveFile.load_file(SAVE_FILE.c_str());
+	if (result.status == pugi::status_file_not_found) {
+		std::cout << "There's no save file available." << std::endl;
+	}else if (!result) {
+		std::cout << "pugi::xml Error description: " << result.description() << std::endl;
+		std::cout << "pugi::xml Error offset: " << result.offset << " (error at [..." << (SAVE_FILE.c_str() + result.offset) << std::endl;
+	}
+	// Checks if there's elements to the XML
+	pugi::xml_object_range<pugi::xml_node_iterator> saveInfo = saveFile.child("tttsavefile").children();
+	if (saveInfo.empty()) {
+		std::cout << "There are no save information available to be loaded!" << std::endl;
+		return;
+	}
+	// Iteration through the childs - save information
+	pugi::xml_node_iterator saveIt;
+	std::string value;
+	std::vector<std::string> saveData; // stores each info on this array
+	for (saveIt = saveInfo.begin(); saveIt != saveInfo.end(); saveIt++) {
+		pugi::xml_node saveNode = *saveIt;
+		value = saveNode.child_value();
+		if (!value.empty()) { // If Child is not empty
+			saveData.push_back(value);
+			DEBUG_PRINT("#%s#\n", saveNode.child_value());
+		} else { // Child is empty - Store ' ' instead
+			saveData.push_back(" ");
+			DEBUG_PRINT("empty\n");
+		}
+	}
+	// Loading TicTacToeGame Member Variables
+	m_board[0][0]		= saveData[0].c_str()[0];
+	m_board[0][1]		= saveData[1].c_str()[0];
+	m_board[0][2]		= saveData[2].c_str()[0];
+	m_board[1][0]		= saveData[3].c_str()[0];
+	m_board[1][1]		= saveData[4].c_str()[0];
+	m_board[1][2]		= saveData[5].c_str()[0];
+	m_board[2][0]		= saveData[6].c_str()[0];
+	m_board[2][1]		= saveData[7].c_str()[0];
+	m_board[2][2]		= saveData[8].c_str()[0];
+	m_currentTurnPlayer = saveData[9].c_str()[0];
+	m_currentRound		= std::stoi(saveData[10]);
+	m_isGameOver		= std::stoi(saveData[11]);
+	m_isItADrawn		= std::stoi(saveData[12]);
+
+	// Since we loaded all variables we just call next turn to continue the game
+	nextTurn();
 }
 
 int randInt(int min, int max) {

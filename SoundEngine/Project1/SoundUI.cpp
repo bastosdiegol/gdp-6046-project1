@@ -9,9 +9,15 @@ void SoundUI::render() {
 
     if (ImGui::BeginMenuBar()) {
         if (ImGui::BeginMenu("File")) {
-            if (ImGui::MenuItem("Open..", "Ctrl+O")) { /* Do stuff */ }
-            if (ImGui::MenuItem("Save", "Ctrl+S")) { /* Do stuff */ }
-            if (ImGui::MenuItem("Close", "Ctrl+W")) { is_my_tool_active = false; }
+            if (ImGui::MenuItem("Load game", "Ctrl+O")) {
+                menuState = LOAD;
+            }
+            if (ImGui::MenuItem("Save game", "Ctrl+S")) {
+                menuState = SAVE;
+            }
+            if (ImGui::MenuItem("Close", "Ctrl+W")) { 
+                is_my_tool_active = false;
+            }
             ImGui::EndMenu();
         }
         ImGui::EndMenuBar();

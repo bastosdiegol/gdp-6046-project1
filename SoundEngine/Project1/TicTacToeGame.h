@@ -7,7 +7,7 @@ public:
 	// Game Board
 	char m_board[3][3];
 	char m_currentTurnPlayer;
-	short m_currentRound; // We gonna use this variable to check last round drawn condition
+	unsigned short m_currentRound; // We gonna use this variable to check last round drawn condition
 	bool m_isGameOver;
 	bool m_isItADrawn;
 	FModManager* m_fModManager;
@@ -27,7 +27,13 @@ public:
 	void nextTurn();
 	// Method that checks if the game is over
 	bool isGameOver();
+	// Method that exports the current state of the game to a XML file
+	void saveGame();
+	// Method that imports an existing state of the game and let you continue the gameplay
+	void loadGame();
 
+private:
+	const std::string	SAVE_FILE = "save.xml";
 };
 
 // Utility function for a random range of two ints
