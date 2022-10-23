@@ -130,6 +130,7 @@ void SoundUI::render() {
                             }
                             ImGui::TableNextRow();
                             ImGui::TableNextColumn();
+                            m_fmod_manager->getSoundLength(itSounds->first);
                             ImGui::Text("Lenght: %d:%d", (int)itSounds->second->m_lenght / 1000 / 60, (int)itSounds->second->m_lenght / 1000 % 60);
                             ImGui::TableNextColumn();
                             m_fmod_manager->getSoundCurrentPosition(itSounds->first);
@@ -170,6 +171,7 @@ void SoundUI::render() {
                             }
                             ImGui::TableNextRow();
                             ImGui::TableNextColumn();
+                            m_fmod_manager->getSoundLength(itSounds->first);
                             ImGui::Text("Lenght: %d:%d", (int)itSounds->second->m_lenght / 1000 / 60, (int)itSounds->second->m_lenght / 1000 % 60);
                             ImGui::TableNextColumn();
                             m_fmod_manager->getSoundCurrentPosition(itSounds->first);
@@ -376,9 +378,18 @@ void SoundUI::render() {
                 }
                 ImGui::EndTabItem();
             }
-            ImGui::EndTabBar();
+            ImGui::EndTabBar();            
         }
     }
-    
+    // TODO: Future development TabBar for DSP with each choosen DSP with its own tab
+    // Inside each tab the user can modify each attribute from the DSP
+    //ImGui::BeginTabBar("DSP Effects");
+    //std::map<FMOD_DSP_TYPE, FMOD::DSP*>::iterator itDSP;
+    //for (itDSP = m_fmod_manager->m_dsp.begin(); itDSP != m_fmod_manager->m_dsp.end(); itDSP++) {
+    //    if (ImGui::BeginTabItem(std::to_string(itDSP->first).c_str())) {
+    //        ImGui::EndTabItem();
+    //    }
+    //}
+    //ImGui::EndTabBar();
     ImGui::End();
 }

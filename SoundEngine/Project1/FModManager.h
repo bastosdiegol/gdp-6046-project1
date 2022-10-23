@@ -98,6 +98,9 @@ public:
 	void setSoundCurrentFrequency(const std::string& sound_name, float frequency);
 	// Gets the current frequency of a sound
 	void getSoundCurrentFrequency(const std::string& sound_name);
+	// Gets the length of a sound
+	void getSoundLength(const std::string& sound_name);
+
 
 private:
 	const int			MAX_CHANNELS = 255;

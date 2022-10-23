@@ -493,8 +493,8 @@ void FModManager::loadSoundsFromFile() {
 		newSound->m_frequency	 = sound.attribute("frequency").as_float();
 		newSound->m_volume		 = sound.attribute("volume").as_float();
 		newSound->m_balance		 = sound.attribute("balance").as_float();
-		newSound->m_lenght		 = sound.attribute("lenght").as_uint();
-		newSound->m_cur_position = sound.attribute("position").as_uint();
+		//newSound->m_lenght	   = sound.attribute("lenght").as_uint();
+		//newSound->m_cur_position = sound.attribute("position").as_uint();
 		// Calls FMOD createSound according with the type of the sound
 		if (newSound->m_type == "music") {
 			// Calls the FMOD function to create the new sound with mode LOOP - BGM
@@ -506,10 +506,14 @@ void FModManager::loadSoundsFromFile() {
 		// Checks the result
 		if (m_result != FMOD_OK) {
 			std::cout << "fmod error: #" << m_result << "-" << FMOD_ErrorString(m_result) << std::endl;
-			return;
+			newSound->~Sound(); // Deletes the instance
+			continue;			// Continues the loop
 		}
 		// Adds the new sound to the map tree of sounds
 		m_sounds.try_emplace(newSound->m_name, newSound);
+		// Gets attributes from FMOD instead of XML
+		getSoundCurrentPosition(newSound->m_name);
+		getSoundLength(newSound->m_name);
 	}
 }
 
@@ -637,3 +641,21 @@ void FModManager::getSoundCurrentFrequency(const std::string& sound_name) {
 		}
 	}
 }
+
+void FModManager::getSoundLength(const std::string& sound_name) {
+	DEBUG_PRINT("FModManager::getSoundLength(%s)\n", sound_name.c_str());
+	std::map<std::string, Sound*>::iterator itSound = m_sounds.find(sound_name);
+
+	if (itSound == m_sounds.end()) {
+		std::cout << "FModManager error: Couldn't find the Sound named #" << sound_name << std::endl;
+		return;
+	}
+
+	m_result = itSound->second->m_sound->getLength(&itSound->second->m_lenght, FMOD_TIMEUNIT_MS);
+	if (m_result != FMOD_OK) {
+		std::cout << "fmod error: #" << m_result << "-" << FMOD_ErrorString(m_result) << std::endl;
+		itSound->second->m_lenght = 0;
+		return;
+	}
+}
+
