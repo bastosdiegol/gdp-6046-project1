@@ -13,9 +13,10 @@
 #define DEBUG_PRINT(x)
 #endif
 
-TicTacToeGame::TicTacToeGame(FModManager* fModManager) {
+TicTacToeGame::TicTacToeGame(FModManager* fModManager, Localization* localization) {
 	DEBUG_PRINT("TicTacToeGame::TicTacToeGame()\n");
 	m_fModManager = fModManager;
+	m_localization = localization;
 	m_currentTurnPlayer = 'X';
 	m_currentRound = 1;
 	m_isGameOver = false;
@@ -40,16 +41,16 @@ void TicTacToeGame::newGame() {
 	m_isGameOver = false;
 	m_isItADrawn = false;
 	system("cls"); // Clear Screen
-	std::cout << "It's a new game. Good lucky to both players!" << std::endl;
-	std::cout << "Use your keyboard to place pieces on your turn." << std::endl;
+	std::cout << m_localization->m_newGame << std::endl;
+	std::cout << m_localization->m_instruction << std::endl;
 	std::cout << " Q | W | E" << std::endl;
 	std::cout << "----------" << std::endl;
 	std::cout << " A | S | D" << std::endl;
 	std::cout << "----------" << std::endl;
 	std::cout << " Z | X | C" << std::endl;
-	std::cout << "The Game Board:" << std::endl;
+	std::cout << m_localization->m_gameBoard << std::endl;
 	printBoard();
-	std::cout << "TicTacToe first player is always the X! Now, make your move!" << std::endl;
+	std::cout << m_localization->m_firstPlayerMove << std::endl;
 	int randomInt = randInt(1,3);
 	switch (randomInt) {
 	case 1:
@@ -142,7 +143,7 @@ bool TicTacToeGame::makeAMove(char position) {
 	m_fModManager->playSound("Move Piece "+std::to_string(randInt(1, 12)),"ch2 fx");
 	// Switch the current player for next turn
 	m_currentTurnPlayer == 'X' ? m_currentTurnPlayer = 'O' : m_currentTurnPlayer = 'X';
-	// Increments turn counter for drawn condition
+	// Increments turn counter for draw condition
 	m_currentRound++;
 	return true;
 }
@@ -152,29 +153,31 @@ void TicTacToeGame::nextTurn() {
 	system("cls"); // Clear Screen
 	// Checks if the game is over
 	if (isGameOver()) {
-		// Checks if it was a drawn
+		// Checks if it was a draw
 		if (m_isItADrawn) {
 			// Print the Winning/Last Board
-			std::cout << "The game is over!" << std::endl;
+			std::cout << m_localization->m_gameOver << std::endl;
 			printBoard();
-			std::cout << "The game is over! It's a drawn! Press (N) to start a new game." << std::endl;
-			m_fModManager->playSound("Drawn Game", "ch2 fx");
+			std::cout << m_localization->m_gameOverDrawn << std::endl;
+			m_fModManager->playSound("Draw Game", "ch2 fx");
 			return;
 		}
-		std::cout << "The game is over!" << std::endl;
+		std::cout << m_localization->m_gameOver << std::endl;
 		// Print the Winning/Last Board
 		printBoard();
 		// Grabs last turn player
 		m_currentTurnPlayer == 'X' ? m_currentTurnPlayer = 'O' : m_currentTurnPlayer = 'X';
 		// Winning Game Message
-		std::cout << "Player " << m_currentTurnPlayer << " won! Congratulations!" << std::endl;
+		printf(m_localization->m_congratulations.c_str(), m_currentTurnPlayer);
+		std::cout << std::endl;
 		m_fModManager->playSound("Victory Melody","ch2 fx");
-		std::cout << "Press (N) to start a new game." << std::endl;
+		std::cout << m_localization->m_newGameInfo << std::endl;
 		return;
 	}
-	std::cout << "New turn! ... " << std::endl;
+	std::cout << m_localization->m_newTurn << std::endl;
 	printBoard();
-	std::cout << "Now is the time for player " << m_currentTurnPlayer << " to make a move." << std::endl;
+	printf(m_localization->m_newTurnPlayer.c_str(), m_currentTurnPlayer);
+	std::cout << std::endl;
 }
 
 bool TicTacToeGame::isGameOver() {
@@ -206,7 +209,7 @@ bool TicTacToeGame::isGameOver() {
 	// Found winning condition?
 	if (m_isGameOver)
 		return m_isGameOver;
-	// No? Lets check for drawn now
+	// No? Lets check for draw now
 	else if (m_isGameOver == false && m_currentRound == 10) {
 		m_isItADrawn = true;
 		m_isGameOver = true;
@@ -221,7 +224,7 @@ bool TicTacToeGame::isGameOver() {
 				foundEmptySpot = true;
 		}
 	}
-	// If empty slot wasn't found - it's a drawn
+	// If empty slot wasn't found - it's a draw
 	if (!foundEmptySpot) {
 		m_isGameOver = true;
 		m_isItADrawn = true;
@@ -267,6 +270,8 @@ void TicTacToeGame::saveGame() {
 	saveSlot.append_child("isItADrawn").append_child(pugi::node_pcdata).set_value(value.c_str());
 
 	saveFile.save_file(SAVE_FILE.c_str());
+	// Save Game Sound
+	m_fModManager->playSound("Save Game", "ch2 fx");
 }
 
 void TicTacToeGame::loadGame() {
@@ -277,7 +282,7 @@ void TicTacToeGame::loadGame() {
 	// Load the XML Save File
 	pugi::xml_parse_result result = saveFile.load_file(SAVE_FILE.c_str());
 	if (result.status == pugi::status_file_not_found) {
-		std::cout << "There's no save file available." << std::endl;
+		std::cout << m_localization->m_noSaveFile << std::endl;
 	}else if (!result) {
 		std::cout << "pugi::xml Error description: " << result.description() << std::endl;
 		std::cout << "pugi::xml Error offset: " << result.offset << " (error at [..." << (SAVE_FILE.c_str() + result.offset) << std::endl;
@@ -285,7 +290,7 @@ void TicTacToeGame::loadGame() {
 	// Checks if there's elements to the XML
 	pugi::xml_object_range<pugi::xml_node_iterator> saveInfo = saveFile.child("tttsavefile").children();
 	if (saveInfo.empty()) {
-		std::cout << "There are no save information available to be loaded!" << std::endl;
+		std::cout << m_localization->m_noSaveInformation << std::endl;
 		return;
 	}
 	// Iteration through the childs - save information
@@ -317,6 +322,9 @@ void TicTacToeGame::loadGame() {
 	m_currentRound		= std::stoi(saveData[10]);
 	m_isGameOver		= std::stoi(saveData[11]);
 	m_isItADrawn		= std::stoi(saveData[12]);
+
+	// Load Game Sound
+	m_fModManager->playSound("Load Game", "ch2 fx");
 
 	// Since we loaded all variables we just call next turn to continue the game
 	nextTurn();

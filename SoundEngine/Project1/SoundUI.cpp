@@ -9,14 +9,23 @@ void SoundUI::render() {
 
     if (ImGui::BeginMenuBar()) {
         if (ImGui::BeginMenu("File")) {
-            if (ImGui::MenuItem("Load game", "Ctrl+O")) {
+            if (ImGui::MenuItem("Load game", "Ctrl+L")) {
                 menuState = LOAD;
             }
-            if (ImGui::MenuItem("Save game", "Ctrl+S")) {
+            if (ImGui::MenuItem("Save game", "Ctrl+K")) {
                 menuState = SAVE;
             }
-            if (ImGui::MenuItem("Close", "Ctrl+W")) { 
+            if (ImGui::MenuItem("Close", "")) { 
                 is_my_tool_active = false;
+            }
+            ImGui::EndMenu();
+        }
+        if (ImGui::BeginMenu("Languages")) {
+            for (int i = 0; i < m_localization->m_vLanguagesAvailable.size(); i++) {
+                if (ImGui::MenuItem(m_localization->m_vLanguagesAvailable[i].c_str(), std::to_string(i+1).c_str())) {
+                    menuState = LANG;
+                    newLang = m_localization->m_vLanguagesAvailable[i];
+                }
             }
             ImGui::EndMenu();
         }

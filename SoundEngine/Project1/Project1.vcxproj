@@ -156,6 +156,7 @@
     <ClCompile Include="imgui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="imgui\imgui_tables.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
+    <ClCompile Include="Localization.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MeshObject.cpp" />
     <ClCompile Include="PlyFileReader.cpp" />
@@ -177,6 +178,7 @@
     <ClInclude Include="imgui\imstb_rectpack.h" />
     <ClInclude Include="imgui\imstb_textedit.h" />
     <ClInclude Include="imgui\imstb_truetype.h" />
+    <ClInclude Include="Localization.h" />
     <ClInclude Include="MeshObject.h" />
     <ClInclude Include="PlyFileReader.h" />
     <ClInclude Include="Sound.h" />
@@ -184,12 +186,28 @@
     <ClInclude Include="TicTacToeGame.h" />
   </ItemGroup>
   <ItemGroup>
+    <Media Include="sounds\fx\board_newgame.wav" />
     <Media Include="sounds\fx\Breath.wav" />
+    <Media Include="sounds\fx\drawn_beep.wav" />
     <Media Include="sounds\fx\Fire01.wav" />
     <Media Include="sounds\fx\Fire16.wav" />
+    <Media Include="sounds\fx\game_win_success.wav" />
     <Media Include="sounds\fx\Hit.wav" />
+    <Media Include="sounds\fx\move-piece01.wav" />
+    <Media Include="sounds\fx\move-piece02.wav" />
+    <Media Include="sounds\fx\move-piece03.wav" />
+    <Media Include="sounds\fx\move-piece04.wav" />
+    <Media Include="sounds\fx\move-piece05.wav" />
+    <Media Include="sounds\fx\move-piece06.wav" />
+    <Media Include="sounds\fx\move-piece07.wav" />
+    <Media Include="sounds\fx\move-piece08.wav" />
+    <Media Include="sounds\fx\move-piece09.wav" />
+    <Media Include="sounds\fx\move-piece10.wav" />
+    <Media Include="sounds\fx\move-piece11.wav" />
+    <Media Include="sounds\fx\move-piece12.wav" />
     <Media Include="sounds\fx\Rock02.wav" />
     <Media Include="sounds\fx\Rock10.wav" />
+    <Media Include="sounds\fx\victory_melody.wav" />
     <Media Include="sounds\fx\Water03.wav" />
     <Media Include="sounds\fx\Water04.wav" />
     <Media Include="sounds\fx\Water10.wav" />

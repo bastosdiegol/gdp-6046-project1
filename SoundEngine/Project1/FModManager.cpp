@@ -526,7 +526,7 @@ void FModManager::playSound(const std::string& sound_name, const std::string& ch
 
 	if (itSound == m_sounds.end() || itChannel == m_channel_groups.end()) {
 		std::cout << "FModManager error: Couldn't find the Sound named #" << sound_name
-													<< "or ChannelGroup named #" << channel_group_name << std::endl;
+													<< " or ChannelGroup named #" << channel_group_name << std::endl;
 		return;
 	}
 
@@ -572,7 +572,7 @@ void FModManager::stopSound(const std::string& channel_group_name) {
 }
 
 void FModManager::setPause(const std::string& channel_group_name, const bool pause) {
-	DEBUG_PRINT("FModManager::setPause(%s, %b)\n", channel_group_name.c_str(), pause);
+	DEBUG_PRINT("FModManager::setPause(%s, %d)\n", channel_group_name.c_str(), pause);
 	// Tries to find the channel group
 	std::map<std::string, ChannelGroup*>::iterator itChannel = m_channel_groups.find(channel_group_name);
 

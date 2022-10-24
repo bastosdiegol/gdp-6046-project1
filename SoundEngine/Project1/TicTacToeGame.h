@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "FModManager.h"
+#include "Localization.h"
 
 class TicTacToeGame {
 public:
@@ -11,9 +12,10 @@ public:
 	bool m_isGameOver;
 	bool m_isItADrawn;
 	FModManager* m_fModManager;
+	Localization* m_localization;
 
 	// Default Constructor
-	TicTacToeGame(FModManager* fModManager);
+	TicTacToeGame(FModManager* fModManager, Localization* localization);
 	// Starts a new game - reset the board
 	void newGame();
 	// Console Output for the board and its pieces

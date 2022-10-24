@@ -96,6 +96,9 @@
     <ClCompile Include="MeshObject.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Localization.cpp">
+      <Filter>Source Files\tictactoe</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
@@ -152,6 +155,9 @@
     <ClInclude Include="MeshObject.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Localization.h">
+      <Filter>Header Files\tictactoe</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Media Include="sounds\music\beethoven_moonlight_sonata.mp3">
@@ -191,6 +197,54 @@
       <Filter>Resource Files\sounds\fx</Filter>
     </Media>
     <Media Include="sounds\fx\WingFlap.wav">
+      <Filter>Resource Files\sounds\fx</Filter>
+    </Media>
+    <Media Include="sounds\fx\board_newgame.wav">
+      <Filter>Resource Files\sounds\fx</Filter>
+    </Media>
+    <Media Include="sounds\fx\drawn_beep.wav">
+      <Filter>Resource Files\sounds\fx</Filter>
+    </Media>
+    <Media Include="sounds\fx\game_win_success.wav">
+      <Filter>Resource Files\sounds\fx</Filter>
+    </Media>
+    <Media Include="sounds\fx\move-piece01.wav">
+      <Filter>Resource Files\sounds\fx</Filter>
+    </Media>
+    <Media Include="sounds\fx\move-piece02.wav">
+      <Filter>Resource Files\sounds\fx</Filter>
+    </Media>
+    <Media Include="sounds\fx\move-piece03.wav">
+      <Filter>Resource Files\sounds\fx</Filter>
+    </Media>
+    <Media Include="sounds\fx\move-piece04.wav">
+      <Filter>Resource Files\sounds\fx</Filter>
+    </Media>
+    <Media Include="sounds\fx\move-piece05.wav">
+      <Filter>Resource Files\sounds\fx</Filter>
+    </Media>
+    <Media Include="sounds\fx\move-piece06.wav">
+      <Filter>Resource Files\sounds\fx</Filter>
+    </Media>
+    <Media Include="sounds\fx\move-piece07.wav">
+      <Filter>Resource Files\sounds\fx</Filter>
+    </Media>
+    <Media Include="sounds\fx\move-piece08.wav">
+      <Filter>Resource Files\sounds\fx</Filter>
+    </Media>
+    <Media Include="sounds\fx\move-piece09.wav">
+      <Filter>Resource Files\sounds\fx</Filter>
+    </Media>
+    <Media Include="sounds\fx\move-piece10.wav">
+      <Filter>Resource Files\sounds\fx</Filter>
+    </Media>
+    <Media Include="sounds\fx\move-piece11.wav">
+      <Filter>Resource Files\sounds\fx</Filter>
+    </Media>
+    <Media Include="sounds\fx\move-piece12.wav">
+      <Filter>Resource Files\sounds\fx</Filter>
+    </Media>
+    <Media Include="sounds\fx\victory_melody.wav">
       <Filter>Resource Files\sounds\fx</Filter>
     </Media>
   </ItemGroup>

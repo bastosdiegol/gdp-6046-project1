@@ -27,5 +27,8 @@
 	<sound title="Game Win" path="./sounds/fx/game_win_success.wav" format="wav" type="fx" frequency="1" volume="1" balance="0" lenght="3000" position="0" />
 	<sound title="New Game" path="./sounds/fx/board_newgame.wav" format="wav" type="fx" frequency="1" volume="1" balance="0" lenght="1000" position="0" />
 	<sound title="Victory Melody" path="./sounds/fx/victory_melody.wav" format="wav" type="fx" frequency="1" volume="1" balance="0" lenght="3000" position="0" />
-	<sound title="Drawn Game" path="./sounds/fx/drawn_beep.wav" format="wav" type="fx" frequency="1" volume="1" balance="0" lenght="1000" position="0" />
+	<sound title="Draw Game" path="./sounds/fx/draw_beep.wav" format="wav" type="fx" frequency="1" volume="1" balance="0" lenght="1000" position="0" />
+	<sound title="Load Game" path="./sounds/fx/load_game.wav" format="wav" type="fx" frequency="1" volume="1" balance="0" lenght="1000" position="0" />
+	<sound title="Save Game" path="./sounds/fx/save_game.wav" format="wav" type="fx" frequency="1" volume="1" balance="0" lenght="1000" position="0" />
+	<sound title="New Lang" path="./sounds/fx/new_lang.wav" format="wav" type="fx" frequency="1" volume="1" balance="0" lenght="1000" position="0" />
 </soundlibrary>
