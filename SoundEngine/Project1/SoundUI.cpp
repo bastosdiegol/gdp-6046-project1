@@ -45,6 +45,7 @@ void SoundUI::render() {
     }
 
     static std::map<std::string, ChannelGroup*>::iterator itChannels;
+    static std::map<std::string, Sound*>::iterator itSoundUncompressed;
     for (itChannels = m_fmod_manager->m_channel_groups.begin(); itChannels != m_fmod_manager->m_channel_groups.end(); itChannels++) {
         std::string channelName = itChannels->first;
         m_channel = itChannels->second;
@@ -92,7 +93,7 @@ void SoundUI::render() {
                         m_channel->m_isPaused = false;
                     } else {
                         if (channelName == "ch1 music") {
-                            m_fmod_manager->playSound(current_item_music, channelName);
+                            m_fmod_manager->playSound(current_item_music, channelName, uncompressedMusic);
                         } else if (channelName == "ch2 fx") {
                             m_fmod_manager->playSound(current_item_fx, channelName);
                         }
@@ -105,8 +106,12 @@ void SoundUI::render() {
                 }
                 ImGui::SameLine();
                 if (ImGui::Button(ICON_FAD_STOP)) { // Stop Button
-                    m_fmod_manager->stopSound(channelName);
-                    m_channel->m_isPaused = false;
+                    /*if (channelName == "ch1 music") {
+                        m_fmod_manager->stopSound(channelName, uncompressedMusic);
+                    } else {*/
+                        m_fmod_manager->stopSound(channelName);
+                    /*}
+                    m_channel->m_isPaused = false;*/
                 }
                 ImGui::SameLine();
                 if (m_channel->m_isMuted) {
@@ -127,35 +132,75 @@ void SoundUI::render() {
                     ImGui::TableNextColumn();
                     for (itSounds = m_fmod_manager->m_sounds.begin(); itSounds != m_fmod_manager->m_sounds.end(); itSounds++) {
                         if (itSounds->first == current_item_music) {
-                            ImGui::Text("Path: %s", itSounds->second->m_path.c_str());
-                            ImGui::TableNextColumn();
-                            ImGui::TableNextColumn();
-                            ImGui::Text("Format: %s", itSounds->second->m_format.c_str());
-                            ImGui::TableNextColumn();
-                            ImGui::Text("                       ");
-                            ImGui::TableNextRow();
-                            ImGui::TableNextColumn();
-                            ImGui::Text("Volume: %d%%", (int)itSounds->second->m_volume*100);
-                            ImGui::TableNextColumn();
-                            ImGui::TableNextColumn();
-                            ImGui::Text("Balance: %0.1f", itSounds->second->m_balance);
-                            ImGui::TableNextColumn();
-                            if (ImGui::SliderFloat("##Balance", &itSounds->second->m_balance, -1.0f, 1.0f)) {
-                                m_fmod_manager->setChannelGroupPan(channelName, itSounds->second->m_balance); // Sets new pan
-                            }
-                            ImGui::TableNextRow();
-                            ImGui::TableNextColumn();
-                            m_fmod_manager->getSoundLength(itSounds->first);
-                            ImGui::Text("Lenght: %d:%d", (int)itSounds->second->m_lenght / 1000 / 60, (int)itSounds->second->m_lenght / 1000 % 60);
-                            ImGui::TableNextColumn();
-                            m_fmod_manager->getSoundCurrentPosition(itSounds->first);
-                            ImGui::Text("Position: %d:%d", (int)itSounds->second->m_cur_position / 1000 / 60, (int)itSounds->second->m_cur_position / 1000 % 60);
-                            ImGui::TableNextColumn();
-                            ImGui::Text("Frequency: %0.1f", itSounds->second->m_frequency);
-                            ImGui::TableNextColumn();
-                            // Frequency Knob
-                            if (ImGui::SliderFloat("##Frequency", &itSounds->second->m_frequency, 0.5f, 2.0f)) {
-                                m_fmod_manager->setChannelGroupPitch(channelName, itSounds->second->m_frequency); // Sets new pan
+                            // If the selected music is the UNCOMPRESSED version
+                            itSoundUncompressed = m_fmod_manager->m_uncrompressed_sounds.find(current_item_music);
+                            if (uncompressedMusic) {
+                                ImGui::Text("Path: %s", itSoundUncompressed->second->m_path.c_str());
+                                ImGui::TableNextColumn();
+                                ImGui::TableNextColumn();
+                                ImGui::Text("Format: %s", itSoundUncompressed->second->m_format.c_str());
+                                ImGui::TableNextColumn();
+                                if (itSounds->second->m_hasUncompressed) {
+                                    ImGui::Checkbox("Uncompressed Sound", &uncompressedMusic);
+                                }
+                                ImGui::TableNextRow();
+                                ImGui::TableNextColumn();
+                                ImGui::Text("Volume: %d%%", (int)itSoundUncompressed->second->m_volume * 100);
+                                ImGui::TableNextColumn();
+                                ImGui::TableNextColumn();
+                                ImGui::Text("Balance: %0.1f", itSoundUncompressed->second->m_balance);
+                                ImGui::TableNextColumn();
+                                if (ImGui::SliderFloat("##Balance", &itSoundUncompressed->second->m_balance, -1.0f, 1.0f)) {
+                                    m_fmod_manager->setChannelGroupPan(channelName, itSoundUncompressed->second->m_balance); // Sets new pan
+                                }
+                                ImGui::TableNextRow();
+                                ImGui::TableNextColumn();
+                                m_fmod_manager->getSoundLength(itSoundUncompressed->first, uncompressedMusic);
+                                ImGui::Text("Lenght: %d:%d", (int)itSoundUncompressed->second->m_lenght / 1000 / 60, (int)itSoundUncompressed->second->m_lenght / 1000 % 60);
+                                ImGui::TableNextColumn();
+                                m_fmod_manager->getSoundCurrentPosition(itSounds->first, uncompressedMusic);
+                                ImGui::Text("Position: %d:%d", (int)itSoundUncompressed->second->m_cur_position / 1000 / 60, (int)itSoundUncompressed->second->m_cur_position / 1000 % 60);
+                                ImGui::TableNextColumn();
+                                ImGui::Text("Frequency: %0.1f", itSoundUncompressed->second->m_frequency);
+                                ImGui::TableNextColumn();
+                                // Frequency Slider
+                                if (ImGui::SliderFloat("##Frequency", &itSoundUncompressed->second->m_frequency, 0.5f, 2.0f)) {
+                                    m_fmod_manager->setChannelGroupPitch(channelName, itSoundUncompressed->second->m_frequency); // Sets new pan
+                                }
+                            // If the selected music is the COMPRESSED version
+                            } else {
+                                ImGui::Text("Path: %s", itSounds->second->m_path.c_str());
+                                ImGui::TableNextColumn();
+                                ImGui::TableNextColumn();
+                                ImGui::Text("Format: %s", itSounds->second->m_format.c_str());
+                                ImGui::TableNextColumn();
+                                if (itSounds->second->m_hasUncompressed) {
+                                    ImGui::Checkbox("Uncompressed Sound", &uncompressedMusic);
+                                }
+                                ImGui::TableNextRow();
+                                ImGui::TableNextColumn();
+                                ImGui::Text("Volume: %d%%", (int)itSounds->second->m_volume * 100);
+                                ImGui::TableNextColumn();
+                                ImGui::TableNextColumn();
+                                ImGui::Text("Balance: %0.1f", itSounds->second->m_balance);
+                                ImGui::TableNextColumn();
+                                if (ImGui::SliderFloat("##Balance", &itSounds->second->m_balance, -1.0f, 1.0f)) {
+                                    m_fmod_manager->setChannelGroupPan(channelName, itSounds->second->m_balance); // Sets new pan
+                                }
+                                ImGui::TableNextRow();
+                                ImGui::TableNextColumn();
+                                m_fmod_manager->getSoundLength(itSounds->first);
+                                ImGui::Text("Lenght: %d:%d", (int)itSounds->second->m_lenght / 1000 / 60, (int)itSounds->second->m_lenght / 1000 % 60);
+                                ImGui::TableNextColumn();
+                                m_fmod_manager->getSoundCurrentPosition(itSounds->first);
+                                ImGui::Text("Position: %d:%d", (int)itSounds->second->m_cur_position / 1000 / 60, (int)itSounds->second->m_cur_position / 1000 % 60);
+                                ImGui::TableNextColumn();
+                                ImGui::Text("Frequency: %0.1f", itSounds->second->m_frequency);
+                                ImGui::TableNextColumn();
+                                // Frequency Slider
+                                if (ImGui::SliderFloat("##Frequency", &itSounds->second->m_frequency, 0.5f, 2.0f)) {
+                                    m_fmod_manager->setChannelGroupPitch(channelName, itSounds->second->m_frequency); // Sets new pan
+                                }
                             }
                         }
                     }

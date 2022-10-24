@@ -88,18 +88,27 @@ public:
 	void loadSoundsFromFile();
 	// Play a sound on a specified channel group
 	void playSound(const std::string& sound_name, const std::string& channel_group_name);
+	// Play a sound on a specified channel group
+	// Overloaded method that accepts a boolean for uncompressed sounds
+	void playSound(const std::string& sound_name, const std::string& channel_group_name, bool uncompressedSound);
 	// Stop all the sounds on a specified channel group
 	void stopSound(const std::string& channel_group_name);
 	// Sets bool pause on a specified channel group
 	void setPause(const std::string& channel_group_name, const bool pause);
 	// Gets the current playback position of a sound
 	void getSoundCurrentPosition(const std::string& sound_name);
+	// Gets the current playback position of a sound
+	// Overloaded method that accepts a boolean for uncompressed sounds
+	void getSoundCurrentPosition(const std::string& sound_name, bool uncompressedSound);
 	// Sets the current frequency of a sound
 	void setSoundCurrentFrequency(const std::string& sound_name, float frequency);
 	// Gets the current frequency of a sound
 	void getSoundCurrentFrequency(const std::string& sound_name);
 	// Gets the length of a sound
 	void getSoundLength(const std::string& sound_name);
+	// Gets the length of a sound
+	// Overloaded method that accepts a boolean for uncompressed sounds
+	void getSoundLength(const std::string& sound_name, bool uncompressedSound);
 
 
 private:
@@ -110,6 +119,7 @@ private:
 	FMOD::System*						 m_system;			// FMod System
 	std::map<std::string, ChannelGroup*> m_channel_groups;	// Map Tree of Channel Groups
 	std::map<std::string, Sound*>		 m_sounds;			// Map Tree of Sounds
+	std::map<std::string, Sound*>		 m_uncrompressed_sounds; // Map Tree of Uncompressed Sounds
 	std::map<FMOD_DSP_TYPE, FMOD::DSP*>	 m_dsp;				// Map Tree of Digital Sound Processors
 
 	friend class SoundUI; // We will allow SoundUI to access these private variables above

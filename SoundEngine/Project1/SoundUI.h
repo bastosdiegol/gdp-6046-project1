@@ -17,6 +17,7 @@ public:
 	}menu;
 
     bool is_my_tool_active;
+	bool uncompressedMusic;
 	menu menuState;
 	ChannelGroup* m_channel;
 	std::map<std::string, Sound*>::iterator itSounds;
@@ -24,7 +25,12 @@ public:
 
 	// Constructor
     SoundUI(FModManager* fmod_manager, Localization* localization)
-			: m_fmod_manager(fmod_manager), m_localization(localization), is_my_tool_active(true), m_channel(nullptr), menuState(SoundUI::IDLE){}
+			: m_fmod_manager(fmod_manager), 
+			  m_localization(localization), 
+			  is_my_tool_active(true), 
+			  uncompressedMusic(false), 
+		      m_channel(nullptr), 
+			  menuState(SoundUI::IDLE){}
 
 	// LifeCycle method thats going to be inside the main program loop
 	void render();

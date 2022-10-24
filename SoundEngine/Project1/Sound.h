@@ -16,7 +16,7 @@ public:
 	float			m_balance;
 	unsigned int	m_lenght;
 	unsigned int	m_cur_position;
-
+	bool			m_hasUncompressed;
 	// Default Constructor
 	Sound();
 	// Destructor
