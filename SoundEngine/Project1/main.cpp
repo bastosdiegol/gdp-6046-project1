@@ -25,6 +25,7 @@ GLFWwindow*		g_window;
 FModManager*	g_fmod_manager;
 Localization*	g_localization;
 bool			g_lastMoveResult = true;
+std::vector<MeshObject> g_vMeshObjects;
 
 //// Vertex Struct that we are going to send to GPU to be drawn
 //struct sVertex_XYZ_RGB {
@@ -59,6 +60,65 @@ static const char* fragment_shader_text =
 glm::vec3 g_cameraEye = glm::vec3(0.0, -60.0, 1.0f);
 // Global Variable to the Camera Target
 glm::vec3 g_cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
+
+#define behindCamera glm::vec3(  0.0f,-80.0f,  1.0f)
+#define posQ		 glm::vec3( -8.0f,  0.0f,  8.0f)
+#define posW		 glm::vec3(  0.0f,  0.0f,  8.0f)
+#define posE		 glm::vec3(  8.0f,  0.0f,  8.0f)
+#define posA		 glm::vec3( -8.0f,  0.0f,  0.0f)
+#define posS		 glm::vec3(  0.0f,  0.0f,  0.0f)
+#define posD		 glm::vec3(  8.0f,  0.0f,  0.0f)
+#define posZ		 glm::vec3( -8.0f,  0.0f, -8.0f)
+#define posX		 glm::vec3(  0.0f,  0.0f, -8.0f)
+#define posC		 glm::vec3(  8.0f,  0.0f, -8.0f)
+
+void newGameSetMeshes() {
+	for (int i = 1; i < g_vMeshObjects.size(); i++) {
+		g_vMeshObjects[i].m_position = behindCamera;
+	}
+}
+
+void loadGameSetMeshes() {
+	int countX = 1;		// Index of X pieces existing in the game. Starts at 1 - its the first model
+	int countO = 2;		// Index of O pieces existing in the game. Starts at 2 - its the first model
+	int posIndex = 0;	// Global Index for us to keep a track of which slot are we checking now
+	// Iterate through the game board
+	for (int iLine = 0; iLine < 3; iLine++) {
+		for (int iCol = 0; iCol < 3; iCol++) {
+			// Checks if this piece is X or Y
+			if (g_tttGame->m_board[iLine][iCol] == 'X') {
+				// Uses the posIndex to know where to place the Mesh Object
+				switch (posIndex) {
+				case 0: g_vMeshObjects[countX].m_position = posQ; break;
+				case 1: g_vMeshObjects[countX].m_position = posW; break;
+				case 2: g_vMeshObjects[countX].m_position = posE; break;
+				case 3: g_vMeshObjects[countX].m_position = posA; break;
+				case 4: g_vMeshObjects[countX].m_position = posS; break;
+				case 5: g_vMeshObjects[countX].m_position = posD; break;
+				case 6: g_vMeshObjects[countX].m_position = posZ; break;
+				case 7: g_vMeshObjects[countX].m_position = posX; break;
+				case 8: g_vMeshObjects[countX].m_position = posC; break;
+				}
+				countX += 2;
+			} else if (g_tttGame->m_board[iLine][iCol] == 'O') {
+				switch (posIndex) {
+				case 0: g_vMeshObjects[countO].m_position = posQ; break;
+				case 1: g_vMeshObjects[countO].m_position = posW; break;
+				case 2: g_vMeshObjects[countO].m_position = posE; break;
+				case 3: g_vMeshObjects[countO].m_position = posA; break;
+				case 4: g_vMeshObjects[countO].m_position = posS; break;
+				case 5: g_vMeshObjects[countO].m_position = posD; break;
+				case 6: g_vMeshObjects[countO].m_position = posZ; break;
+				case 7: g_vMeshObjects[countO].m_position = posX; break;
+				case 8: g_vMeshObjects[countO].m_position = posC; break;
+				}
+				countO += 2;
+			}
+			// Increments the posIndex to let us know that will be checking the next slot of the board
+			posIndex++;
+		}
+	}
+}
 
 void key_callback(GLFWwindow* window, const int key, int scancode, const int action, const int mods) {
 	// Move the camera
@@ -97,64 +157,82 @@ void key_callback(GLFWwindow* window, const int key, int scancode, const int act
 				g_lastMoveResult = g_tttGame->makeAMove('q');
 				if (!g_lastMoveResult)
 					std::cout << "Your move attempt was invalid. There's already a piece on the position Q. Try again!" << std::endl;
-				else if (!g_tttGame->m_isGameOver)
+				else if (!g_tttGame->m_isGameOver) {
+					g_vMeshObjects[g_tttGame->m_currentRound-1].m_position = posQ;
 					g_tttGame->nextTurn();
+				}
 				break;
 			case GLFW_KEY_W:
 				g_lastMoveResult = g_tttGame->makeAMove('w');
 				if (!g_lastMoveResult)
 					std::cout << "Your move attempt was invalid. There's already a piece on the position W. Try again!" << std::endl;
-				else if (!g_tttGame->m_isGameOver)
+				else if (!g_tttGame->m_isGameOver) {
+					g_vMeshObjects[g_tttGame->m_currentRound-1].m_position = posW;
 					g_tttGame->nextTurn();
+				}
 				break;
 			case GLFW_KEY_E:
 				g_lastMoveResult = g_tttGame->makeAMove('e');
 				if (!g_lastMoveResult)
 					std::cout << "Your move attempt was invalid. There's already a piece on the position E. Try again!" << std::endl;
-				else if (!g_tttGame->m_isGameOver)
+				else if (!g_tttGame->m_isGameOver) {
+					g_vMeshObjects[g_tttGame->m_currentRound-1].m_position = posE;
 					g_tttGame->nextTurn();
+				}
 				break;
 			case GLFW_KEY_A:
 				g_lastMoveResult = g_tttGame->makeAMove('a');
 				if (!g_lastMoveResult)
 					std::cout << "Your move attempt was invalid. There's already a piece on the position A. Try again!" << std::endl;
-				else if (!g_tttGame->m_isGameOver)
+				else if (!g_tttGame->m_isGameOver) {
+					g_vMeshObjects[g_tttGame->m_currentRound-1].m_position = posA;
 					g_tttGame->nextTurn();
+				}
 				break;
 			case GLFW_KEY_S:
 				g_lastMoveResult = g_tttGame->makeAMove('s');
 				if (!g_lastMoveResult)
 					std::cout << "Your move attempt was invalid. There's already a piece on the position S. Try again!" << std::endl;
-				else if (!g_tttGame->m_isGameOver)
+				else if (!g_tttGame->m_isGameOver) {
+					g_vMeshObjects[g_tttGame->m_currentRound-1].m_position = posS;
 					g_tttGame->nextTurn();
+				}
 				break;
 			case GLFW_KEY_D:
 				g_lastMoveResult = g_tttGame->makeAMove('d');
 				if (!g_lastMoveResult)
 					std::cout << "Your move attempt was invalid. There's already a piece on the position D. Try again!" << std::endl;
-				else if (!g_tttGame->m_isGameOver)
+				else if (!g_tttGame->m_isGameOver) {
+					g_vMeshObjects[g_tttGame->m_currentRound-1].m_position = posD;
 					g_tttGame->nextTurn();
+				}
 				break;
 			case GLFW_KEY_Z:
 				g_lastMoveResult = g_tttGame->makeAMove('z');
 				if (!g_lastMoveResult)
 					std::cout << "Your move attempt was invalid. There's already a piece on the position Z. Try again!" << std::endl;
-				else if (!g_tttGame->m_isGameOver)
+				else if (!g_tttGame->m_isGameOver) {
+					g_vMeshObjects[g_tttGame->m_currentRound-1].m_position = posZ;
 					g_tttGame->nextTurn();
+				}
 				break;
 			case GLFW_KEY_X:
 				g_lastMoveResult = g_tttGame->makeAMove('x');
 				if (!g_lastMoveResult)
 					std::cout << "Your move attempt was invalid. There's already a piece on the position X. Try again!" << std::endl;
-				else if (!g_tttGame->m_isGameOver)
+				else if (!g_tttGame->m_isGameOver) {
+					g_vMeshObjects[g_tttGame->m_currentRound-1].m_position = posX;
 					g_tttGame->nextTurn();
+				}
 				break;
 			case GLFW_KEY_C:
 				g_lastMoveResult = g_tttGame->makeAMove('c');
 				if (!g_lastMoveResult)
 					std::cout << "Your move attempt was invalid. There's already a piece on the position C. Try again!" << std::endl;
-				else if (!g_tttGame->m_isGameOver)
+				else if (!g_tttGame->m_isGameOver) {
+					g_vMeshObjects[g_tttGame->m_currentRound-1].m_position = posC;
 					g_tttGame->nextTurn();
+				}
 				break;
 			case GLFW_KEY_1:
 				g_localization->setLanguage(g_localization->m_vLanguagesAvailable[0]);
@@ -174,14 +252,19 @@ void key_callback(GLFWwindow* window, const int key, int scancode, const int act
 				break;
 			}
 		}
-		if(key == GLFW_KEY_N)
+		if (key == GLFW_KEY_N) {
 			g_tttGame->newGame();
+			newGameSetMeshes();
+		}		
 		if (key == GLFW_KEY_K)
 			if(mods == GLFW_MOD_CONTROL)
 				g_tttGame->saveGame();
 		if (key == GLFW_KEY_L)
-			if (mods == GLFW_MOD_CONTROL)
+			if (mods == GLFW_MOD_CONTROL) {
 				g_tttGame->loadGame();
+				newGameSetMeshes();
+				loadGameSetMeshes();
+			}
 	}
 }
 
@@ -231,41 +314,39 @@ int main(int argc, char* argv[]) {
 	short numberOf_O_ToDrawn = 4;
 	pfr = new PlyFileReader("./assets/models/tictactoeO.ply");
 	v_PlyModels.push_back(pfr);
-
-	std::vector<MeshObject> v_MeshObjects;
+	
 	// Game Board
-	MeshObject   board(meshID::board, "board", glm::vec3(0.0f));
+	MeshObject   board(meshID::board, "board", posS);
 	board.loadVerticesToBeDrawn(v_PlyModels[0]->pTheModelArray, v_PlyModels[0]->pTheModelTriangleArray, v_PlyModels[0]->m_numberOfTriangles);
-	v_MeshObjects.push_back(board);
-	// Game Pieces X
-	MeshObject pieceX1(meshID::pieceX, "X1", glm::vec3(-10.0f, 0.0f, 0.0f));
+	g_vMeshObjects.push_back(board);
+	// Game Pieces by Turn Order
+	MeshObject pieceX1(meshID::pieceX, "X1", behindCamera);
 	pieceX1.loadVerticesToBeDrawn(v_PlyModels[1]->pTheModelArray, v_PlyModels[1]->pTheModelTriangleArray, v_PlyModels[1]->m_numberOfTriangles);
-	v_MeshObjects.push_back(pieceX1);
-	MeshObject pieceX2(meshID::pieceX, "X2", glm::vec3(-10.0f, 0.0f, 10.0f));
-	pieceX2.loadVerticesToBeDrawn(v_PlyModels[1]->pTheModelArray, v_PlyModels[1]->pTheModelTriangleArray, v_PlyModels[1]->m_numberOfTriangles);
-	v_MeshObjects.push_back(pieceX2);
-	MeshObject pieceX3(meshID::pieceX, "X3", glm::vec3(-10.0f, 0.0f, -10.0f));
-	pieceX3.loadVerticesToBeDrawn(v_PlyModels[1]->pTheModelArray, v_PlyModels[1]->pTheModelTriangleArray, v_PlyModels[1]->m_numberOfTriangles);
-	v_MeshObjects.push_back(pieceX3);
-	MeshObject pieceX4(meshID::pieceX, "X4", glm::vec3(10.0f, 0.0f, 10.0f));
-	pieceX4.loadVerticesToBeDrawn(v_PlyModels[1]->pTheModelArray, v_PlyModels[1]->pTheModelTriangleArray, v_PlyModels[1]->m_numberOfTriangles);
-	v_MeshObjects.push_back(pieceX4);
-	MeshObject pieceX5(meshID::pieceX, "X5", glm::vec3(10.0f, 0.0f, -10.0f));
-	pieceX5.loadVerticesToBeDrawn(v_PlyModels[1]->pTheModelArray, v_PlyModels[1]->pTheModelTriangleArray, v_PlyModels[1]->m_numberOfTriangles);
-	v_MeshObjects.push_back(pieceX5);
-	// Game Pieces O
-	MeshObject pieceO1(meshID::pieceO, "O1", glm::vec3(0.0f));
+	g_vMeshObjects.push_back(pieceX1);
+	MeshObject pieceO1(meshID::pieceO, "O1", behindCamera);
 	pieceO1.loadVerticesToBeDrawn(v_PlyModels[2]->pTheModelArray, v_PlyModels[2]->pTheModelTriangleArray, v_PlyModels[2]->m_numberOfTriangles);
-	v_MeshObjects.push_back(pieceO1);
-	MeshObject pieceO2(meshID::pieceO, "O2", glm::vec3(0.0f));
+	g_vMeshObjects.push_back(pieceO1);
+	MeshObject pieceX2(meshID::pieceX, "X2", behindCamera);
+	pieceX2.loadVerticesToBeDrawn(v_PlyModels[1]->pTheModelArray, v_PlyModels[1]->pTheModelTriangleArray, v_PlyModels[1]->m_numberOfTriangles);
+	g_vMeshObjects.push_back(pieceX2);
+	MeshObject pieceO2(meshID::pieceO, "O2", behindCamera);
 	pieceO2.loadVerticesToBeDrawn(v_PlyModels[2]->pTheModelArray, v_PlyModels[2]->pTheModelTriangleArray, v_PlyModels[2]->m_numberOfTriangles);
-	v_MeshObjects.push_back(pieceO2);
-	MeshObject pieceO3(meshID::pieceO, "O3", glm::vec3(0.0f));
+	g_vMeshObjects.push_back(pieceO2);
+	MeshObject pieceX3(meshID::pieceX, "X3", behindCamera);
+	pieceX3.loadVerticesToBeDrawn(v_PlyModels[1]->pTheModelArray, v_PlyModels[1]->pTheModelTriangleArray, v_PlyModels[1]->m_numberOfTriangles);
+	g_vMeshObjects.push_back(pieceX3);
+	MeshObject pieceO3(meshID::pieceO, "O3", behindCamera);
 	pieceO3.loadVerticesToBeDrawn(v_PlyModels[2]->pTheModelArray, v_PlyModels[2]->pTheModelTriangleArray, v_PlyModels[2]->m_numberOfTriangles);
-	v_MeshObjects.push_back(pieceO3);
-	MeshObject pieceO4(meshID::pieceO, "O4", glm::vec3(0.0f));
+	g_vMeshObjects.push_back(pieceO3);
+	MeshObject pieceX4(meshID::pieceX, "X4", behindCamera);
+	pieceX4.loadVerticesToBeDrawn(v_PlyModels[1]->pTheModelArray, v_PlyModels[1]->pTheModelTriangleArray, v_PlyModels[1]->m_numberOfTriangles);
+	g_vMeshObjects.push_back(pieceX4);
+	MeshObject pieceO4(meshID::pieceO, "O4", behindCamera);
 	pieceO4.loadVerticesToBeDrawn(v_PlyModels[2]->pTheModelArray, v_PlyModels[2]->pTheModelTriangleArray, v_PlyModels[2]->m_numberOfTriangles);
-	v_MeshObjects.push_back(pieceO4);
+	g_vMeshObjects.push_back(pieceO4);
+	MeshObject pieceX5(meshID::pieceX, "X5", behindCamera);
+	pieceX5.loadVerticesToBeDrawn(v_PlyModels[1]->pTheModelArray, v_PlyModels[1]->pTheModelTriangleArray, v_PlyModels[1]->m_numberOfTriangles);
+	g_vMeshObjects.push_back(pieceX5);
 	
 	//initialize glfw/glad
 	if (!glfwInit())
@@ -380,7 +461,7 @@ int main(int argc, char* argv[]) {
 		// Sets VOA to 0
 		glBindVertexArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 		glDisableVertexAttribArray(vpos_location);
 		glDisableVertexAttribArray(vcol_location);
@@ -416,7 +497,7 @@ int main(int argc, char* argv[]) {
 		// mat4x4_mul(mvp, p, m);
 
 		std::vector<MeshObject>::iterator itMesh;
-		for (itMesh = v_MeshObjects.begin(); itMesh != v_MeshObjects.end(); itMesh++) {
+		for (itMesh = g_vMeshObjects.begin(); itMesh != g_vMeshObjects.end(); itMesh++) {
 			if (!itMesh->m_isVisible) {
 				// Skip this object because its not visible
 				continue;
@@ -449,10 +530,9 @@ int main(int argc, char* argv[]) {
 			}
 			
 			//glDrawArrays(GL_TRIANGLES, 0, itMesh->m_numVerticesToDraw);
-			glDrawElements(GL_TRIANGLES,
-				itMesh->m_numVerticesToDraw,
-				GL_UNSIGNED_INT,
-				(void*)0);
+			glDrawArrays(GL_TRIANGLES,
+				0,
+				itMesh->m_numVerticesToDraw);
 			glBindVertexArray(0);
 		}
 		
@@ -471,6 +551,8 @@ int main(int argc, char* argv[]) {
 			break;
 		case SoundUI::LOAD :
 			g_tttGame->loadGame();
+			newGameSetMeshes();
+			loadGameSetMeshes();
 			sound_ui.menuState = SoundUI::IDLE;
 			break;
 		case SoundUI::LANG :
