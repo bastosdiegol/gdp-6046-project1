@@ -499,28 +499,6 @@ void FModManager::loadSoundsFromFile() {
 		if (newSound->m_type == "music") {
 			// Calls the FMOD function to create the new sound with mode LOOP - BGM
 			m_result = m_system->createSound(newSound->m_path.c_str(), FMOD_LOOP_NORMAL, nullptr, &newSound->m_sound);
-			// This music is uncompressed
-			if (newSound->m_format == "wav") {
-				// We loopuk for the compressed version
-				std::map<std::string, Sound*>::iterator itCompressedVersion = m_sounds.find(newSound->m_name);
-				// If found we set it has having an uncompressed version
-				if (itCompressedVersion != m_sounds.end()) {
-					itCompressedVersion->second->m_hasUncompressed = true;
-				}
-				// Checks the result
-				if (m_result != FMOD_OK) {
-					std::cout << "fmod error: #" << m_result << "-" << FMOD_ErrorString(m_result) << std::endl;
-					newSound->~Sound(); // Deletes the instance
-					continue;			// Continues the loop
-				}
-				// Adds the new uncompressed sound to the map tree of uncompressed sounds
-				m_uncrompressed_sounds.try_emplace(newSound->m_name, newSound);
-				// Gets attributes from FMOD instead of XML
-				getSoundCurrentPosition(newSound->m_name);
-				getSoundLength(newSound->m_name);
-				// Avoid inserting it on the sounds map, so we just continue the loop
-				continue;
-			}
 		} else if (newSound->m_type == "fx") {
 			// Calls the FMOD function to create the new sound with mode DEFAULT - FX
 			m_result = m_system->createSound(newSound->m_path.c_str(), FMOD_DEFAULT, nullptr, &newSound->m_sound);
@@ -552,6 +530,12 @@ void FModManager::playSound(const std::string& sound_name, const std::string& ch
 		return;
 	}
 
+	//FMOD::Channel* channel;
+	// Calls FMOD to play the sound
+	// TODO : DELETE
+	float tempVolume; //  <<<<<< REMEMBER TO DELETE THIS
+	getChannelGroupVolume(channel_group_name, &tempVolume);
+	DEBUG_PRINT("playSound() about to be called. Channel Volume is: %f\n", tempVolume);
 	m_result = m_system->playSound(itSound->second->m_sound, itChannel->second->m_group, true, &itSound->second->m_channel);
 	// Checks the result
 	if (m_result != FMOD_OK) {
@@ -565,48 +549,6 @@ void FModManager::playSound(const std::string& sound_name, const std::string& ch
 		return;
 	}
 
-}
-
-void FModManager::playSound(const std::string& sound_name, const std::string& channel_group_name, bool uncompressedSound) {
-	DEBUG_PRINT("FModManager::playSound(%s, %s, %d)\n", sound_name.c_str(), channel_group_name.c_str(), uncompressedSound);
-	// Tries to find the sound
-	std::map<std::string, Sound*>::iterator itSound;
-	if (uncompressedSound) {
-		// We are playing uncompressed
-		itSound = m_uncrompressed_sounds.find(sound_name);
-	} else {
-		// We are playing compressed
-		itSound = m_sounds.find(sound_name);
-	}
-	 
-	// Tries to find the channel group
-	std::map<std::string, ChannelGroup*>::iterator itChannel = m_channel_groups.find(channel_group_name);
-	if (uncompressedSound) {
-		if (itSound == m_uncrompressed_sounds.end() || itChannel == m_channel_groups.end()) {
-			std::cout << "FModManager error: Couldn't find the Sound named #" << sound_name
-				<< " or ChannelGroup named #" << channel_group_name << std::endl;
-			return;
-		}
-	} else {
-		if (itSound == m_sounds.end() || itChannel == m_channel_groups.end()) {
-			std::cout << "FModManager error: Couldn't find the Sound named #" << sound_name
-				<< " or ChannelGroup named #" << channel_group_name << std::endl;
-			return;
-		}
-	}
-
-	m_result = m_system->playSound(itSound->second->m_sound, itChannel->second->m_group, true, &itSound->second->m_channel);
-	// Checks the result
-	if (m_result != FMOD_OK) {
-		std::cout << "fmod error: #" << m_result << "-" << FMOD_ErrorString(m_result) << std::endl;
-		return;
-	}
-	// Tries to set the sound as paused
-	m_result = itSound->second->m_channel->setPaused(false);
-	if (m_result != FMOD_OK) {
-		std::cout << "fmod error: #" << m_result << "-" << FMOD_ErrorString(m_result) << std::endl;
-		return;
-	}
 }
 
 void FModManager::stopSound(const std::string& channel_group_name) {
@@ -618,15 +560,9 @@ void FModManager::stopSound(const std::string& channel_group_name) {
 		std::cout << "FModManager error: Couldn't find the ChannelGroup named #" << channel_group_name << std::endl;
 		return;
 	}
-	// Tries to find the sound
+
 	std::map<std::string, Sound*>::iterator itSound;
 	for (itSound = m_sounds.begin(); itSound != m_sounds.end(); itSound++) {
-		if (channel_group_name.find(itSound->second->m_type) != -1) {
-			itSound->second->m_channel = nullptr;
-		}
-	}
-	// Do the same for uncompressed files
-	for (itSound = m_uncrompressed_sounds.begin(); itSound != m_uncrompressed_sounds.end(); itSound++) {
 		if (channel_group_name.find(itSound->second->m_type) != -1) {
 			itSound->second->m_channel = nullptr;
 		}
@@ -635,42 +571,11 @@ void FModManager::stopSound(const std::string& channel_group_name) {
 	itChannel->second->m_group->stop();
 }
 
-//void FModManager::stopSound(const std::string& channel_group_name, bool uncompressedSound) {
-//	DEBUG_PRINT("FModManager::stopSound(%s)\n", channel_group_name.c_str());
-//	// Tries to find the channel group
-//	std::map<std::string, ChannelGroup*>::iterator itChannel = m_channel_groups.find(channel_group_name);
-//
-//	if (itChannel == m_channel_groups.end()) {
-//		std::cout << "FModManager error: Couldn't find the ChannelGroup named #" << channel_group_name << std::endl;
-//		return;
-//	}
-//
-//	std::map<std::string, Sound*>::iterator itSound;
-//	if (uncompressedSound) {
-//		// Tries to find the sound
-//		for (itSound = m_uncrompressed_sounds.begin(); itSound != m_uncrompressed_sounds.end(); itSound++) {
-//			if (channel_group_name.find(itSound->second->m_type) != -1) {
-//				itSound->second->m_channel = nullptr;
-//			}
-//		}
-//	} else {
-//		// Tries to find the sound
-//		for (itSound = m_sounds.begin(); itSound != m_sounds.end(); itSound++) {
-//			if (channel_group_name.find(itSound->second->m_type) != -1) {
-//				itSound->second->m_channel = nullptr;
-//			}
-//		}
-//	}
-//
-//	itChannel->second->m_group->stop();
-//}
-
 void FModManager::setPause(const std::string& channel_group_name, const bool pause) {
 	DEBUG_PRINT("FModManager::setPause(%s, %d)\n", channel_group_name.c_str(), pause);
 	// Tries to find the channel group
 	std::map<std::string, ChannelGroup*>::iterator itChannel = m_channel_groups.find(channel_group_name);
 
-	// Tries to find the channel group
 	if (itChannel == m_channel_groups.end()) {
 		std::cout << "FModManager error: Couldn't find the ChannelGroup named #" << channel_group_name << std::endl;
 		return;
@@ -684,13 +589,11 @@ void FModManager::getSoundCurrentPosition(const std::string& sound_name) {
 	// Tries to find the sound
 	std::map<std::string, Sound*>::iterator itSound = m_sounds.find(sound_name);
 
-	// Tries to find the sound
 	if (itSound == m_sounds.end()) {
 		std::cout << "FModManager error: Couldn't find the Sound named #" << sound_name  << std::endl;
 		return;
 	}
 
-	// Tries to get the current Position
 	if (itSound->second->m_channel != nullptr) {
 		m_result = itSound->second->m_channel->getPosition(&itSound->second->m_cur_position, FMOD_TIMEUNIT_MS);
 		if (m_result != FMOD_OK) {
@@ -700,47 +603,17 @@ void FModManager::getSoundCurrentPosition(const std::string& sound_name) {
 	}
 }
 
-
-void FModManager::getSoundCurrentPosition(const std::string& sound_name, bool uncompressedSound) {
-	//DEBUG_PRINT("FModManager::getSoundCurrentPosition(%s)\n", sound_name.c_str());
-	std::map<std::string, Sound*>::iterator itSound;
-	// Tries to find the sound
-	if (uncompressedSound) {
-		itSound = m_uncrompressed_sounds.find(sound_name);
-		if (itSound == m_uncrompressed_sounds.end()) {
-			std::cout << "FModManager error: Couldn't find the Sound named #" << sound_name << std::endl;
-			return;
-		}
-	} else {
-		itSound = m_sounds.find(sound_name);
-		if (itSound == m_sounds.end()) {
-			std::cout << "FModManager error: Couldn't find the Sound named #" << sound_name << std::endl;
-			return;
-		}
-	}
-
-	// Tries to get the current Position
-	if (itSound->second->m_channel != nullptr) {
-		m_result = itSound->second->m_channel->getPosition(&itSound->second->m_cur_position, FMOD_TIMEUNIT_MS);
-		if (m_result != FMOD_OK) {
-			std::cout << "fmod error: #" << m_result << "-" << FMOD_ErrorString(m_result) << std::endl;
-			return;
-		}
-	}
-}
 
 void FModManager::setSoundCurrentFrequency(const std::string& sound_name, float frequency) {
 	DEBUG_PRINT("FModManager::setSoundCurrentFrequency(%s)\n", sound_name.c_str());
 	// Tries to find the sound
 	std::map<std::string, Sound*>::iterator itSound = m_sounds.find(sound_name);
 
-	// Tries to find the sound
 	if (itSound == m_sounds.end()) {
 		std::cout << "FModManager error: Couldn't find the Sound named #" << sound_name << std::endl;
 		return;
 	}
 
-	// Tries to set the frequency
 	if (itSound->second->m_channel != nullptr) {
 		m_result = itSound->second->m_channel->setFrequency(frequency);
 		if (m_result != FMOD_OK) {
@@ -755,13 +628,11 @@ void FModManager::getSoundCurrentFrequency(const std::string& sound_name) {
 	// Tries to find the sound
 	std::map<std::string, Sound*>::iterator itSound = m_sounds.find(sound_name);
 
-	// Tries to find the sound
 	if (itSound == m_sounds.end()) {
 		std::cout << "FModManager error: Couldn't find the Sound named #" << sound_name << std::endl;
 		return;
 	}
 
-	// Tries to find the frequency
 	if (itSound->second->m_channel != nullptr) {
 		m_result = itSound->second->m_channel->getFrequency(&itSound->second->m_frequency);
 		if (m_result != FMOD_OK) {
@@ -772,44 +643,14 @@ void FModManager::getSoundCurrentFrequency(const std::string& sound_name) {
 }
 
 void FModManager::getSoundLength(const std::string& sound_name) {
-	//DEBUG_PRINT("FModManager::getSoundLength(%s)\n", sound_name.c_str());
+	DEBUG_PRINT("FModManager::getSoundLength(%s)\n", sound_name.c_str());
 	std::map<std::string, Sound*>::iterator itSound = m_sounds.find(sound_name);
 
-	// Tries to find the sound
 	if (itSound == m_sounds.end()) {
 		std::cout << "FModManager error: Couldn't find the Sound named #" << sound_name << std::endl;
 		return;
 	}
 
-	// Tries to get the length
-	m_result = itSound->second->m_sound->getLength(&itSound->second->m_lenght, FMOD_TIMEUNIT_MS);
-	if (m_result != FMOD_OK) {
-		std::cout << "fmod error: #" << m_result << "-" << FMOD_ErrorString(m_result) << std::endl;
-		itSound->second->m_lenght = 0;
-		return;
-	}
-}
-
-void FModManager::getSoundLength(const std::string& sound_name, bool uncompressedSound) {
-	//DEBUG_PRINT("FModManager::getSoundLength(%s, %d)\n", sound_name.c_str(), uncompressedSound);
-	std::map<std::string, Sound*>::iterator itSound;
-
-	// Tries to find the sound
-	if (uncompressedSound) {
-		itSound = m_uncrompressed_sounds.find(sound_name);
-		if (itSound == m_uncrompressed_sounds.end()) {
-			std::cout << "FModManager error: Couldn't find the Sound named #" << sound_name << std::endl;
-			return;
-		}
-	} else {
-		itSound = m_sounds.find(sound_name);
-		if (itSound == m_sounds.end()) {
-			std::cout << "FModManager error: Couldn't find the Sound named #" << sound_name << std::endl;
-			return;
-		}
-	}
-
-	// Tries to get the length
 	m_result = itSound->second->m_sound->getLength(&itSound->second->m_lenght, FMOD_TIMEUNIT_MS);
 	if (m_result != FMOD_OK) {
 		std::cout << "fmod error: #" << m_result << "-" << FMOD_ErrorString(m_result) << std::endl;
