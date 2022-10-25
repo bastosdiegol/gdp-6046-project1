@@ -8,7 +8,10 @@ void SoundUI::render() {
 	ImGui::Begin("Sound Engine Tools", &is_my_tool_active, ImGuiWindowFlags_MenuBar );
 
     if (ImGui::BeginMenuBar()) {
-        if (ImGui::BeginMenu("File")) {
+        if (ImGui::BeginMenu("Game")) {
+            if (ImGui::MenuItem("New game", "N")) {
+                menuState = NEWGAME;
+            }
             if (ImGui::MenuItem("Load game", "Ctrl+L")) {
                 menuState = LOAD;
             }

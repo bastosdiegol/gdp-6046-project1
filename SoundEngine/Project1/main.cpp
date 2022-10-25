@@ -559,6 +559,11 @@ int main(int argc, char* argv[]) {
 			sound_ui.render();
 		// ImGui Menu Treatment
 		switch (sound_ui.menuState) {
+		case SoundUI::NEWGAME :
+			g_tttGame->newGame();
+			newGameSetMeshes();
+			sound_ui.menuState = SoundUI::IDLE;
+			break;
 		case SoundUI::SAVE :
 			g_tttGame->saveGame();
 			sound_ui.menuState = SoundUI::IDLE;

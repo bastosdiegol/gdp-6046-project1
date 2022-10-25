@@ -10,6 +10,7 @@ protected:
 
 public:
 	typedef enum {
+		NEWGAME,
 		SAVE,
 		LOAD,
 		LANG,
