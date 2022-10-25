@@ -528,6 +528,7 @@ void FModManager::loadSoundsFromFile() {
 		// Gets attributes from FMOD instead of XML
 		getSoundCurrentPosition(newSound->m_name);
 		getSoundLength(newSound->m_name);
+		getSoundCurrentFrequency(newSound->m_name);
 	}
 }
 

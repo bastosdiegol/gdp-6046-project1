@@ -154,11 +154,12 @@ void SoundUI::render() {
                             m_fmod_manager->getSoundCurrentPosition(itSounds->first);
                             ImGui::Text("Position: %d:%d", (int)itSounds->second->m_cur_position / 1000 / 60, (int)itSounds->second->m_cur_position / 1000 % 60);
                             ImGui::TableNextColumn();
+                            m_fmod_manager->getSoundCurrentFrequency(itSounds->first);
                             ImGui::Text("Frequency: %0.1f", itSounds->second->m_frequency);
                             ImGui::TableNextColumn();
                             // Frequency Knob
-                            if (ImGui::SliderFloat("##Frequency", &itSounds->second->m_frequency, 0.5f, 2.0f)) {
-                                m_fmod_manager->setChannelGroupPitch(channelName, itSounds->second->m_frequency); // Sets new pan
+                            if (ImGui::SliderFloat("##Frequency", &itSounds->second->m_frequency, -10000.0f, 48000.0f)) {
+                                m_fmod_manager->setSoundCurrentFrequency(itSounds->first, itSounds->second->m_frequency); // Sets new pan
                             }
                         }
                     }
@@ -195,10 +196,11 @@ void SoundUI::render() {
                             m_fmod_manager->getSoundCurrentPosition(itSounds->first);
                             ImGui::Text("Position: %d:%d", (int)itSounds->second->m_cur_position / 1000 / 60, (int)itSounds->second->m_cur_position / 1000 % 60);
                             ImGui::TableNextColumn();
+                            m_fmod_manager->getSoundCurrentFrequency(itSounds->first);
                             ImGui::Text("Frequency: %0.1f", itSounds->second->m_frequency);
                             ImGui::TableNextColumn();
-                            if (ImGui::SliderFloat("##Frequency", &itSounds->second->m_frequency, 0.5f, 2.0f)) {
-                                m_fmod_manager->setChannelGroupPitch(channelName, itSounds->second->m_frequency); // Sets new pan
+                            if (ImGui::SliderFloat("##Frequency", &itSounds->second->m_frequency, -10000.0f, 48000.0f)) {
+                                m_fmod_manager->setSoundCurrentFrequency(itSounds->first, itSounds->second->m_frequency); // Sets new pan
                             }
                         }
                     }
@@ -401,13 +403,13 @@ void SoundUI::render() {
     }
     // TODO: Future development TabBar for DSP with each choosen DSP with its own tab
     // Inside each tab the user can modify each attribute from the DSP
-    //ImGui::BeginTabBar("DSP Effects");
-    //std::map<FMOD_DSP_TYPE, FMOD::DSP*>::iterator itDSP;
-    //for (itDSP = m_fmod_manager->m_dsp.begin(); itDSP != m_fmod_manager->m_dsp.end(); itDSP++) {
-    //    if (ImGui::BeginTabItem(std::to_string(itDSP->first).c_str())) {
-    //        ImGui::EndTabItem();
-    //    }
-    //}
-    //ImGui::EndTabBar();
+    /*ImGui::BeginTabBar("DSP Effects");
+    std::map<FMOD_DSP_TYPE, FMOD::DSP*>::iterator itDSP;
+    for (itDSP = m_fmod_manager->m_dsp.begin(); itDSP != m_fmod_manager->m_dsp.end(); itDSP++) {
+        if (ImGui::BeginTabItem(std::to_string(itDSP->first).c_str())) {
+            ImGui::EndTabItem();
+        }
+    }
+    ImGui::EndTabBar();*/
     ImGui::End();
 }

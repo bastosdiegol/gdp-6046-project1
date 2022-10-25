@@ -85,21 +85,21 @@ void Localization::setLanguage(std::string lang) {
 		// Checks if there's no current language
 		if (strcmp(m_currentLanguage.c_str(), message.attribute("lang").value()) == 0) {
 			pugi::xml_node messageNode = *message.children().begin();
-			m_title = messageNode.child_value(); messageNode = messageNode.next_sibling();
-			m_newGame = messageNode.child_value(); messageNode = messageNode.next_sibling();
-			m_instruction = messageNode.child_value(); messageNode = messageNode.next_sibling();
-			m_gameBoard = messageNode.child_value(); messageNode = messageNode.next_sibling();
-			m_firstPlayerMove = messageNode.child_value(); messageNode = messageNode.next_sibling();
-			m_gameOver = messageNode.child_value(); messageNode = messageNode.next_sibling();
-			m_gameOverDrawn = messageNode.child_value(); messageNode = messageNode.next_sibling();
-			m_congratulations = messageNode.child_value(); messageNode = messageNode.next_sibling();
-			m_newGameInfo = messageNode.child_value(); messageNode = messageNode.next_sibling();
-			m_newTurn = messageNode.child_value(); messageNode = messageNode.next_sibling();
-			m_newTurnPlayer = messageNode.child_value(); messageNode = messageNode.next_sibling();
-			m_noSaveFile = messageNode.child_value(); messageNode = messageNode.next_sibling();
+			m_title = messageNode.child_value();			 messageNode = messageNode.next_sibling();
+			m_newGame = messageNode.child_value();			 messageNode = messageNode.next_sibling();
+			m_instruction = messageNode.child_value();		 messageNode = messageNode.next_sibling();
+			m_gameBoard = messageNode.child_value();		 messageNode = messageNode.next_sibling();
+			m_firstPlayerMove = messageNode.child_value();	 messageNode = messageNode.next_sibling();
+			m_gameOver = messageNode.child_value();			 messageNode = messageNode.next_sibling();
+			m_gameOverDrawn = messageNode.child_value();	 messageNode = messageNode.next_sibling();
+			m_congratulations = messageNode.child_value();	 messageNode = messageNode.next_sibling();
+			m_newGameInfo = messageNode.child_value();		 messageNode = messageNode.next_sibling();
+			m_newTurn = messageNode.child_value();			 messageNode = messageNode.next_sibling();
+			m_newTurnPlayer = messageNode.child_value();	 messageNode = messageNode.next_sibling();
+			m_noSaveFile = messageNode.child_value();		 messageNode = messageNode.next_sibling();
 			m_noSaveInformation = messageNode.child_value(); messageNode = messageNode.next_sibling();
-			m_saveGame = messageNode.child_value(); messageNode = messageNode.next_sibling();
-			m_loadGame = messageNode.child_value(); messageNode = messageNode.next_sibling();
+			m_saveGame = messageNode.child_value();			 messageNode = messageNode.next_sibling();
+			m_loadGame = messageNode.child_value();			 messageNode = messageNode.next_sibling();
 			m_quit = messageNode.child_value();
 		}
 	}

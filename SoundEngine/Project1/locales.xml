@@ -20,35 +20,35 @@
 	<message lang="pt-BR">
 		<title>Ferramentas de Som</title>
 		<newGame>Novo jogo. Boa sorte para ambos jogadores!</newGame>
-		<instruction>Use o teclado para escolher onde colocar as peças no seu turno.</instruction>
+		<instruction>Use o teclado para escolher onde colocar as pecas no seu turno.</instruction>
 		<gameBoard>Tabuleiro do Jogo:</gameBoard>
-		<firstPlayerMove>O primeiro jogador do TicTacToe é sempre o X! Agora, faça a sua jogada!</firstPlayerMove>
+		<firstPlayerMove>O primeiro jogador do TicTacToe e sempre o X! Agora, faca a sua jogada!</firstPlayerMove>
 		<gameOver>Fim de jogo!</gameOver>
-		<gameOverDrawn>O jogo acabou! É um empate! Pressione (N) para iniciar um novo jogo.</gameOverDrawn>
-		<congratulations>O jogador %c ganhou! Parabéns!</congratulations>
+		<gameOverDrawn>O jogo acabou! E um empate! Pressione (N) para iniciar um novo jogo.</gameOverDrawn>
+		<congratulations>O jogador %c ganhou! Parabens!</congratulations>
 		<newGameInfo>Pressione (N) para iniciar um novo jogo.</newGameInfo>
 		<newTurn>Novo turno! ... </newTurn>
-		<newTurnPlayer>Agora é a hora do jogador %c fazer uma jogada.</newTurnPlayer>
-		<noSaveFile>Não há nenhum jogo salvo disponível.</noSaveFile>
-		<noSaveInformation>Não há jogo salvo disponíveis para ser carregado!</noSaveInformation>
+		<newTurnPlayer>Agora e a hora do jogador %c fazer uma jogada.</newTurnPlayer>
+		<noSaveFile>Nao ha nenhum jogo salvo disponivel.</noSaveFile>
+		<noSaveInformation>Nao ha jogo salvo disponiveis para ser carregado!</noSaveInformation>
 		<saveGame>Salvar Jogo</saveGame>
 		<loadGame>Carregar Jogo</loadGame>
 		<quit>Sair</quit>
 	</message>
 	<message lang="es-US">
 		<title>Herramientas de Sonido</title>
-		<newGame>Nuevo juego. ¡Buena suerte a ambos jugadores!</newGame>
-		<instruction>Usa el teclado para elegir dónde colocar las piezas en tu turno.</instruction>
+		<newGame>Nuevo juego. iBuena suerte a ambos jugadores!</newGame>
+		<instruction>Usa el teclado para elegir donde colocar las piezas en tu turno.</instruction>
 		<gameBoard>Junta:</gameBoard>
-		<firstPlayerMove>¡El primer jugador de TicTacToe siempre es X! ¡Ahora, haz tu movimiento!</firstPlayerMove>
-		<gameOver>¡Fin del juego!</gameOver>
-		<gameOverDrawn>¡El juego ha terminado! ¡Es un empate! Presione (N) para comenzar un nuevo juego.</gameOverDrawn>
-		<congratulations>¡El jugador %c ganó! ¡Felicidades!</congratulations>
+		<firstPlayerMove>iEl primer jugador de TicTacToe siempre es X! iAhora, haz tu movimiento!</firstPlayerMove>
+		<gameOver>iFin del juego!</gameOver>
+		<gameOverDrawn>iEl juego ha terminado! iEs un empate! Presione (N) para comenzar un nuevo juego.</gameOverDrawn>
+		<congratulations>iEl jugador %c gano! iFelicidades!</congratulations>
 		<newGameInfo>Presione (N) para comenzar un nuevo juego.</newGameInfo>
-		<newTurn>¡Nuevo turno! ...</newTurn>
+		<newTurn>iNuevo turno! ...</newTurn>
 		<newTurnPlayer>Ahora es el momento de que el jugador %c haga un movimiento.</newTurnPlayer>
 		<noSaveFile>No hay partidas guardadas disponibles.</noSaveFile>
-		<noSaveInformation>¡No hay juegos guardados disponibles para cargar!</noSaveInformation>
+		<noSaveInformation>iNo hay juegos guardados disponibles para cargar!</noSaveInformation>
 		<saveGame>Guardar Partida</saveGame>
 		<loadGame>Cargar Juego</loadGame>
 		<quit>Salir</quit>
@@ -56,17 +56,17 @@
 	<message lang="fr-CA">
 		<title>Outils Sonores</title>
 		<newGame>Nouveau jeu. Bonne chance aux deux joueurs !</newGame>
-		<instruction>Utilisez le clavier pour choisir où placer les pièces à votre tour.</instruction>
+		<instruction>Utilisez le clavier pour choisir ou placer les pieces a votre tour.</instruction>
 		<gameBoard>Plateau de jeu:</gameBoard>
 		<firstPlayerMove>Le premier joueur de TicTacToe est toujours X ! Maintenant, bougez !</firstPlayerMove>
 		<gameOver>Fin du jeu!</gameOver>
-		<gameOverDrawn>Le jeu est terminé! C'est une cravate! Appuyez sur (N) pour démarrer une nouvelle partie.</gameOverDrawn>
-		<congratulations>Le joueur %c a gagné ! Toutes nos félicitations!</congratulations>
-		<newGameInfo>Appuyez sur (N) pour démarrer une nouvelle partie.</newGameInfo>
+		<gameOverDrawn>Le jeu est termine! C'est une cravate! Appuyez sur (N) pour demarrer une nouvelle partie.</gameOverDrawn>
+		<congratulations>Le joueur %c a gagne ! Toutes nos felicitations!</congratulations>
+		<newGameInfo>Appuyez sur (N) pour demarrer une nouvelle partie.</newGameInfo>
 		<newTurn>Nouveau tour! ... </newTurn>
 		<newTurnPlayer>Il est maintenant temps pour le joueur %c de jouer.</newTurnPlayer>
-		<noSaveFile>Il n'y a pas de jeux sauvegardés disponibles.</noSaveFile>
-		<noSaveInformation>Il n'y a pas de jeux sauvegardés disponibles à charger !</noSaveInformation>
+		<noSaveFile>Il n'y a pas de jeux sauvegardes disponibles.</noSaveFile>
+		<noSaveInformation>Il n'y a pas de jeux sauvegardes disponibles a charger !</noSaveInformation>
 		<saveGame>Sauvegarder la Partie</saveGame>
 		<loadGame>Chargement du Jeu</loadGame>
 		<quit>Sortir</quit>
