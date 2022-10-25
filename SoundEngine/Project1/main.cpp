@@ -271,8 +271,22 @@ void key_callback(GLFWwindow* window, const int key, int scancode, const int act
 int main(int argc, char* argv[]) {
 	// Initialize the Localization
 	g_localization = new Localization();
-	// Initialize the FModManager Class
-	g_fmod_manager = new FModManager(FMOD_INIT_NORMAL);
+
+
+	//Asks the user if they want uncompressed music files
+	char choice;
+	do {
+		std::cout << "Do you want to load uncompressed music sound files? [Y/N]" << std::endl;
+		std::cin >> choice;
+	} while ((choice != 'Y') && (choice != 'N') && (choice != 'y') && (choice != 'n'));
+	if ((choice == 'Y') || (choice == 'y')) {
+		// Initialize the FModManager Class
+		g_fmod_manager = new FModManager(FMOD_INIT_NORMAL, true);
+	} else {
+		// Initialize the FModManager Class
+		g_fmod_manager = new FModManager(FMOD_INIT_NORMAL, false);
+	}
+
 	// Initialize the TicTacToe Game
 	g_tttGame = new TicTacToeGame(g_fmod_manager, g_localization);
 

@@ -12,8 +12,10 @@
 #define DEBUG_PRINT(x)
 #endif
 
-FModManager::FModManager(const int system_flags) {
-	DEBUG_PRINT("FModManager::FModManager(%d)\n", system_flags);
+FModManager::FModManager(const int system_flags, bool uncompressedFiles) {
+	DEBUG_PRINT("FModManager::FModManager(%d, %d)\n", system_flags, uncompressedFiles);
+	// Sets if our FMOD will be using uncompressed music sound files
+	m_isUsingUncompressedSound = uncompressedFiles;
 	// Creates the System
 	m_result = System_Create(&m_system);
 	// Checks for errors
@@ -490,6 +492,18 @@ void FModManager::loadSoundsFromFile() {
 		newSound->m_path		 = sound.attribute("path").value();
 		newSound->m_format		 = sound.attribute("format").value();
 		newSound->m_type		 = sound.attribute("type").value();
+		// Checks for music MP3 files while using uncompressed sounds
+		// If found skip them
+		if ((m_isUsingUncompressedSound == true) && newSound->m_type == "music" && newSound->m_format == "mp3") {
+			newSound->~Sound();
+			continue;
+		}
+		// Checks for music WAV files while using compressed sounds
+		// If found skip them
+		if ((m_isUsingUncompressedSound == false) && newSound->m_type == "music" && newSound->m_format == "wav") {
+			newSound->~Sound();
+			continue;
+		}
 		newSound->m_frequency	 = sound.attribute("frequency").as_float();
 		newSound->m_volume		 = sound.attribute("volume").as_float();
 		newSound->m_balance		 = sound.attribute("balance").as_float();
@@ -530,12 +544,6 @@ void FModManager::playSound(const std::string& sound_name, const std::string& ch
 		return;
 	}
 
-	//FMOD::Channel* channel;
-	// Calls FMOD to play the sound
-	// TODO : DELETE
-	float tempVolume; //  <<<<<< REMEMBER TO DELETE THIS
-	getChannelGroupVolume(channel_group_name, &tempVolume);
-	DEBUG_PRINT("playSound() about to be called. Channel Volume is: %f\n", tempVolume);
 	m_result = m_system->playSound(itSound->second->m_sound, itChannel->second->m_group, true, &itSound->second->m_channel);
 	// Checks the result
 	if (m_result != FMOD_OK) {
@@ -643,7 +651,7 @@ void FModManager::getSoundCurrentFrequency(const std::string& sound_name) {
 }
 
 void FModManager::getSoundLength(const std::string& sound_name) {
-	DEBUG_PRINT("FModManager::getSoundLength(%s)\n", sound_name.c_str());
+	//DEBUG_PRINT("FModManager::getSoundLength(%s)\n", sound_name.c_str());
 	std::map<std::string, Sound*>::iterator itSound = m_sounds.find(sound_name);
 
 	if (itSound == m_sounds.end()) {

@@ -11,7 +11,7 @@
 class FModManager {
 public:
 	// Constructor
-	FModManager(const int system_flags);
+	FModManager(const int system_flags, bool uncompressedFiles);
 	// Destructor
 	~FModManager();
 
@@ -105,6 +105,7 @@ public:
 private:
 	const int			MAX_CHANNELS = 255;
 	const std::string	SOUND_FILE	 = "sounds.xml";
+	bool				m_isUsingUncompressedSound;
 
 	FMOD_RESULT							 m_result;			// Variable to check Erros
 	FMOD::System*						 m_system;			// FMod System
