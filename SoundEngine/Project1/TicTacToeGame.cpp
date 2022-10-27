@@ -233,6 +233,10 @@ bool TicTacToeGame::isGameOver() {
 	return m_isGameOver;
 }
 
+/// <summary>
+/// To save a new game I'm creating a new document everytime and overwriting it
+/// So I won't have to worry about checking its file integrity
+/// </summary>
 void TicTacToeGame::saveGame() {
 	DEBUG_PRINT("TicTacToeGame::saveGame()\n");
 	pugi::xml_document saveFile;
@@ -242,7 +246,9 @@ void TicTacToeGame::saveGame() {
 	// File not found - We won't throw an error, we are just going to create a new XML
 	
 	saveSlot = saveFile.append_child("tttsavefile");
+	// For each board position we grab its values
 	value = m_board[0][0];
+	// And create a new Child on the XML and also Set its Value on the same line
 	saveSlot.append_child("q").append_child(pugi::node_pcdata).set_value(value.c_str());
 	value = m_board[0][1];
 	saveSlot.append_child("w").append_child(pugi::node_pcdata).set_value(value.c_str());
@@ -268,9 +274,9 @@ void TicTacToeGame::saveGame() {
 	saveSlot.append_child("isGameOver").append_child(pugi::node_pcdata).set_value(value.c_str());
 	value = std::to_string(m_isItADrawn);
 	saveSlot.append_child("isItADrawn").append_child(pugi::node_pcdata).set_value(value.c_str());
-
+	// Then we finally save the XML file overwriting any if created previously
 	saveFile.save_file(SAVE_FILE.c_str());
-	// Save Game Sound
+	// Play Save Game Sound
 	m_fModManager->playSound("Save Game", "ch2 fx");
 }
 
