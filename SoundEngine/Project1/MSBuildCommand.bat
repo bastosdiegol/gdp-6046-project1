@@ -1,0 +1,1 @@
+"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin\MSBuild.exe" C:\Fanshawe\gdp-6046-media\gdp-6046-project1\SoundEngine\ -t:project_03 -property:Platform=x64 -property:Configuration=Debug

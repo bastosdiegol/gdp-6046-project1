@@ -162,6 +162,7 @@
     <ClCompile Include="PlyFileReader.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="SoundUI.cpp" />
+    <ClCompile Include="Stream.cpp" />
     <ClCompile Include="TicTacToeGame.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -183,12 +184,13 @@
     <ClInclude Include="PlyFileReader.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="SoundUI.h" />
+    <ClInclude Include="Stream.h" />
     <ClInclude Include="TicTacToeGame.h" />
   </ItemGroup>
   <ItemGroup>
     <Media Include="sounds\fx\board_newgame.wav" />
     <Media Include="sounds\fx\Breath.wav" />
-    <Media Include="sounds\fx\drawn_beep.wav" />
+    <Media Include="sounds\fx\draw_beep.wav" />
     <Media Include="sounds\fx\Fire01.wav" />
     <Media Include="sounds\fx\Fire16.wav" />
     <Media Include="sounds\fx\game_win_success.wav" />
@@ -222,4 +224,81 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <!--v BELOW HERE IS CUSTOM WORK v-->
+  <PropertyGroup Condition="'$(Configuration)' == 'DEBUG'">
+    <Path1>C:\cnd\DIEGO_BASTOS\</Path1>
+    <MeshFolder>assets\models\</MeshFolder>
+    <SoundFXFolder>sounds\fx\</SoundFXFolder>
+    <SoundMusicFolder>sounds\music\</SoundMusicFolder>
+    <FontsFolder>fonts\</FontsFolder>
+    <OutZipName>DIEGO_BASTOS.zip</OutZipName>
+    <FileCompressorPath>"C:\Program Files\WinRAR\WinRAR.exe"</FileCompressorPath>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(Configuration)' == 'DEBUG'">
+    <XMLFiles Include="save.xml" />
+    <XMLFiles Include="sounds.xml" />
+    <XMLFiles Include="locales.xml" />
+    <DLLFiles Include="$(SolutionDir)dev\libraries\fmod.dll" />
+    <INIFiles Include="imgui.ini" />
+    <MeshFiles Include="assets\models\tictactoeNewBoard.ply" />
+    <MeshFiles Include="assets\models\tictactoeO.ply" />
+    <MeshFiles Include="assets\models\tictactoeX.ply" />
+    <FontFiles Include="fonts\fontaudio.ttf" />
+    <SoundFX Include="sounds\fx\board_newgame.wav" />
+    <SoundFX Include="sounds\fx\Breath.wav" />
+    <SoundFX Include="sounds\fx\draw_beep.wav" />
+    <SoundFX Include="sounds\fx\Fire01.wav" />
+    <SoundFX Include="sounds\fx\Fire16.wav" />
+    <SoundFX Include="sounds\fx\game_win_success.wav" />
+    <SoundFX Include="sounds\fx\Hit.wav" />
+    <SoundFX Include="sounds\fx\load_game.wav" />
+    <SoundFX Include="sounds\fx\move-piece01.wav" />
+    <SoundFX Include="sounds\fx\move-piece02.wav" />
+    <SoundFX Include="sounds\fx\move-piece03.wav" />
+    <SoundFX Include="sounds\fx\move-piece04.wav" />
+    <SoundFX Include="sounds\fx\move-piece05.wav" />
+    <SoundFX Include="sounds\fx\move-piece06.wav" />
+    <SoundFX Include="sounds\fx\move-piece07.wav" />
+    <SoundFX Include="sounds\fx\move-piece08.wav" />
+    <SoundFX Include="sounds\fx\move-piece09.wav" />
+    <SoundFX Include="sounds\fx\move-piece10.wav" />
+    <SoundFX Include="sounds\fx\move-piece11.wav" />
+    <SoundFX Include="sounds\fx\move-piece12.wav" />
+    <SoundFX Include="sounds\fx\new_lang.wav" />
+    <SoundFX Include="sounds\fx\Rock02.wav" />
+    <SoundFX Include="sounds\fx\Rock10.wav" />
+    <SoundFX Include="sounds\fx\save_game.wav" />
+    <SoundFX Include="sounds\fx\victory_melody.wav" />
+    <SoundFX Include="sounds\fx\Water03.wav" />
+    <SoundFX Include="sounds\fx\Water04.wav" />
+    <SoundFX Include="sounds\fx\Water10.wav" />
+    <SoundFX Include="sounds\fx\WingFlap.wav" />
+    <SoundMusic Include="sounds\music\beethoven_moonlight_sonata.mp3" />
+    <SoundMusic Include="sounds\music\tchaikovsky_dance_of_the_sugar_plum_fairy.mp3" />
+    <SoundMusic Include="sounds\music\vivaldi_winter_mvt1.mp3" />
+    <SoundMusic Include="sounds\music\beethoven_moonlight_sonata.wav" />
+    <SoundMusic Include="sounds\music\tchaikovsky_dance_of_the_sugar_plum_fairy.wav" />
+    <SoundMusic Include="sounds\music\vivaldi_winter_mvt1.wav" />
+  </ItemGroup>
+  <Target Name="project_03" DependsOnTargets="Clean;Build" Condition="'$(Configuration)' == 'DEBUG'">
+    <Message Text="Copying XML files!" />
+    <Copy SourceFiles="@(XMLFiles)" DestinationFolder="$(Path1)" />
+    <Message Text="Copying DLL files!" />
+    <Copy SourceFiles="@(DLLFiles)" DestinationFolder="$(Path1)" />
+    <Message Text="Copying INI files!" />
+    <Copy SourceFiles="@(INIFiles)" DestinationFolder="$(Path1)" />
+    <Message Text="Copying Mesh files!" />
+    <Copy SourceFiles="@(MeshFiles)" DestinationFolder="$(Path1)$(MeshFolder)" />
+    <Message Text="Copying Sound FX files!" />
+    <Copy SourceFiles="@(SoundFX)" DestinationFolder="$(Path1)$(SoundFXFolder)" />
+    <Message Text="Copying Sound Music files!" />
+    <Copy SourceFiles="@(SoundMusic)" DestinationFolder="$(Path1)$(SoundMusicFolder)" />
+    <Message Text="Copying font files!" />
+    <Copy SourceFiles="@(FontFiles)" DestinationFolder="$(Path1)$(FontsFolder)" />
+    <Message Text="Copying main executable file!" />
+    <Exec Command="copy $(OutDir)\$(RootNamespace).exe $(Path1)" />
+    <Message Text="Creating the compacted file!" />
+    <Exec Command="$(FileCompressorPath) a -r -o+ $(OutDir)$(OutZipName) $(OutDir)" />
+  </Target>
+  <!--^ ABOVE HERE IS CUSTOM WORK ^-->
 </Project>

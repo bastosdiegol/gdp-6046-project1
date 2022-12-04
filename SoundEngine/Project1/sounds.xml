@@ -34,4 +34,9 @@
 	<sound title="Load Game" path="./sounds/fx/load_game.wav" format="wav" type="fx" frequency="1" volume="1" balance="0" lenght="1000" position="0" />
 	<sound title="Save Game" path="./sounds/fx/save_game.wav" format="wav" type="fx" frequency="1" volume="1" balance="0" lenght="1000" position="0" />
 	<sound title="New Lang" path="./sounds/fx/new_lang.wav" format="wav" type="fx" frequency="1" volume="1" balance="0" lenght="1000" position="0" />
+	<sound title="North Pole Radio" path="http://85.25.217.22:8050" format="" type="stream" frequency="1" volume="1" balance="0" lenght="0" position="0" />
+	<sound title="Radio X-MAS" path="http://77.75.16.229:443" format="" type="stream" frequency="1" volume="1" balance="0" lenght="0" position="0" />
+	<sound title="Venice Classic Radio Auditorium" path="http://116.202.241.212:8010" format="" type="stream" frequency="1" volume="1" balance="0" lenght="0" position="0" />
+	<sound title="Howl: idobi" path="http://69.46.88.26:80" format="" type="stream" frequency="1" volume="1" balance="0" lenght="0" position="0" />
+	<sound title="Radio Bloodstream" path="http://uk1.internet-radio.com:8294" format="" type="stream" frequency="1" volume="1" balance="0" lenght="0" position="0" />
 </soundlibrary>

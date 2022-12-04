@@ -99,6 +99,9 @@
     <ClCompile Include="Localization.cpp">
       <Filter>Source Files\tictactoe</Filter>
     </ClCompile>
+    <ClCompile Include="Stream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
@@ -158,6 +161,9 @@
     <ClInclude Include="Localization.h">
       <Filter>Header Files\tictactoe</Filter>
     </ClInclude>
+    <ClInclude Include="Stream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Media Include="sounds\music\beethoven_moonlight_sonata.mp3">
@@ -202,9 +208,6 @@
     <Media Include="sounds\fx\board_newgame.wav">
       <Filter>Resource Files\sounds\fx</Filter>
     </Media>
-    <Media Include="sounds\fx\drawn_beep.wav">
-      <Filter>Resource Files\sounds\fx</Filter>
-    </Media>
     <Media Include="sounds\fx\game_win_success.wav">
       <Filter>Resource Files\sounds\fx</Filter>
     </Media>
@@ -246,6 +249,9 @@
     </Media>
     <Media Include="sounds\fx\victory_melody.wav">
       <Filter>Resource Files\sounds\fx</Filter>
+    </Media>
+    <Media Include="sounds\fx\draw_beep.wav">
+      <Filter>Resource Files</Filter>
     </Media>
   </ItemGroup>
   <ItemGroup>

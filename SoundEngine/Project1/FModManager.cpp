@@ -2,6 +2,7 @@
 #include <pugixml/pugixml.hpp>
 
 #include "FModManager.h"
+#include "Stream.h"
 
 #ifdef _DEBUG
 #define DEBUG_LOG_ENABLED
@@ -487,7 +488,11 @@ void FModManager::loadSoundsFromFile() {
 	// Iterates through each node
 	for (pugi::xml_node sound = sounds.child("sound"); sound; sound = sound.next_sibling("sound")) {
 		// Instantiate a new sound and set its values from XML
-		newSound = new Sound();
+		if (std::string(sound.attribute("type").value()).compare("stream") == 0) {
+			newSound = new Stream();
+		} else {
+			newSound = new Sound();
+		}
 		newSound->m_name		 = sound.attribute("title").value();
 		newSound->m_path		 = sound.attribute("path").value();
 		newSound->m_format		 = sound.attribute("format").value();
@@ -495,13 +500,13 @@ void FModManager::loadSoundsFromFile() {
 		// Checks for music MP3 files while using uncompressed sounds
 		// If found skip them
 		if ((m_isUsingUncompressedSound == true) && newSound->m_type == "music" && newSound->m_format == "mp3") {
-			newSound->~Sound();
+			delete newSound;
 			continue;
 		}
 		// Checks for music WAV files while using compressed sounds
 		// If found skip them
 		if ((m_isUsingUncompressedSound == false) && newSound->m_type == "music" && newSound->m_format == "wav") {
-			newSound->~Sound();
+			delete newSound;
 			continue;
 		}
 		newSound->m_frequency	 = sound.attribute("frequency").as_float();
@@ -516,6 +521,9 @@ void FModManager::loadSoundsFromFile() {
 		} else if (newSound->m_type == "fx") {
 			// Calls the FMOD function to create the new sound with mode DEFAULT - FX
 			m_result = m_system->createSound(newSound->m_path.c_str(), FMOD_DEFAULT, nullptr, &newSound->m_sound);
+		} else if (newSound->m_type == "stream") {
+			// Creates the sound steam
+			m_result = m_system->createSound(newSound->m_path.c_str(), FMOD_CREATESTREAM | FMOD_NONBLOCKING, nullptr, &newSound->m_sound);
 		}
 		// Checks the result
 		if (m_result != FMOD_OK) {
@@ -664,6 +672,17 @@ void FModManager::getSoundLength(const std::string& sound_name) {
 	if (m_result != FMOD_OK) {
 		std::cout << "fmod error: #" << m_result << "-" << FMOD_ErrorString(m_result) << std::endl;
 		itSound->second->m_lenght = 0;
+		return;
+	}
+}
+
+void FModManager::getOpenState(Stream* radio) {
+	DEBUG_PRINT("FModManager::getOpenState(%s)\n", radio->m_name.c_str());
+	// Tries to get the open state
+	m_result = radio->m_sound->getOpenState(&radio->m_openState, &radio->m_percentage, &radio->m_isStarving, nullptr);
+	// Checks the result
+	if (m_result != FMOD_OK) {
+		std::cout << "fmod error: #" << m_result << "-" << FMOD_ErrorString(m_result) << std::endl;
 		return;
 	}
 }

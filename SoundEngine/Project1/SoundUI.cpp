@@ -2,6 +2,7 @@
 #include "imgui/imgui.h"
 #include "imgui/IconsFontaudio.h"
 #include "imgui/imgui-knobs.h"
+#include "Stream.h"
 
 void SoundUI::render() {
 	// Create a window called "Audio Settings", with a menu bar.
@@ -37,14 +38,18 @@ void SoundUI::render() {
 
     static const char* current_item_music;
     static const char* current_item_fx;
+    static const char* current_item_stream;
     std::vector<const char*> musics;
     std::vector<const char*> fx;
+    std::vector<const char*> streams;
 
     for (itSounds = m_fmod_manager->m_sounds.begin(); itSounds != m_fmod_manager->m_sounds.end(); itSounds++) {
         if (itSounds->second->m_type == "music")
             musics.push_back(itSounds->first.c_str());
         if (itSounds->second->m_type == "fx")
             fx.push_back(itSounds->first.c_str());
+        if (itSounds->second->m_type == "stream")
+            streams.push_back(itSounds->first.c_str());
     }
 
     static std::map<std::string, ChannelGroup*>::iterator itChannels;
@@ -56,7 +61,7 @@ void SoundUI::render() {
             // CHANNEL
             // -------
             if (ImGui::BeginTabItem(channelName.c_str())) {
-                if (channelName == "ch1 music" || channelName == "ch2 fx") {
+                if (channelName != "ch0 master") {
                     if (channelName == "ch1 music") {
                         ImGui::Text("Musics Available:"); 
                         ImGui::SameLine();
@@ -70,7 +75,7 @@ void SoundUI::render() {
                             }
                             ImGui::EndCombo();
                         }
-                    } else {
+                    } else if (channelName == "ch2 fx") {
                         ImGui::Text("FXs Available:");
                         ImGui::SameLine();
                         if (ImGui::BeginCombo("##combo", current_item_fx)) {
@@ -78,6 +83,19 @@ void SoundUI::render() {
                                 bool is_selected = (current_item_fx == fx[i]);
                                 if (ImGui::Selectable(fx[i], is_selected))
                                     current_item_fx = fx[i];
+                                if (is_selected)
+                                    ImGui::SetItemDefaultFocus();
+                            }
+                            ImGui::EndCombo();
+                        }
+                    } else if (channelName == "ch3 stream") {
+                        ImGui::Text("Streams Available:");
+                        ImGui::SameLine();
+                        if (ImGui::BeginCombo("##combo", current_item_stream)) {
+                            for (int i = 0; i < streams.size(); i++) {
+                                bool is_selected = (current_item_stream == streams[i]);
+                                if (ImGui::Selectable(streams[i], is_selected))
+                                    current_item_stream = streams[i];
                                 if (is_selected)
                                     ImGui::SetItemDefaultFocus();
                             }
@@ -176,6 +194,49 @@ void SoundUI::render() {
                             ImGui::TableNextColumn();
                             ImGui::TableNextColumn();
                             ImGui::Text("Format: %s", itSounds->second->m_format.c_str());
+                            ImGui::TableNextColumn();
+                            ImGui::Text("                       ");
+                            ImGui::TableNextRow();
+                            ImGui::TableNextColumn();
+                            ImGui::Text("Volume: %d%%", (int)itSounds->second->m_volume * 100);
+                            ImGui::TableNextColumn();
+                            ImGui::TableNextColumn();
+                            ImGui::Text("Balance: %0.1f", itSounds->second->m_balance);
+                            ImGui::TableNextColumn();
+                            if (ImGui::SliderFloat("##Balance", &itSounds->second->m_balance, -1.0f, 1.0f)) {
+                                m_fmod_manager->setChannelGroupPan(channelName, itSounds->second->m_balance); // Sets new pan
+                            }
+                            ImGui::TableNextRow();
+                            ImGui::TableNextColumn();
+                            m_fmod_manager->getSoundLength(itSounds->first);
+                            ImGui::Text("Lenght: %d:%d", (int)itSounds->second->m_lenght / 1000 / 60, (int)itSounds->second->m_lenght / 1000 % 60);
+                            ImGui::TableNextColumn();
+                            m_fmod_manager->getSoundCurrentPosition(itSounds->first);
+                            ImGui::Text("Position: %d:%d", (int)itSounds->second->m_cur_position / 1000 / 60, (int)itSounds->second->m_cur_position / 1000 % 60);
+                            ImGui::TableNextColumn();
+                            m_fmod_manager->getSoundCurrentFrequency(itSounds->first);
+                            ImGui::Text("Frequency: %0.1f", itSounds->second->m_frequency);
+                            ImGui::TableNextColumn();
+                            if (ImGui::SliderFloat("##Frequency", &itSounds->second->m_frequency, -10000.0f, 48000.0f)) {
+                                m_fmod_manager->setSoundCurrentFrequency(itSounds->first, itSounds->second->m_frequency); // Sets new pan
+                            }
+                        }
+                    }
+                    ImGui::EndTable();
+                }
+                // Table with information about the selected sound CH2
+                if (channelName == "ch3 stream" && current_item_stream != nullptr) {
+                    ImGui::BeginTable("Radio Data", 4, ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_BordersOuter);
+                    ImGui::TableNextRow();
+                    ImGui::TableNextColumn();
+                    for (itSounds = m_fmod_manager->m_sounds.begin(); itSounds != m_fmod_manager->m_sounds.end(); itSounds++) {
+                        if (itSounds->first == current_item_stream) {
+                            Stream* cur_stream = static_cast<Stream*>(itSounds->second);
+                            m_fmod_manager->getOpenState(cur_stream);
+                            ImGui::Text("URL: %s", itSounds->second->m_path.c_str());
+                            ImGui::TableNextColumn();
+                            ImGui::TableNextColumn();
+                            ImGui::Text("Status: %s %s", cur_stream->getState().c_str(), cur_stream->m_isStarving ? " (STARVING)" : "");
                             ImGui::TableNextColumn();
                             ImGui::Text("                       ");
                             ImGui::TableNextRow();

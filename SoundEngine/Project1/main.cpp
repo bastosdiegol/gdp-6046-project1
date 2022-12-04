@@ -297,16 +297,19 @@ int main(int argc, char* argv[]) {
 	g_fmod_manager->createChannelGroup("ch0 master");
 	g_fmod_manager->createChannelGroup("ch1 music");
 	g_fmod_manager->createChannelGroup("ch2 fx");
+	g_fmod_manager->createChannelGroup("ch3 stream");
 
 	// Creates Parent Child relation between channels
 	g_fmod_manager->setChannelGroupParent("ch0 master", "ch1 music");
 	g_fmod_manager->setChannelGroupParent("ch0 master", "ch2 fx");
+	g_fmod_manager->setChannelGroupParent("ch0 master", "ch3 stream");
 
 	// Sets initial volume for master channel to 20%
 	// WARNING: DO NOT PASS VOLUME VALUE ABOVE 1.0f
 	g_fmod_manager->setChannelGroupVolume("ch0 master", 0.7f);
 	g_fmod_manager->setChannelGroupVolume("ch1 music", 0.15f);
 	g_fmod_manager->setChannelGroupVolume("ch2 fx", 0.7f);
+	g_fmod_manager->setChannelGroupVolume("ch3 stream", 0.7f);
 
 	// Load all sounds from the XML File
 	g_fmod_manager->loadSoundsFromFile();

@@ -54,13 +54,13 @@ void TicTacToeGame::newGame() {
 	int randomInt = randInt(1,3);
 	switch (randomInt) {
 	case 1:
-		m_fModManager->playSound("Moonlight Sonata", "ch1 music");
+		//m_fModManager->playSound("Moonlight Sonata", "ch1 music");
 		break;
 	case 2:
-		m_fModManager->playSound("Dance of the Sugar Plum Fairy", "ch1 music");
+		//m_fModManager->playSound("Dance of the Sugar Plum Fairy", "ch1 music");
 		break;
 	case 3:
-		m_fModManager->playSound("Winter Movement 1", "ch1 music");
+		//m_fModManager->playSound("Winter Movement 1", "ch1 music");
 		break;
 	}
 }

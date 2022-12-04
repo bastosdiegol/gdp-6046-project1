@@ -7,6 +7,7 @@
 
 #include "ChannelGroup.h"
 #include "Sound.h"
+#include "Stream.h"
 
 class FModManager {
 public:
@@ -100,6 +101,9 @@ public:
 	void getSoundCurrentFrequency(const std::string& sound_name);
 	// Gets the length of a sound
 	void getSoundLength(const std::string& sound_name);
+
+	// Opens the state of a stream
+	void getOpenState(Stream* radio);
 
 
 private:
