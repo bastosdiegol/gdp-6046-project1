@@ -108,6 +108,8 @@ public:
 	void getOpenState(const std::string& sound_name);
 	// Get current tags
 	void getTag(Stream* radio);
+	//
+	void playStream(const std::string& sound_name, const std::string& channel_group_name);
 
 
 private:

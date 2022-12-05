@@ -524,6 +524,7 @@ void FModManager::loadSoundsFromFile() {
 		} else if (newSound->m_type == "stream") {
 			// Creates the sound steam
 			m_result = m_system->createSound(newSound->m_path.c_str(), FMOD_CREATESTREAM | FMOD_NONBLOCKING, nullptr, &newSound->m_sound);
+			this->getOpenState(static_cast<Stream*>(newSound));
 		}
 		// Checks the result
 		if (m_result != FMOD_OK) {
@@ -719,5 +720,26 @@ void FModManager::getTag(Stream* radio) {
 			setSoundCurrentFrequency(radio->m_name, frequency);
 		}
 	}
+}
+
+void FModManager::playStream(const std::string& sound_name, const std::string& channel_group_name) {
+	DEBUG_PRINT("FModManager::getOpenState(%s)\n", sound_name.c_str());
+	std::map<std::string, Sound*>::iterator itSound = m_sounds.find(sound_name);
+
+	if (itSound == m_sounds.end()) {
+		std::cout << "FModManager error: Couldn't find the Sound named #" << sound_name << std::endl;
+		return;
+	}
+	Stream* radio = static_cast<Stream*>(itSound->second);
+
+	// Now we'll be geting the open state till the stream is ready to play
+	do {
+		getOpenState(radio);
+		// Checks if its ready and has available buffer
+		if (radio->m_openState == FMOD_OPENSTATE_READY && radio->m_percentage > 0) {
+			playSound(sound_name, channel_group_name);
+			break;
+		}
+	} while (true);
 }
 

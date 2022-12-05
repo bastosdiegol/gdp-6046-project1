@@ -54,20 +54,16 @@ void TicTacToeGame::newGame() {
 	//int randomInt = randInt(1,3);
 	//switch (randomInt) {
 	//case 1:
-	//	m_fModManager->getOpenState("Venice Classic Radio Auditorium");
-	//	m_fModManager->playSound("Venice Classic Radio Auditorium", "ch3 stream");
+	//	m_fModManager->playStream("Venice Classic Radio Auditorium", "ch3 stream");
 	//	break;
 	//case 2:
-	//	m_fModManager->getOpenState("Radio X-MAS");
-	//	m_fModManager->playSound("Radio X-MAS", "ch3 stream");
+	//	m_fModManager->playStream("Radio X-MAS", "ch3 stream");
 	//	break;
 	//case 3:
-	//	m_fModManager->getOpenState("North Pole Radio");
-	//	m_fModManager->playSound("North Pole Radio", "ch3 stream");
+	//	m_fModManager->playStream("North Pole Radio", "ch3 stream");
 	//	break;
 	//}
-	m_fModManager->getOpenState("North Pole Radio");
-	m_fModManager->playSound("North Pole Radio", "ch3 stream");
+	m_fModManager->playStream("North Pole Radio", "ch3 stream");
 }
 
 void TicTacToeGame::printBoard() {
