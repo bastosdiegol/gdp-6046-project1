@@ -51,18 +51,23 @@ void TicTacToeGame::newGame() {
 	std::cout << m_localization->m_gameBoard << std::endl;
 	printBoard();
 	std::cout << m_localization->m_firstPlayerMove << std::endl;
-	int randomInt = randInt(1,3);
-	switch (randomInt) {
-	case 1:
-		//m_fModManager->playSound("Moonlight Sonata", "ch1 music");
-		break;
-	case 2:
-		//m_fModManager->playSound("Dance of the Sugar Plum Fairy", "ch1 music");
-		break;
-	case 3:
-		//m_fModManager->playSound("Winter Movement 1", "ch1 music");
-		break;
-	}
+	//int randomInt = randInt(1,3);
+	//switch (randomInt) {
+	//case 1:
+	//	m_fModManager->getOpenState("Venice Classic Radio Auditorium");
+	//	m_fModManager->playSound("Venice Classic Radio Auditorium", "ch3 stream");
+	//	break;
+	//case 2:
+	//	m_fModManager->getOpenState("Radio X-MAS");
+	//	m_fModManager->playSound("Radio X-MAS", "ch3 stream");
+	//	break;
+	//case 3:
+	//	m_fModManager->getOpenState("North Pole Radio");
+	//	m_fModManager->playSound("North Pole Radio", "ch3 stream");
+	//	break;
+	//}
+	m_fModManager->getOpenState("North Pole Radio");
+	m_fModManager->playSound("North Pole Radio", "ch3 stream");
 }
 
 void TicTacToeGame::printBoard() {

@@ -565,7 +565,7 @@ void FModManager::playSound(const std::string& sound_name, const std::string& ch
 		std::cout << "fmod error: #" << m_result << "-" << FMOD_ErrorString(m_result) << std::endl;
 		return;
 	}
-
+	itChannel->second->m_isPlaying = true;
 }
 
 void FModManager::stopSound(const std::string& channel_group_name) {
@@ -584,8 +584,8 @@ void FModManager::stopSound(const std::string& channel_group_name) {
 			itSound->second->m_channel = nullptr;
 		}
 	}
-
 	itChannel->second->m_group->stop();
+	itChannel->second->m_isPlaying = false;
 }
 
 void FModManager::setPause(const std::string& channel_group_name, const bool pause) {
@@ -677,13 +677,47 @@ void FModManager::getSoundLength(const std::string& sound_name) {
 }
 
 void FModManager::getOpenState(Stream* radio) {
-	DEBUG_PRINT("FModManager::getOpenState(%s)\n", radio->m_name.c_str());
 	// Tries to get the open state
 	m_result = radio->m_sound->getOpenState(&radio->m_openState, &radio->m_percentage, &radio->m_isStarving, nullptr);
 	// Checks the result
 	if (m_result != FMOD_OK) {
 		std::cout << "fmod error: #" << m_result << "-" << FMOD_ErrorString(m_result) << std::endl;
 		return;
+	}
+}
+
+void FModManager::getOpenState(const std::string& sound_name) {
+	DEBUG_PRINT("FModManager::getOpenState(%s)\n", sound_name.c_str());
+	std::map<std::string, Sound*>::iterator itSound = m_sounds.find(sound_name);
+
+	if (itSound == m_sounds.end()) {
+		std::cout << "FModManager error: Couldn't find the Sound named #" << sound_name << std::endl;
+		return;
+	}
+	Stream* radio = static_cast<Stream*>(itSound->second);
+	// Tries to get the open state
+	m_result = radio->m_sound->getOpenState(&radio->m_openState, &radio->m_percentage, &radio->m_isStarving, nullptr);
+	// Checks the result
+	if (m_result != FMOD_OK) {
+		std::cout << "fmod error: #" << m_result << "-" << FMOD_ErrorString(m_result) << std::endl;
+		return;
+	}
+}
+
+void FModManager::getTag(Stream* radio) {
+	FMOD_TAG tag;
+	bool newtags = true;
+	while (radio->m_sound->getTag(nullptr, -1, &tag) == FMOD_OK) {
+		if (tag.datatype == FMOD_TAGDATATYPE_STRING) {
+			if (newtags == true) {
+				radio->v_tags.clear();
+				newtags = false;
+			}
+			radio->v_tags.try_emplace(tag.name, static_cast<char*>(tag.data));
+		} else {
+			float frequency = *static_cast<float*>(tag.data);
+			setSoundCurrentFrequency(radio->m_name, frequency);
+		}
 	}
 }
 

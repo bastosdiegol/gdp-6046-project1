@@ -274,10 +274,10 @@ int main(int argc, char* argv[]) {
 
 
 	//Asks the user if they want uncompressed music files
-	char choice;
+	char choice = 'N';
 	do {
-		std::cout << "Do you want to load uncompressed music sound files? [Y/N]" << std::endl;
-		std::cin >> choice;
+		//std::cout << "Do you want to load uncompressed music sound files? [Y/N]" << std::endl;
+		//std::cin >> choice;
 	} while ((choice != 'Y') && (choice != 'N') && (choice != 'y') && (choice != 'n'));
 	if ((choice == 'Y') || (choice == 'y')) {
 		// Initialize the FModManager Class
@@ -309,7 +309,7 @@ int main(int argc, char* argv[]) {
 	g_fmod_manager->setChannelGroupVolume("ch0 master", 0.7f);
 	g_fmod_manager->setChannelGroupVolume("ch1 music", 0.15f);
 	g_fmod_manager->setChannelGroupVolume("ch2 fx", 0.7f);
-	g_fmod_manager->setChannelGroupVolume("ch3 stream", 0.7f);
+	g_fmod_manager->setChannelGroupVolume("ch3 stream", 0.15f);
 
 	// Load all sounds from the XML File
 	g_fmod_manager->loadSoundsFromFile();

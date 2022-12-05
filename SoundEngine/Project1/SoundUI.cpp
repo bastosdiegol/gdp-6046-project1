@@ -116,6 +116,8 @@ void SoundUI::render() {
                             m_fmod_manager->playSound(current_item_music, channelName);
                         } else if (channelName == "ch2 fx") {
                             m_fmod_manager->playSound(current_item_fx, channelName);
+                        } else if (channelName == "ch3 stream") {
+                            m_fmod_manager->playSound(current_item_stream, channelName);
                         }
                     }
                 }
@@ -224,15 +226,18 @@ void SoundUI::render() {
                     }
                     ImGui::EndTable();
                 }
-                // Table with information about the selected sound CH2
+                // Table with information about the selected sound CH3
                 if (channelName == "ch3 stream" && current_item_stream != nullptr) {
-                    ImGui::BeginTable("Radio Data", 4, ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_BordersOuter);
+                    ImGui::BeginTable("Radio Data", 5, ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_BordersOuter);
                     ImGui::TableNextRow();
                     ImGui::TableNextColumn();
                     for (itSounds = m_fmod_manager->m_sounds.begin(); itSounds != m_fmod_manager->m_sounds.end(); itSounds++) {
                         if (itSounds->first == current_item_stream) {
                             Stream* cur_stream = static_cast<Stream*>(itSounds->second);
                             m_fmod_manager->getOpenState(cur_stream);
+                            if (cur_stream->m_channel) {
+                                m_fmod_manager->getTag(cur_stream);
+                            }
                             ImGui::Text("URL: %s", itSounds->second->m_path.c_str());
                             ImGui::TableNextColumn();
                             ImGui::TableNextColumn();
@@ -252,7 +257,7 @@ void SoundUI::render() {
                             ImGui::TableNextRow();
                             ImGui::TableNextColumn();
                             m_fmod_manager->getSoundLength(itSounds->first);
-                            ImGui::Text("Lenght: %d:%d", (int)itSounds->second->m_lenght / 1000 / 60, (int)itSounds->second->m_lenght / 1000 % 60);
+                            ImGui::Text("Buffering: %d%%", cur_stream->m_percentage);
                             ImGui::TableNextColumn();
                             m_fmod_manager->getSoundCurrentPosition(itSounds->first);
                             ImGui::Text("Position: %d:%d", (int)itSounds->second->m_cur_position / 1000 / 60, (int)itSounds->second->m_cur_position / 1000 % 60);
@@ -262,6 +267,14 @@ void SoundUI::render() {
                             ImGui::TableNextColumn();
                             if (ImGui::SliderFloat("##Frequency", &itSounds->second->m_frequency, -10000.0f, 48000.0f)) {
                                 m_fmod_manager->setSoundCurrentFrequency(itSounds->first, itSounds->second->m_frequency); // Sets new pan
+                            }
+                            ImGui::TableNextRow();
+                            ImGui::TableNextColumn();
+                            std::map<std::string, std::string>::iterator itTags;
+                            for (itTags = cur_stream->v_tags.begin(); 
+                                 itTags != cur_stream->v_tags.end();
+                                 itTags++) {
+                                ImGui::Text("%s: %s", itTags->first.c_str(), itTags->second.c_str());
                             }
                         }
                     }

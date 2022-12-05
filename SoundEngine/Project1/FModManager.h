@@ -104,6 +104,10 @@ public:
 
 	// Opens the state of a stream
 	void getOpenState(Stream* radio);
+	// Opens the state of a stream
+	void getOpenState(const std::string& sound_name);
+	// Get current tags
+	void getTag(Stream* radio);
 
 
 private:

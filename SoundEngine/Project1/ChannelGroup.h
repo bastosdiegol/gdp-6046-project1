@@ -18,6 +18,7 @@ private:
 	float m_pitch;				// Pitch variablebool isMusicPaused;
     bool m_isMuted;
     bool m_isPaused;
+    bool m_isPlaying;
     // Variables that store user input for DSP parameters
     // Later I want to mave it to a DSP Class of its own
     float m_chorusMix;

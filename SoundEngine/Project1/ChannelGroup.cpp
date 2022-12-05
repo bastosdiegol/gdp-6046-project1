@@ -29,6 +29,7 @@ ChannelGroup::ChannelGroup(FMOD::ChannelGroup* channel_group) {
 	m_pitchshiftPitch = 1.0f;
 	m_isMuted = false;
 	m_isPaused = false;
+	m_isPlaying = false;
 	m_dspChorus = false;
 	m_dspCompressor = false;
 	m_dspDelay = false;

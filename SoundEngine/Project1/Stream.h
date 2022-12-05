@@ -1,7 +1,7 @@
 #pragma once
 #include "Sound.h"
 #include <FMOD/fmod.hpp>
-#include <vector>
+#include <map>
 
 class Stream : public Sound {
 public:
@@ -9,7 +9,7 @@ public:
     unsigned int m_percentage;
     bool m_isStarving;
 
-    std::vector<std::string> v_tags;
+    std::map<std::string, std::string> v_tags;
 
     // Default Constructor
     Stream();
