@@ -28,6 +28,7 @@ void TicTacToeGame::newGame() {
 	m_fModManager->stopSound("ch0 master");
 	m_fModManager->stopSound("ch1 music");
 	m_fModManager->stopSound("ch2 fx");
+	m_fModManager->stopStreamSound("ch3 stream", "North Pole Radio");
 	m_fModManager->playSound("New Game","ch2 fx");
 	// Sets all variables to ' '
 	for (int iLine = 0; iLine < 3; iLine++) {

@@ -128,7 +128,11 @@ void SoundUI::render() {
                 }
                 ImGui::SameLine();
                 if (ImGui::Button(ICON_FAD_STOP)) { // Stop Button
-                    m_fmod_manager->stopSound(channelName);
+                    if (channelName == "ch3 stream" && current_item_stream != "") {
+                        m_fmod_manager->stopStreamSound(channelName, current_item_stream);
+                    } else if (channelName != "ch3 stream") {
+                        m_fmod_manager->stopSound(channelName);
+                    }
                     m_channel->m_isPaused = false;
                 }
                 ImGui::SameLine();

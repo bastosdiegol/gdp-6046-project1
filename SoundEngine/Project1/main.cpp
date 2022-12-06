@@ -331,7 +331,7 @@ int main(int argc, char* argv[]) {
 	short numberOf_O_ToDrawn = 4;
 	pfr = new PlyFileReader("./assets/models/tictactoeO.ply");
 	v_PlyModels.push_back(pfr);
-	
+
 	// Game Board
 	MeshObject   board(meshID::board, "board", posS);
 	board.loadVerticesToBeDrawn(v_PlyModels[0]->pTheModelArray, v_PlyModels[0]->pTheModelTriangleArray, v_PlyModels[0]->m_numberOfTriangles);
@@ -364,7 +364,7 @@ int main(int argc, char* argv[]) {
 	MeshObject pieceX5(meshID::pieceX, "X5", behindCamera);
 	pieceX5.loadVerticesToBeDrawn(v_PlyModels[1]->pTheModelArray, v_PlyModels[1]->pTheModelTriangleArray, v_PlyModels[1]->m_numberOfTriangles);
 	g_vMeshObjects.push_back(pieceX5);
-	
+
 	//initialize glfw/glad
 	if (!glfwInit())
 		exit(EXIT_FAILURE);
@@ -501,7 +501,7 @@ int main(int argc, char* argv[]) {
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		
+
 		p = glm::perspective(0.6f,
 			ratio,
 			0.1f,
@@ -545,14 +545,14 @@ int main(int argc, char* argv[]) {
 			} else if (itMesh->m_name.find("O") != -1) {
 				glBindVertexArray(oVAOid);
 			}
-			
+
 			//glDrawArrays(GL_TRIANGLES, 0, itMesh->m_numVerticesToDraw);
 			glDrawArrays(GL_TRIANGLES,
 				0,
 				itMesh->m_numVerticesToDraw);
 			glBindVertexArray(0);
 		}
-		
+
 
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
@@ -562,22 +562,22 @@ int main(int argc, char* argv[]) {
 			sound_ui.render();
 		// ImGui Menu Treatment
 		switch (sound_ui.menuState) {
-		case SoundUI::NEWGAME :
+		case SoundUI::NEWGAME:
 			g_tttGame->newGame();
 			newGameSetMeshes();
 			sound_ui.menuState = SoundUI::IDLE;
 			break;
-		case SoundUI::SAVE :
+		case SoundUI::SAVE:
 			g_tttGame->saveGame();
 			sound_ui.menuState = SoundUI::IDLE;
 			break;
-		case SoundUI::LOAD :
+		case SoundUI::LOAD:
 			g_tttGame->loadGame();
 			newGameSetMeshes();
 			loadGameSetMeshes();
 			sound_ui.menuState = SoundUI::IDLE;
 			break;
-		case SoundUI::LANG :
+		case SoundUI::LANG:
 			g_localization->setLanguage(sound_ui.newLang);
 			g_fmod_manager->playSound("New Lang", "ch2 fx");
 			sound_ui.newLang = "";
@@ -608,6 +608,10 @@ int main(int argc, char* argv[]) {
 
 	glfwDestroyWindow(g_window);
 	glfwTerminate();
+
+	delete g_fmod_manager;
+	delete g_tttGame;
+	delete g_localization;
 
 	return 0;
 }

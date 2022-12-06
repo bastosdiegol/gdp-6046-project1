@@ -108,8 +108,10 @@ public:
 	void getOpenState(const std::string& sound_name);
 	// Get current tags
 	void getTag(Stream* radio);
-	//
+	// Plays a stream Sound
 	void playStream(const std::string& sound_name, const std::string& channel_group_name);
+	// Sets bool pause on a specified channel
+	void stopStreamSound(const std::string& channel_group_name, const std::string& sound_name);
 
 
 private:

@@ -642,7 +642,7 @@ void FModManager::setSoundCurrentFrequency(const std::string& sound_name, float 
 }
 
 void FModManager::getSoundCurrentFrequency(const std::string& sound_name) {
-	DEBUG_PRINT("FModManager::getSoundCurrentFrequency(%s)\n", sound_name.c_str());
+	//DEBUG_PRINT("FModManager::getSoundCurrentFrequency(%s)\n", sound_name.c_str());
 	// Tries to find the sound
 	std::map<std::string, Sound*>::iterator itSound = m_sounds.find(sound_name);
 
@@ -741,5 +741,42 @@ void FModManager::playStream(const std::string& sound_name, const std::string& c
 			break;
 		}
 	} while (true);
+}
+
+void FModManager::stopStreamSound(const std::string& channel_group_name, const std::string& sound_name) {
+	// Tries to find the channel group
+	std::map<std::string, ChannelGroup*>::iterator itChannel = m_channel_groups.find(channel_group_name);
+
+	if (itChannel == m_channel_groups.end()) {
+		std::cout << "FModManager error: Couldn't find the ChannelGroup named #" << channel_group_name << std::endl;
+		return;
+	}
+
+	std::map<std::string, Sound*>::iterator itSound;
+	for (itSound = m_sounds.begin(); itSound != m_sounds.end(); itSound++) {
+		if (channel_group_name.find(itSound->second->m_type) != -1) {
+			itSound->second->m_channel = nullptr;
+		}
+	}
+	itChannel->second->m_group->stop();
+	itChannel->second->m_isPlaying = false;
+	// Channel now is stopped
+	// Now we gonna recreate the stream to make it available once again
+	itSound = m_sounds.find(sound_name);
+
+	if (itSound == m_sounds.end()) {
+		std::cout << "FModManager error: Couldn't find the Sound named #" << sound_name << std::endl;
+		return;
+	}
+	Stream* radio = static_cast<Stream*>(itSound->second);
+	// Releases the stream
+	radio->m_sound->release();
+	// Recreates the stream
+	m_result = m_system->createSound(radio->m_path.c_str(), FMOD_CREATESTREAM | FMOD_NONBLOCKING, nullptr, &radio->m_sound);
+	this->getOpenState(radio);
+	// Checks the result
+	if (m_result != FMOD_OK) {
+		std::cout << "fmod error: #" << m_result << "-" << FMOD_ErrorString(m_result) << std::endl;
+	}
 }
 
